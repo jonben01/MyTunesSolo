@@ -6,7 +6,6 @@ import java.util.List;
 
 public interface IPlaylistDataAccess {
 
-    //ADD CRUD METHODS FOR PLAYLIST
 
     List<Playlist> getAllPlaylists();
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.Jonas_MyTunesSolo.GUI.Controller.NewGenreController">
+   <children>
+      <ListView fx:id="lstGenres" layoutX="26.0" layoutY="31.0" prefHeight="200.0" prefWidth="200.0" />
+      <Text layoutX="17.0" layoutY="268.0" strokeType="OUTSIDE" strokeWidth="0.0" text="LIST OF ALL GENRES CURRENTLY ADDED" />
+      <Button fx:id="btnAddGenre" layoutX="248.0" layoutY="119.0" mnemonicParsing="false" onAction="#btnHandleAddGenre" text="ADD GENRE BUTTON" />
+      <TextField fx:id="txtGenreName" layoutX="239.0" layoutY="82.0" />
+      <Label layoutX="234.0" layoutY="171.0" text="LABEL OF SELECTED GENRE" />
+      <Button layoutX="255.0" layoutY="200.0" mnemonicParsing="false" text="DELETE SELECTED GENRE" />
+      <Text layoutX="255.0" layoutY="244.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DELETE SHOULD HAVE CONFIRMATION WINDOW" />
+   </children>
+</AnchorPane>
