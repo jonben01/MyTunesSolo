@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="555.0" prefWidth="748.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.Jonas_MyTunesSolo.GUI.Controller.ViewController">
+   <children>
+      <TableView fx:id="tblPlaylist" layoutX="19.0" layoutY="91.0" prefHeight="342.0" prefWidth="184.0">
+        <columns>
+          <TableColumn prefWidth="75.0" text="C1" />
+          <TableColumn prefWidth="75.0" text="C2" />
+        </columns>
+      </TableView>
+      <TableView fx:id="tblSong" layoutX="448.0" layoutY="91.0" prefHeight="342.0" prefWidth="231.0">
+        <columns>
+          <TableColumn fx:id="colTitle" prefWidth="75.0" text="C1" />
+          <TableColumn fx:id="colArtist" prefWidth="53.5999755859375" text="C2" />
+            <TableColumn fx:id="colGenre" prefWidth="113.60009765625" text="C3" />
+        </columns>
+      </TableView>
+      <ListView layoutX="210.0" layoutY="91.0" prefHeight="342.0" prefWidth="168.0" />
+      <Button fx:id="btnNewPlaylist" layoutX="19.0" layoutY="446.0" mnemonicParsing="false" onAction="#btnHandleNewPlaylist" prefHeight="25.0" prefWidth="50.0" text="New" />
+      <Button fx:id="btnEditPlaylist" layoutX="86.0" layoutY="446.0" mnemonicParsing="false" onAction="#btnHandleEditPlaylist" prefHeight="25.0" prefWidth="50.0" text="Edit" />
+      <Button fx:id="btnDeletePlaylist" layoutX="152.0" layoutY="446.0" mnemonicParsing="false" onAction="#btnHandleDeletePlaylist" prefHeight="25.0" prefWidth="50.0" text="Delete" />
+      <Button fx:id="btnMoveSongToPlaylist" layoutX="401.0" layoutY="99.0" mnemonicParsing="false" onAction="#btnHandleMoveSongToPlaylist" prefHeight="26.0" prefWidth="31.0" text="⬅" />
+      <Button fx:id="btnMoveSongUp" layoutX="219.0" layoutY="446.0" mnemonicParsing="false" onAction="#btnHandleMoveSongUp" text="⬆" />
+      <Button fx:id="btnMoveSongDown" layoutX="255.0" layoutY="446.0" mnemonicParsing="false" onAction="#btnHandleMoveSongDown" text="⬇" />
+      <Button fx:id="btnDeleteSongOnPlaylist" layoutX="294.0" layoutY="446.0" mnemonicParsing="false" onAction="#btnHandleDeleteSongOnPlaylist" text="Delete" />
+      <Button fx:id="btnNewSong" layoutX="448.0" layoutY="446.0" mnemonicParsing="false" onAction="#btnHandleNewSong" text="new" />
+      <Button fx:id="btnEditSong" layoutX="511.0" layoutY="446.0" mnemonicParsing="false" onAction="#btnHandleEditSong" text="edit" />
+      <Button layoutX="85.0" layoutY="20.0" mnemonicParsing="false" text="Button" />
+      <Button layoutX="151.0" layoutY="20.0" mnemonicParsing="false" text="Button" />
+      <Button layoutX="30.0" layoutY="20.0" mnemonicParsing="false" text="Button" />
+      <Text layoutX="309.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TEMPORARY" />
+      <Text layoutX="19.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Playlists" />
+      <Text layoutX="210.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Songs on Playlist" />
+      <Button fx:id="btnDeleteSong" layoutX="573.0" layoutY="446.0" mnemonicParsing="false" onAction="#btnHandleDeleteSong" text="delete" />
+      <Slider layoutX="56.0" layoutY="59.0" />
+      <Button layoutX="-7.0" layoutY="47.0" mnemonicParsing="false" text="Button" />
+   </children>
+</AnchorPane>

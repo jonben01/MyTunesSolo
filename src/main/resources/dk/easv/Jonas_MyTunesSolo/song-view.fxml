@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="268.0" prefWidth="270.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.Jonas_MyTunesSolo.GUI.Controller.ViewController">
+   <children>
+      <VBox layoutX="71.0" layoutY="44.0" prefHeight="210.0" prefWidth="128.0">
+         <children>
+            <TextField prefHeight="14.0" prefWidth="128.0">
+               <VBox.margin>
+                  <Insets bottom="15.0" />
+               </VBox.margin>
+            </TextField>
+            <TextField>
+               <VBox.margin>
+                  <Insets bottom="15.0" />
+               </VBox.margin>
+            </TextField>
+            <TextField>
+               <VBox.margin>
+                  <Insets bottom="15.0" />
+               </VBox.margin>
+            </TextField>
+            <TextField />
+         </children>
+      </VBox>
+      <Text layoutX="39.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="title" />
+      <Text layoutX="28.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="artist" />
+      <Text layoutX="28.0" layoutY="181.0" strokeType="OUTSIDE" strokeWidth="0.0" text="file path" />
+      <Button layoutX="189.0" layoutY="211.0" mnemonicParsing="false" text="filechooser" />
+      <Text layoutX="17.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="genre, should be drop down options" />
+   </children>
+</AnchorPane>
