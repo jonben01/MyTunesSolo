@@ -54,7 +54,7 @@ public class ViewController implements Initializable {
     public void btnHandleNewSong(ActionEvent actionEvent) {
         try {
             // Load the FXML file
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/resources/song-view.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/song-view.fxml"));
             Parent root = fxmlLoader.load();
 
             // Create a new stage

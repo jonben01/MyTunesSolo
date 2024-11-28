@@ -32,7 +32,8 @@
       <Text layoutX="39.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="title" />
       <Text layoutX="28.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="artist" />
       <Text layoutX="28.0" layoutY="181.0" strokeType="OUTSIDE" strokeWidth="0.0" text="file path" />
-      <Button layoutX="189.0" layoutY="211.0" mnemonicParsing="false" text="filechooser" />
+      <Button fx:id="btnFileChooser" layoutX="189.0" layoutY="211.0" mnemonicParsing="false" onAction="#btnHandleFileChooser" text="filechooser" />
       <Text layoutX="17.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="genre, should be drop down options" />
+      <Button fx:id="btnMenuAddSong" layoutX="13.0" layoutY="224.0" mnemonicParsing="false" onAction="#btnHandleMenuAddSong" text="ADD" />
    </children>
 </AnchorPane>
