@@ -3,45 +3,38 @@ package dk.easv.Jonas_MyTunesSolo.BE;
 public class Song {
 
     private int songId;
-    private String songName;
-    private String songArtist;
-    private String songGenre;
+    private String title;
+    private String artistName;
+    private String genreName;
     private String songFilePath;
+    private int duration;
 
     //Getters and setters for variables
     public int getSongID() {return songId;}
-
     public void setSongID(int songID) {this.songId = songID;}
 
-    public String getSongName() {return songName;}
+    public String getTitle() {return title;}
+    public void setTitle(String title) {this.title = title;}
 
-    public void setSongName(String songName) {this.songName = songName;}
+    public String getArtistName() {return artistName;}
+    public void setArtistName(String artistName) {this.artistName = artistName;}
 
-    public String getSongArtist() {return songArtist;}
-
-    public void setSongArtist(String songArtist) {this.songArtist = songArtist;}
-
-    public String getSongGenre() {return songGenre;}
-
-    public void setSongGenre(String songGenre) {this.songGenre = songGenre;}
+    public String getGenreName() {return genreName;}
+    public void setGenreName(String genreName) {this.genreName = genreName;}
 
     public String getSongFilePath() {return songFilePath;}
-
     public void setSongFilePath(String songFilePath) {this.songFilePath = songFilePath;}
 
-    /**
-     *
-     * @param songID
-     * @param songName
-     * @param songArtist
-     * @param songGenre
-     * @param songFilePath
-     */
-    public Song(int songID, String songName, String songArtist, String songGenre, String songFilePath) {
-        this.songId = songID;
-        this.songName = songName;
-        this.songArtist = songArtist;
-        this.songGenre = songGenre;
+    public int getDuration() {return duration;}
+    public void setDuration(int duration) {this.duration = duration;}
+
+    public Song(int songId, String title, String artistName, String genreName, String songFilePath, int duration) {
+        this.songId = songId;
+        this.title = title;
+        this.artistName = artistName;
+        this.genreName = genreName;
         this.songFilePath = songFilePath;
+        this.duration = duration;
     }
 }
+

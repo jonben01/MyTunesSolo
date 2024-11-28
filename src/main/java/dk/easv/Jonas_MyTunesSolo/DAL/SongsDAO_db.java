@@ -25,16 +25,23 @@ public class SongsDAO_db implements ISongDataAccess {
         ArrayList<Song> allSongs = new ArrayList<>();
         //try with resources, auto closes database connection.
         try (Connection connection = dbConnecter.getConnection(); Statement stmt = connection.createStatement()) {
-            String sql = "SELECT * FROM songs";
+            String sql = "SELECT s.Id, s.Title, s.Artist, s.GenreId, g.GenreName AS genreName, s.Duration, s.File_Path " +
+                         "FROM dbo.Song s " +
+                         "JOIN dbo.Genre g ON s.GenreId = g.Id ";
+
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()) {
 
                 int id =rs.getInt("Id");
                 String title = rs.getString("Title");
-                int Artist_id = rs.getInt("ArtistId");
-                int GenreId = rs.getInt("GenreId");
+                String artist = rs.getString("Artist");
+                String genreName = rs.getString("GenreName");
+                int duration = rs.getInt("Duration");
                 String file_path = rs.getString("File_Path");
+
+                Song song = new Song(id, title, artist, genreName, file_path, duration);
+                allSongs.add(song);
             }
             return allSongs;
 

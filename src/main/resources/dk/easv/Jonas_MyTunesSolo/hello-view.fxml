@@ -16,12 +16,16 @@
           <TableColumn prefWidth="75.0" text="C2" />
         </columns>
       </TableView>
-      <TableView fx:id="tblSong" layoutX="448.0" layoutY="91.0" prefHeight="342.0" prefWidth="231.0">
+      <TableView fx:id="tblSong" layoutX="448.0" layoutY="91.0" prefHeight="342.0" prefWidth="282.0">
         <columns>
-          <TableColumn fx:id="colTitle" prefWidth="75.0" text="C1" />
-          <TableColumn fx:id="colArtist" prefWidth="53.5999755859375" text="C2" />
-            <TableColumn fx:id="colGenre" prefWidth="113.60009765625" text="C3" />
+          <TableColumn fx:id="colTitle" prefWidth="75.0" text="Title" />
+          <TableColumn fx:id="colArtist" prefWidth="53.5999755859375" text="ArtistId" />
+            <TableColumn fx:id="colGenre" prefWidth="72.7999267578125" text="GenreId" />
+            <TableColumn fx:id="colDuration" prefWidth="75.0" text="Duration" />
         </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
       </TableView>
       <ListView layoutX="210.0" layoutY="91.0" prefHeight="342.0" prefWidth="168.0" />
       <Button fx:id="btnNewPlaylist" layoutX="19.0" layoutY="446.0" mnemonicParsing="false" onAction="#btnHandleNewPlaylist" prefHeight="25.0" prefWidth="50.0" text="New" />

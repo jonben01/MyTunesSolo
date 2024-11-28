@@ -4,6 +4,7 @@ import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.DAL.SongsDAO_db;
 
 import java.io.IOException;
+import java.util.List;
 
 public class SongManager {
 
@@ -13,7 +14,7 @@ public class SongManager {
         SongsDAO = new SongsDAO_db();
     }
 
-    public Song getAllSongs() {
-        return SongsDAO.getAllSongs()
+    public List<Song> getAllSongs() {
+        return SongsDAO.getAllSongs();
     }
 }

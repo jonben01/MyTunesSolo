@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -18,7 +19,8 @@ import java.util.ResourceBundle;
 
 public class ViewController implements Initializable {
 
-
+    @FXML
+    TableColumn<Song, Integer> colDuration;
     @FXML
     TableColumn<Song, Integer> colGenre;
     @FXML
@@ -28,13 +30,24 @@ public class ViewController implements Initializable {
     @FXML
     TableView<Song> tblSong;
 
-    public ViewController() throws Exception {
-        SongModel songModel = new dk.easv.Jonas_MyTunesSolo.GUI.SongModel.SongModel();
-    }
+    private SongModel songModel;
 
+    public ViewController()  {
+
+        try {
+            songModel = new SongModel();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+        colArtist.setCellValueFactory(new PropertyValueFactory<>("artistName"));
+        colGenre.setCellValueFactory(new PropertyValueFactory<>("genreName"));
+        colDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
+        tblSong.setItems(songModel.getSongsToBeViewed());
     }
 
     @FXML
