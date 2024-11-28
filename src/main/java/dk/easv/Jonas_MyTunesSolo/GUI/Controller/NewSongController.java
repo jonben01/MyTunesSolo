@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -52,15 +53,17 @@ public class NewSongController {
             Parent root = fxmlLoader.load();
 
             // Create a new stage
-            Stage newSongStage = new Stage();
-            newSongStage.setTitle("New genre");
-            newSongStage.setResizable(false);
+            Stage newGenreStage = new Stage();
+            newGenreStage.setTitle("New genre");
+            newGenreStage.setResizable(false);
+            //Sets modality, cant use previous window till this one is closed
+            newGenreStage.initModality(Modality.APPLICATION_MODAL);
 
             // Set the scene with the loaded FXML file
-            newSongStage.setScene(new Scene(root, 500, 400));
+            newGenreStage.setScene(new Scene(root, 500, 400));
 
             // Show the stage
-            newSongStage.show();
+            newGenreStage.show();
         } catch (IOException e) {
             e.printStackTrace();
 

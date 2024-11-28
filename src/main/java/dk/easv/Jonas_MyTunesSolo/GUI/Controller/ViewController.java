@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -61,6 +62,8 @@ public class ViewController implements Initializable {
             Stage newSongStage = new Stage();
             newSongStage.setTitle("New Song");
             newSongStage.setResizable(false);
+            //Sets modality, cant use previous window till this one is closed
+            newSongStage.initModality(Modality.APPLICATION_MODAL);
 
             // Set the scene with the loaded FXML file
             newSongStage.setScene(new Scene(root, 300, 400));
