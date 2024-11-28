@@ -26,7 +26,7 @@
                   <Insets bottom="15.0" />
                </VBox.margin>
             </TextField>
-            <TextField />
+            <TextField fx:id="txtFilePath" />
          </children>
       </VBox>
       <Text layoutX="39.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="title" />
