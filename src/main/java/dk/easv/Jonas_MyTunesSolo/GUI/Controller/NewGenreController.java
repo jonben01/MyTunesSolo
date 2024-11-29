@@ -1,7 +1,11 @@
 package dk.easv.Jonas_MyTunesSolo.GUI.Controller;
 
 import dk.easv.Jonas_MyTunesSolo.BE.Genre;
+import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.GUI.GenreModel;
+import dk.easv.Jonas_MyTunesSolo.GUI.SongModel;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,6 +21,7 @@ public class NewGenreController implements Initializable {
     public TextField txtGenreName;
 
     private GenreModel genreModel;
+    private SimpleBooleanProperty dataChangedFlag;
 
     public NewGenreController() {
         try {
@@ -38,6 +43,7 @@ public class NewGenreController implements Initializable {
         Genre newGenre = new Genre(-1, genreName);
         genreModel.createGenre(newGenre);
         txtGenreName.clear();
+
     }
 
     public void btnHandleDeleteGenre(ActionEvent actionEvent) throws Exception {
@@ -46,6 +52,14 @@ public class NewGenreController implements Initializable {
         if (genreToBeDeleted != null) {
             genreModel.deleteGenre(genreToBeDeleted);
             lstGenres.setItems(genreModel.getGenresToBeViewed());
+            if (dataChangedFlag != null) {
+                dataChangedFlag.set(true);
+            }
         }
     }
+    public void setDataChangedFlag(SimpleBooleanProperty dataChangedFlag) {
+        this.dataChangedFlag = dataChangedFlag;
+    }
+
+
 }

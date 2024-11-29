@@ -20,6 +20,7 @@ public class Song {
     public void setArtistName(String artistName) {this.artistName = artistName;}
 
     public String getGenreName() {return genreName;}
+
     public void setGenreName(String genreName) {this.genreName = genreName;}
 
     public String getSongFilePath() {return songFilePath;}

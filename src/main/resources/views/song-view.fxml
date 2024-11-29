@@ -30,7 +30,7 @@
       <Text layoutX="28.0" layoutY="181.0" strokeType="OUTSIDE" strokeWidth="0.0" text="file path" />
       <Button fx:id="btnFileChooser" layoutX="189.0" layoutY="211.0" mnemonicParsing="false" onAction="#btnHandleFileChooser" text="filechooser" />
       <Button fx:id="btnMenuAddSong" layoutX="13.0" layoutY="224.0" mnemonicParsing="false" onAction="#btnHandleMenuAddSong" text="ADD" />
-      <ComboBox layoutX="13.0" layoutY="123.0" prefWidth="150.0" />
+      <ComboBox fx:id="cmbGenre" layoutX="13.0" layoutY="123.0" prefWidth="150.0" />
       <Text layoutX="31.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="genre, should be drop down options" />
       <Button fx:id="btnAddGenre" layoutX="189.0" layoutY="122.0" mnemonicParsing="false" onAction="#btnHandleAddGenre" text="Add genre" />
    </children>

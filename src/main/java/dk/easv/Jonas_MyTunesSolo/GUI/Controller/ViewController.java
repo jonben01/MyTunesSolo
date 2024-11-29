@@ -1,7 +1,10 @@
 package dk.easv.Jonas_MyTunesSolo.GUI.Controller;
 
+
+//TODO separate project imports and java imports
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
-import dk.easv.Jonas_MyTunesSolo.GUI.SongModel.SongModel;
+import dk.easv.Jonas_MyTunesSolo.GUI.SongModel;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,6 +34,8 @@ public class ViewController implements Initializable {
     @FXML
     TableView<Song> tblSong;
 
+    private SimpleBooleanProperty dataChanged;
+
     private SongModel songModel;
 
     public ViewController()  {
@@ -49,6 +54,20 @@ public class ViewController implements Initializable {
         colGenre.setCellValueFactory(new PropertyValueFactory<>("genreName"));
         colDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
         tblSong.setItems(songModel.getSongsToBeViewed());
+
+        //data = FXCollections.observableArrayList();
+        //tableView.setItems(data);
+        // REMOVE CHAT GPT COMMENTS, i did type this out myself jsut dfyi if you see this
+        //TODO add comments to this, and in the other controllers
+        dataChanged = new SimpleBooleanProperty(false);
+        dataChanged.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                songModel.refreshSong();
+                tblSong.refresh(); // Refresh the TableView
+                dataChanged.set(false); // Reset the flag
+            }
+        });
+
     }
 
     @FXML
@@ -57,6 +76,9 @@ public class ViewController implements Initializable {
             // Load the FXML file
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/song-view.fxml"));
             Parent root = fxmlLoader.load();
+
+            NewSongController NSController = fxmlLoader.getController();
+            NSController.setDataChangedFlag(dataChanged);
 
             // Create a new stage
             Stage newSongStage = new Stage();

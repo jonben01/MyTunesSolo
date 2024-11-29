@@ -1,4 +1,4 @@
-package dk.easv.Jonas_MyTunesSolo.GUI.SongModel;
+package dk.easv.Jonas_MyTunesSolo.GUI;
 //PROJECT IMPORTS
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.BLL.SongManager;
@@ -21,4 +21,9 @@ public class SongModel {
     }
 
     public ObservableList<Song> getSongsToBeViewed() { return songsToBeViewed; }
+
+    public void refreshSong() {
+        songsToBeViewed.clear();
+        songsToBeViewed.addAll(songManager.getAllSongs());
+    }
 }

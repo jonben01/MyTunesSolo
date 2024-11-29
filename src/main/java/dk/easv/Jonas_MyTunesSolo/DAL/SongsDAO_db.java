@@ -27,7 +27,7 @@ public class SongsDAO_db implements ISongDataAccess {
         try (Connection connection = dbConnecter.getConnection(); Statement stmt = connection.createStatement()) {
             String sql = "SELECT s.Id, s.Title, s.Artist, s.GenreId, g.GenreName AS genreName, s.Duration, s.File_Path " +
                          "FROM dbo.Song s " +
-                         "JOIN dbo.Genre g ON s.GenreId = g.Id ";
+                         "LEFT JOIN dbo.Genre g ON s.GenreId = g.Id ";
 
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -37,11 +37,15 @@ public class SongsDAO_db implements ISongDataAccess {
                 String title = rs.getString("Title");
                 String artist = rs.getString("Artist");
                 String genreName = rs.getString("GenreName");
+                if (genreName == null) {
+                    genreName = "Unknown";
+                }
                 int duration = rs.getInt("Duration");
                 String file_path = rs.getString("File_Path");
 
                 Song song = new Song(id, title, artist, genreName, file_path, duration);
                 allSongs.add(song);
+
             }
             return allSongs;
 
