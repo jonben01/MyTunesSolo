@@ -2,6 +2,7 @@ package dk.easv.Jonas_MyTunesSolo.DAL;
 
 import dk.easv.Jonas_MyTunesSolo.BE.Genre;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface IGenreDataAccess {
@@ -10,5 +11,5 @@ public interface IGenreDataAccess {
     Genre createGenre(Genre newGenre) throws Exception;
 
 
-    void deleteGenre(Genre genre);
+    void deleteGenre(Genre genre) throws SQLException;
 }

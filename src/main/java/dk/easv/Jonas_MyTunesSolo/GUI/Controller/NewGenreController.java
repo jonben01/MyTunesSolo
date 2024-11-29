@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 
 public class NewGenreController implements Initializable {
     @FXML
-    public ListView lstGenres;
+    public ListView<Genre> lstGenres;
     public TextField txtGenreName;
 
     private GenreModel genreModel;
@@ -38,5 +38,14 @@ public class NewGenreController implements Initializable {
         Genre newGenre = new Genre(-1, genreName);
         genreModel.createGenre(newGenre);
         txtGenreName.clear();
+    }
+
+    public void btnHandleDeleteGenre(ActionEvent actionEvent) throws Exception {
+        Genre genreToBeDeleted = lstGenres.getSelectionModel().getSelectedItem();
+
+        if (genreToBeDeleted != null) {
+            genreModel.deleteGenre(genreToBeDeleted);
+            lstGenres.setItems(genreModel.getGenresToBeViewed());
+        }
     }
 }

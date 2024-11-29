@@ -75,7 +75,14 @@ public class GenreDAO_db implements IGenreDataAccess {
     }
 
     @Override
-    public void deleteGenre(Genre genre) {
+    public void deleteGenre(Genre genreToBeDeleted) throws SQLException {
+        String sql = "DELETE FROM dbo.Genre WHERE Id = ?;";
+
+        try (Connection conn = dbConnector.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, genreToBeDeleted.getId());
+            stmt.executeUpdate();
+        }
 
     }
 

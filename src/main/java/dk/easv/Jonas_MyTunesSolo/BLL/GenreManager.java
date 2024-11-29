@@ -22,4 +22,8 @@ public class GenreManager {
     public List<Genre> getAllGenres() {
         return genreDAO.getAllGenres();
     }
+
+    public void deleteGenre(Genre genreToBeDeleted) throws Exception {
+        genreDAO.deleteGenre(genreToBeDeleted);
+    }
 }

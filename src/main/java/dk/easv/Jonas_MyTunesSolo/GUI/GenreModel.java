@@ -28,4 +28,9 @@ public class GenreModel {
     public ObservableList<Genre> getGenresToBeViewed() {
         return genresToBeViewed;
     }
+
+    public void deleteGenre(Genre genreToBeDeleted) throws Exception {
+        genresToBeViewed.remove(genreToBeDeleted);
+        genreManager.deleteGenre(genreToBeDeleted);
+    }
 }
