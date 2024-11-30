@@ -26,6 +26,7 @@ public class GenreModel {
     }
 
     public ObservableList<Genre> getGenresToBeViewed() {
+        ObservableList<Genre> genres = FXCollections.observableArrayList(genresToBeViewed);
         return genresToBeViewed;
     }
 

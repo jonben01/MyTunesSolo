@@ -42,10 +42,13 @@ public class NewGenreController implements Initializable {
     public void btnHandleAddGenre(ActionEvent actionEvent) throws Exception {
         String genreName = txtGenreName.getText();
         Genre newGenre = new Genre(-1, genreName);
+
+        if (genreName != null && !genreName.isEmpty()) {
         genreModel.createGenre(newGenre);
         txtGenreName.clear();
         if (genreDataChangedFlag != null) {
             genreDataChangedFlag.set(true);
+            }
         }
 
     }

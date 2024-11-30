@@ -54,25 +54,27 @@ public class SongsDAO_db implements ISongDataAccess {
     }
 
     @Override
-    public Song createSong(Song newSong) throws SQLServerException {
-    String sql ="INSERT INTO dbo.Song (Title, Artist, ) VALUES (?,?,?,?,?,?);";
+    public Song createSong(Song newSong) {
+    String sql ="INSERT INTO dbo.Song (Title, Artist, GenreId, Duration, File_Path ) VALUES (?,?,?,?,?);";
 
-    try(Connection connection = dbConnecter.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
-        PreparedStatement pstmt = connection.prepareStatement(sql);
+    try(Connection connection = dbConnecter.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
         pstmt.setString(1, newSong.getTitle());
         pstmt.setString(2, newSong.getArtistName());
-        pstmt.setString(3, newSong.getGenreName());
-        pstmt.setString(4, newSong.getSongFilePath());
-        pstmt.setInt(5, newSong.getDuration());
-
-        //TODO fix genreName and genreId, so that we input into the song table, the id, but we're using
+        pstmt.setInt(3, newSong.getGenreId());
+        pstmt.setInt(4, newSong.getDuration());
+        pstmt.setString(5, newSong.getSongFilePath());
 
 
+        Song songCreated = new Song(newSong.getSongID(), newSong.getTitle(), newSong.getArtistName(), newSong.getGenreName(),
+                                    newSong.getSongFilePath(), newSong.getDuration());
+        pstmt.executeUpdate();
+
+        return songCreated;
 
     } catch (SQLException e) {
         throw new RuntimeException(e);
     }
-        return null;
     }
 
     @Override

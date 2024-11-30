@@ -29,8 +29,8 @@ public class SongModel {
     }
 
     public Song createSong(Song newSong) throws SQLServerException {
-        songManager.createSong(newSong);
-        songsToBeViewed.add(newSong);
-        return newSong;
+        Song songCreated = songManager.createSong(newSong);
+        songsToBeViewed.add(songCreated);
+        return songCreated;
     }
 }

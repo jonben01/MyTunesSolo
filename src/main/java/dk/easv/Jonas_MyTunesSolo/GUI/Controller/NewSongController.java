@@ -23,6 +23,10 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ResourceBundle;
 
 public class NewSongController implements Initializable {
@@ -41,24 +45,35 @@ public class NewSongController implements Initializable {
 
         try {
             genreModel = new GenreModel();
+            songModel = new SongModel();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void btnHandleMenuAddSong(ActionEvent actionEvent) throws SQLServerException {
-        String title = txtTitle.getText();
-        String artist = txtArtist.getText();
-        String filePath = this.txtFilePath.getText();
-        String genre = this.cmbGenre.getSelectionModel().getSelectedItem().toString(); //CHANGE THIS
-        int duration = Integer.parseInt(this.txtDuration.getText());
+    public void btnHandleMenuAddSong(ActionEvent actionEvent) throws SQLServerException, IOException {
 
-        //TODO FIGURE OUT HOW TO GET DURATION IN A GOOD WAY
-        //And make combobox give a genreId instead of the name
+            String title = txtTitle.getText();
+            String artist = txtArtist.getText();
+            Genre selectedGenre = (Genre) this.cmbGenre.getSelectionModel().getSelectedItem();
+            int duration = Integer.parseInt(txtDuration.getText());
 
-        Song newSong = new Song(-1, title, artist, genre, filePath, duration);
-        songModel.createSong(newSong);
+            String songDestinationDir = "src/main/resources/Songs";
+            //Path songDestinationPath = Paths.get(songDestinationDir, txtTitle.getText());
+            Path songDestinationPath = Paths.get(songDestinationDir, new File(txtFilePath.getText()).getName());
+            //TODO, check if get name is needed in the Path.
+            //TODO fix the war crime that is REPLACE_EXISTING, fix the actual method instead
+            //TODO make alert window "song with this file name already exists, override song?"
+            Files.copy(Paths.get(txtFilePath.getText()), songDestinationPath, StandardCopyOption.REPLACE_EXISTING);
+            //not doing absolute path, I want it to be able to run on other computers
+            String newFilePath = songDestinationPath.toString();
+
+            //TODO FIGURE OUT HOW TO GET DURATION IN A GOOD WAY
+            //USE MEDIAPLAYER CLASS TO GET DURATION, lavede det med David fredag d.29, se i discord
+
+            Song newSong = new Song(-1, title, artist, selectedGenre.getId(), newFilePath, duration);
+            songModel.createSong(newSong);
 
     }
 
@@ -121,6 +136,14 @@ public class NewSongController implements Initializable {
     }
     public void setDataChangedFlag(SimpleBooleanProperty dataChangedFlag) {
         this.dataChangedFlag = dataChangedFlag;
+    }
+
+
+
+    private String formatDuration(int durationSeconds) {
+        int minutes = durationSeconds / 60;
+        int seconds = durationSeconds % 60;
+        return String.format("%02d:%02d", minutes, seconds);
     }
 
 }
