@@ -11,7 +11,7 @@ public interface ISongDataAccess {
 
     List<Song> getAllSongs() throws SQLServerException;
 
-    Song createSong(Song newSong);
+    Song createSong(Song newSong) throws SQLServerException;
 
     void updateSong(Song song);
 

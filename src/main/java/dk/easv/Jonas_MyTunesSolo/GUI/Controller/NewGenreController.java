@@ -22,6 +22,7 @@ public class NewGenreController implements Initializable {
 
     private GenreModel genreModel;
     private SimpleBooleanProperty dataChangedFlag;
+    private SimpleBooleanProperty genreDataChangedFlag;
 
     public NewGenreController() {
         try {
@@ -43,6 +44,9 @@ public class NewGenreController implements Initializable {
         Genre newGenre = new Genre(-1, genreName);
         genreModel.createGenre(newGenre);
         txtGenreName.clear();
+        if (genreDataChangedFlag != null) {
+            genreDataChangedFlag.set(true);
+        }
 
     }
 
@@ -59,6 +63,9 @@ public class NewGenreController implements Initializable {
     }
     public void setDataChangedFlag(SimpleBooleanProperty dataChangedFlag) {
         this.dataChangedFlag = dataChangedFlag;
+    }
+    public void setGenreDataChangedFlag(SimpleBooleanProperty genreDataChangedFlag) {
+        this.genreDataChangedFlag = genreDataChangedFlag;
     }
 
 

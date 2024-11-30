@@ -1,13 +1,11 @@
 package dk.easv.Jonas_MyTunesSolo.DAL;
 
 
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +54,24 @@ public class SongsDAO_db implements ISongDataAccess {
     }
 
     @Override
-    public Song createSong(Song newSong) {
+    public Song createSong(Song newSong) throws SQLServerException {
+    String sql ="INSERT INTO dbo.Song (Title, Artist, ) VALUES (?,?,?,?,?,?);";
+
+    try(Connection connection = dbConnecter.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+        PreparedStatement pstmt = connection.prepareStatement(sql);
+        pstmt.setString(1, newSong.getTitle());
+        pstmt.setString(2, newSong.getArtistName());
+        pstmt.setString(3, newSong.getGenreName());
+        pstmt.setString(4, newSong.getSongFilePath());
+        pstmt.setInt(5, newSong.getDuration());
+
+        //TODO fix genreName and genreId, so that we input into the song table, the id, but we're using
+
+
+
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    }
         return null;
     }
 

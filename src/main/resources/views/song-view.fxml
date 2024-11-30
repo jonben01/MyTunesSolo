@@ -22,7 +22,11 @@
                   <Insets bottom="55.0" />
                </VBox.margin>
             </TextField>
-            <TextField fx:id="txtFilePath" editable="false" />
+            <TextField fx:id="txtFilePath" editable="false">
+               <VBox.margin>
+                  <Insets bottom="15.0" />
+               </VBox.margin></TextField>
+            <TextField fx:id="txtDuration" promptText="duration" />
          </children>
       </VBox>
       <Text layoutX="39.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="title" />

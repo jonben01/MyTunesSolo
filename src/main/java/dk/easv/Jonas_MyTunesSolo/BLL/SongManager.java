@@ -1,5 +1,6 @@
 package dk.easv.Jonas_MyTunesSolo.BLL;
 
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.DAL.SongsDAO_db;
 
@@ -16,5 +17,9 @@ public class SongManager {
 
     public List<Song> getAllSongs() {
         return SongsDAO.getAllSongs();
+    }
+
+    public Song createSong(Song newSong) throws SQLServerException {
+        return SongsDAO.createSong(newSong);
     }
 }

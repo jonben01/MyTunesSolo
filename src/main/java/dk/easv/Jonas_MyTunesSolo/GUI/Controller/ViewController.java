@@ -55,16 +55,13 @@ public class ViewController implements Initializable {
         colDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
         tblSong.setItems(songModel.getSongsToBeViewed());
 
-        //data = FXCollections.observableArrayList();
-        //tableView.setItems(data);
-        // REMOVE CHAT GPT COMMENTS, i did type this out myself jsut dfyi if you see this
         //TODO add comments to this, and in the other controllers
         dataChanged = new SimpleBooleanProperty(false);
         dataChanged.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 songModel.refreshSong();
-                tblSong.refresh(); // Refresh the TableView
-                dataChanged.set(false); // Reset the flag
+                //reset flag, so code is reusable
+                dataChanged.set(false);
             }
         });
 

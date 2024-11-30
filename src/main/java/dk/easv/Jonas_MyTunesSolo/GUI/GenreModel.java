@@ -33,4 +33,8 @@ public class GenreModel {
         genresToBeViewed.remove(genreToBeDeleted);
         genreManager.deleteGenre(genreToBeDeleted);
     }
+    public void refreshGenre() {
+        genresToBeViewed.clear();
+        genresToBeViewed.addAll(genreManager.getAllGenres());
+    }
 }

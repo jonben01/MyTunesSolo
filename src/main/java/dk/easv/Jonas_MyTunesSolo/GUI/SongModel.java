@@ -1,5 +1,6 @@
 package dk.easv.Jonas_MyTunesSolo.GUI;
 //PROJECT IMPORTS
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.BLL.SongManager;
 
@@ -25,5 +26,11 @@ public class SongModel {
     public void refreshSong() {
         songsToBeViewed.clear();
         songsToBeViewed.addAll(songManager.getAllSongs());
+    }
+
+    public Song createSong(Song newSong) throws SQLServerException {
+        songManager.createSong(newSong);
+        songsToBeViewed.add(newSong);
+        return newSong;
     }
 }

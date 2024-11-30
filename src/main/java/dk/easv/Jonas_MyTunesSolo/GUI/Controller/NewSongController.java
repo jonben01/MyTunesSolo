@@ -1,5 +1,6 @@
 package dk.easv.Jonas_MyTunesSolo.GUI.Controller;
 
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dk.easv.Jonas_MyTunesSolo.BE.Genre;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.GUI.GenreModel;
@@ -31,7 +32,10 @@ public class NewSongController implements Initializable {
     public TextField txtTitle;
     public ComboBox cmbGenre;
     private GenreModel genreModel;
+    private SongModel songModel;
     private SimpleBooleanProperty dataChangedFlag;
+    private SimpleBooleanProperty genreDataChanged;
+    public TextField txtDuration;
 
     public NewSongController(){
 
@@ -43,13 +47,19 @@ public class NewSongController implements Initializable {
         }
     }
 
-    public void btnHandleMenuAddSong(ActionEvent actionEvent) {
+    public void btnHandleMenuAddSong(ActionEvent actionEvent) throws SQLServerException {
         String title = txtTitle.getText();
         String artist = txtArtist.getText();
         String filePath = this.txtFilePath.getText();
-        //String genre //FIGURE OUT HOW TO MAKE COMBOBOX WORK
-        //FIGURE OUT HOW TO GET DURATION IN A GOOD WAY
-        //Song newSong = new Song(-1, title, artist, genre, filePath, duration);
+        String genre = this.cmbGenre.getSelectionModel().getSelectedItem().toString(); //CHANGE THIS
+        int duration = Integer.parseInt(this.txtDuration.getText());
+
+        //TODO FIGURE OUT HOW TO GET DURATION IN A GOOD WAY
+        //And make combobox give a genreId instead of the name
+
+        Song newSong = new Song(-1, title, artist, genre, filePath, duration);
+        songModel.createSong(newSong);
+
     }
 
     public void btnHandleFileChooser(ActionEvent actionEvent) {
@@ -76,6 +86,7 @@ public class NewSongController implements Initializable {
 
             NewGenreController NGController = fxmlLoader.getController();
             NGController.setDataChangedFlag(dataChangedFlag);
+            NGController.setGenreDataChangedFlag(genreDataChanged);
 
             // Create a new stage
             Stage newGenreStage = new Stage();
@@ -98,6 +109,15 @@ public class NewSongController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cmbGenre.setItems(genreModel.getGenresToBeViewed());
+
+        genreDataChanged = new SimpleBooleanProperty(false);
+        genreDataChanged.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                genreModel.refreshGenre();
+                genreDataChanged.set(false); // Reset the flag
+            }
+        });
+
     }
     public void setDataChangedFlag(SimpleBooleanProperty dataChangedFlag) {
         this.dataChangedFlag = dataChangedFlag;
