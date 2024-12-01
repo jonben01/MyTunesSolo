@@ -14,6 +14,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
@@ -23,10 +25,8 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class NewSongController implements Initializable {
@@ -65,7 +65,31 @@ public class NewSongController implements Initializable {
             //TODO, check if get name is needed in the Path.
             //TODO fix the war crime that is REPLACE_EXISTING, fix the actual method instead
             //TODO make alert window "song with this file name already exists, override song?"
-            Files.copy(Paths.get(txtFilePath.getText()), songDestinationPath, StandardCopyOption.REPLACE_EXISTING);
+            try {
+                Files.copy(Paths.get(txtFilePath.getText()), songDestinationPath);
+            } catch (FileAlreadyExistsException e) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("FileAlreadyExistsException");
+                alert.setHeaderText("File already exists");
+                alert.setContentText("Replace existing song with new song?");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+
+                    //get songToBeDeleted if a song with the file path of the destination path exists
+                    Song songToBeDeleted = songModel.getSongByFilePath(songDestinationPath.toString());
+
+                    if (songToBeDeleted != null) {
+                        //deletes SongToBeDeleted, so we dont keep a deleted song in the database
+                        songModel.deleteSong(songToBeDeleted);
+                    }
+                    Files.copy(Paths.get(txtFilePath.getText()), songDestinationPath, StandardCopyOption.REPLACE_EXISTING);
+                } else {
+                    return;
+                }
+
+            }
+
             //not doing absolute path, I want it to be able to run on other computers
             String newFilePath = songDestinationPath.toString();
 

@@ -22,4 +22,8 @@ public class SongManager {
     public Song createSong(Song newSong) throws SQLServerException {
         return SongsDAO.createSong(newSong);
     }
+
+    public void deleteSong(Song songToBeDeleted) throws SQLServerException {
+        SongsDAO.deleteSong(songToBeDeleted);
+    }
 }

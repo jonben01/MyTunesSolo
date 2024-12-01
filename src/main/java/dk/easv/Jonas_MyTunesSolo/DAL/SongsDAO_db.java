@@ -29,9 +29,9 @@ public class SongsDAO_db implements ISongDataAccess {
 
             ResultSet rs = stmt.executeQuery(sql);
 
-            while(rs.next()) {
+            while (rs.next()) {
 
-                int id =rs.getInt("Id");
+                int id = rs.getInt("Id");
                 String title = rs.getString("Title");
                 String artist = rs.getString("Artist");
                 String genreName = rs.getString("GenreName");
@@ -55,34 +55,43 @@ public class SongsDAO_db implements ISongDataAccess {
 
     @Override
     public Song createSong(Song newSong) {
-    String sql ="INSERT INTO dbo.Song (Title, Artist, GenreId, Duration, File_Path ) VALUES (?,?,?,?,?);";
+        String sql = "INSERT INTO dbo.Song (Title, Artist, GenreId, Duration, File_Path ) VALUES (?,?,?,?,?);";
 
-    try(Connection connection = dbConnecter.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        try (Connection connection = dbConnecter.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
-        pstmt.setString(1, newSong.getTitle());
-        pstmt.setString(2, newSong.getArtistName());
-        pstmt.setInt(3, newSong.getGenreId());
-        pstmt.setInt(4, newSong.getDuration());
-        pstmt.setString(5, newSong.getSongFilePath());
+            pstmt.setString(1, newSong.getTitle());
+            pstmt.setString(2, newSong.getArtistName());
+            pstmt.setInt(3, newSong.getGenreId());
+            pstmt.setInt(4, newSong.getDuration());
+            pstmt.setString(5, newSong.getSongFilePath());
 
+            Song songCreated = new Song(newSong.getSongID(), newSong.getTitle(), newSong.getArtistName(), newSong.getGenreName(),
+                    newSong.getSongFilePath(), newSong.getDuration());
+            pstmt.executeUpdate();
 
-        Song songCreated = new Song(newSong.getSongID(), newSong.getTitle(), newSong.getArtistName(), newSong.getGenreName(),
-                                    newSong.getSongFilePath(), newSong.getDuration());
-        pstmt.executeUpdate();
+            return songCreated;
 
-        return songCreated;
-
-    } catch (SQLException e) {
-        throw new RuntimeException(e);
-    }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void updateSong(Song song) {
+        //TODO implement this method
 
     }
 
     @Override
-    public void deleteSong(Song song) {
+    public void deleteSong(Song songToBeDeleted) throws SQLServerException {
+        String sql = "DELETE FROM dbo.Song WHERE Id = ?";
+        try (Connection connection = dbConnecter.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            pstmt.setInt(1, songToBeDeleted.getSongID());
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

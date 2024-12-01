@@ -33,4 +33,21 @@ public class SongModel {
         songsToBeViewed.add(songCreated);
         return songCreated;
     }
+
+    public Song getSongByFilePath(String filePath) {
+        //go through all songs
+        for (Song song : songManager.getAllSongs()) {
+            //Check if there's a song with the provided file path
+            if (song.getSongFilePath().equals(filePath)) {
+                //if there is, return that song
+                return song;
+            }
+        }
+        return null;
+    }
+
+    public void deleteSong(Song songToBeDeleted) throws SQLServerException {
+        songsToBeViewed.remove(songToBeDeleted);
+        songManager.deleteSong(songToBeDeleted);
+    }
 }
