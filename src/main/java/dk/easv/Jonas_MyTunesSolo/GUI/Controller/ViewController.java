@@ -119,8 +119,6 @@ public class ViewController implements Initializable {
                     fileToDelete.delete();
                 }
 
-
-
                 tblSong.setItems(songModel.getSongsToBeViewed());
             }
         }

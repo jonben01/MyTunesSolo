@@ -61,12 +61,18 @@ public class SongsDAO_db implements ISongDataAccess {
 
             pstmt.setString(1, newSong.getTitle());
             pstmt.setString(2, newSong.getArtistName());
-            pstmt.setInt(3, newSong.getGenreId());
+
+            //If genreId is null it sets the sql INTEGER column value on my new row to null, if not null proceeds as normal
+            if (newSong.getGenreId() == null) {
+                pstmt.setNull(3, Types.INTEGER);
+            } else {
+                pstmt.setInt(3, newSong.getGenreId());
+            }
             pstmt.setInt(4, newSong.getDuration());
             pstmt.setString(5, newSong.getSongFilePath());
 
             Song songCreated = new Song(newSong.getSongID(), newSong.getTitle(), newSong.getArtistName(), newSong.getGenreName(),
-                    newSong.getSongFilePath(), newSong.getDuration());
+                                        newSong.getSongFilePath(), newSong.getDuration());
             pstmt.executeUpdate();
 
             return songCreated;

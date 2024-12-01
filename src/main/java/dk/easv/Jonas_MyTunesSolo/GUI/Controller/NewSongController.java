@@ -60,11 +60,8 @@ public class NewSongController implements Initializable {
             int duration = Integer.parseInt(txtDuration.getText());
 
             String songDestinationDir = "src/main/resources/Songs";
-            //Path songDestinationPath = Paths.get(songDestinationDir, txtTitle.getText());
             Path songDestinationPath = Paths.get(songDestinationDir, new File(txtFilePath.getText()).getName());
-            //TODO, check if get name is needed in the Path.
-            //TODO fix the war crime that is REPLACE_EXISTING, fix the actual method instead
-            //TODO make alert window "song with this file name already exists, override song?"
+
             try {
                 Files.copy(Paths.get(txtFilePath.getText()), songDestinationPath);
             } catch (FileAlreadyExistsException e) {
@@ -75,10 +72,8 @@ public class NewSongController implements Initializable {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {
-
                     //get songToBeDeleted if a song with the file path of the destination path exists
                     Song songToBeDeleted = songModel.getSongByFilePath(songDestinationPath.toString());
-
                     if (songToBeDeleted != null) {
                         //deletes SongToBeDeleted, so we dont keep a deleted song in the database
                         songModel.deleteSong(songToBeDeleted);
@@ -96,7 +91,10 @@ public class NewSongController implements Initializable {
             //TODO FIGURE OUT HOW TO GET DURATION IN A GOOD WAY
             //USE MEDIAPLAYER CLASS TO GET DURATION, lavede det med David fredag d.29, se i discord
 
-            Song newSong = new Song(-1, title, artist, selectedGenre.getId(), newFilePath, duration);
+            //use ternary operator to let me pass a null value to the createSong method.
+            Integer genreId = (selectedGenre != null) ? selectedGenre.getId() : null;
+            Song newSong = new Song(-1, title, artist, genreId, newFilePath, duration);
+
             songModel.createSong(newSong);
 
     }

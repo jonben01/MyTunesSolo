@@ -8,7 +8,7 @@ public class Song {
     private String genreName;
     private String songFilePath;
     private int duration;
-    private int genreId;
+    private Integer genreId;
 
 
     //Getters and setters for variables
@@ -31,8 +31,9 @@ public class Song {
     public int getDuration() {return duration;}
     public void setDuration(int duration) {this.duration = duration;}
 
-    public int getGenreId() {return genreId;}
-    public void setGenreId(int genreId) {this.genreId = genreId;}
+    //Using Integer genreId, so it can be null.
+    public Integer getGenreId() {return genreId;}
+    public void setGenreId(Integer genreId) {this.genreId = genreId;}
 
     public Song(int songId, String title, String artistName, String genreName, String songFilePath, int duration) {
         this.songId = songId;
@@ -42,7 +43,8 @@ public class Song {
         this.songFilePath = songFilePath;
         this.duration = duration;
     }
-    public Song(int songId, String title, String artistName, int genreId, String songFilePath, int duration) {
+    //Using Integer genreId, so it can be null.
+    public Song(int songId, String title, String artistName, Integer genreId, String songFilePath, int duration) {
         this.songId = songId;
         this.title = title;
         this.artistName = artistName;
