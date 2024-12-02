@@ -85,7 +85,7 @@ public class ViewController implements Initializable {
 
             // Create a new stage
             Stage newSongStage = new Stage();
-            newSongStage.setTitle("New Song");
+            newSongStage.setTitle("Add a new audio file");
             newSongStage.setResizable(false);
             //Sets modality, cant use previous window till this one is closed
             newSongStage.initModality(Modality.APPLICATION_MODAL);
@@ -125,6 +125,31 @@ public class ViewController implements Initializable {
 
     }
 
+
+    //TODO FINISH THIS AFTER DURATION HAS BEEN SORTED
+    public void btnHandleEditSong(ActionEvent actionEvent) {
+
+    }
+     /*   Song songToBeEdited = tblSong.getSelectionModel().getSelectedItem();
+
+        if (songToBeEdited == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select a song to edit");
+            alert.showAndWait();
+        }
+
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/song-view.fxml"));
+            Parent root = fxmlLoader.load()
+        }
+
+
+    }
+
+    */
+
     public void btnHandleNewPlaylist(ActionEvent actionEvent) {
         //TODO IMPLEMENT THIS METHOD
     }
@@ -149,9 +174,6 @@ public class ViewController implements Initializable {
         //TODO IMPLEMENT THIS METHOD
     }
 
-    public void btnHandleEditSong(ActionEvent actionEvent) {
-        //TODO IMPLEMENT THIS METHOD
-    }
 
     public void btnHandleMoveSongToPlaylist(ActionEvent actionEvent) {
         //TODO IMPLEMENT THIS METHOD

@@ -12,13 +12,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.scene.media.Media;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,14 +29,21 @@ import java.util.ResourceBundle;
 public class NewSongController implements Initializable {
     @FXML
     public TextField txtFilePath;
+    @FXML
     public TextField txtArtist;
+    @FXML
     public TextField txtTitle;
+    @FXML
     public ComboBox cmbGenre;
+    @FXML
+    public TextField txtDuration;
+    @FXML
+    private Button btnCancelSong;
+
     private GenreModel genreModel;
     private SongModel songModel;
     private SimpleBooleanProperty dataChangedFlag;
     private SimpleBooleanProperty genreDataChanged;
-    public TextField txtDuration;
 
     public NewSongController(){
 
@@ -51,11 +57,11 @@ public class NewSongController implements Initializable {
     }
 
     public void btnHandleMenuAddSong(ActionEvent actionEvent) throws SQLServerException, IOException {
-
+        //TODO THIS BUTTON SHOULD ONLY SHOW IF YOU CLICKED NEW BUTTON AND NOT IF YOU CLICKED EDIT BUTTON.
             String title = txtTitle.getText();
             String artist = txtArtist.getText();
             Genre selectedGenre = (Genre) this.cmbGenre.getSelectionModel().getSelectedItem();
-            int duration = Integer.parseInt(txtDuration.getText());
+            int duration = durationParser();
 
             if (txtFilePath.getText() == null || txtFilePath.getText().equals("")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -91,14 +97,9 @@ public class NewSongController implements Initializable {
                 } else {
                     return;
                 }
-
             }
-
             //not doing absolute path, I want it to be able to run on other computers
             String newFilePath = songDestinationPath.toString();
-
-            //TODO FIGURE OUT HOW TO GET DURATION IN A GOOD WAY
-            //USE MEDIAPLAYER CLASS TO GET DURATION, lavede det med David fredag d.29, se i discord
 
             //use ternary operator to let me pass a null value to the createSong method. sindsygt cool if/else statement alternativ
             Integer genreId = (selectedGenre != null) ? selectedGenre.getId() : null;
@@ -111,15 +112,40 @@ public class NewSongController implements Initializable {
         //create file chooser object, with filters for relevant file types.
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select audio file");
-        //TODO MAYBE MAKE A INITIAL DIRECTORY (DESKTOP?)
-        //fileChooser.setInitialDirectory
-
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.mp3"));
         //open file chooser dialog window to find file
         File file = fileChooser.showOpenDialog(null);
         //if file exists update text field
         if (file != null) {
             txtFilePath.setText(file.getAbsolutePath());
+
+            //try catch in case someone does something illegal when selecting an audio file
+            try {
+                Media media = new Media(file.toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(media);
+                //after reading documentation it sounds like it might not be the smartest solution? but idk what else to do here
+                //medialayer loads the song and gets duration from MediaPlayers getTotalDuration method and then sets it to seconds.
+                mediaPlayer.setOnReady(() -> {
+                    double duration = mediaPlayer.getTotalDuration().toSeconds();
+                    //use format duration method to make it mm:ss  format
+                    txtDuration.setText(formatDuration((int) duration));
+                    //dispose of the loaded song, we only needed it for duration.
+                    mediaPlayer.dispose();
+                });
+                //Just in case MediaPlayer acts up
+                mediaPlayer.setOnError(() -> {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("This should never happen");
+                });
+
+            } catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Failed to load audio file");
+            }
         }
     }
 
@@ -170,11 +196,36 @@ public class NewSongController implements Initializable {
     }
 
 
-
     private String formatDuration(int durationSeconds) {
+        //removes decimals, so it only gets whole minutes
         int minutes = durationSeconds / 60;
+        //gets whats left after converting to minutes.
         int seconds = durationSeconds % 60;
+        //makes it user-friendly by formatting it to MM:SS
         return String.format("%02d:%02d", minutes, seconds);
     }
+    //Doing both formatDuration and then parsing it through this seem inefficient :)
+    //having songs go over one hour is unrealistic, so 92830 minutes and 10 seconds will do fine :)
+    private int durationParser () {
+        try {
+            String[] parts = txtDuration.getText().split(":");
+            int minutes = Integer.parseInt(parts[0]);
+            int seconds = Integer.parseInt(parts[1]);
+            return (minutes * 60) + seconds;
+        } catch (Exception e) {
+           //not sure if I should do an alert here
+            throw new IllegalArgumentException("Failed to parse duration");
+        }
+    }
 
+    public void btnHandleEditSong(ActionEvent actionEvent) {
+        //TODO this should only show when you press edit song, and it should also have all the information from the selected song in the other view
+    }
+
+    public void btnHandleCancelSong(ActionEvent actionEvent) {
+        //close the stage that the button is located in.
+        Stage stage = (Stage) btnCancelSong.getScene().getWindow();
+        stage.close();
+
+    }
 }

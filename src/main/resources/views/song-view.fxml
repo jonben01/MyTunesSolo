@@ -1,41 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="268.0" prefWidth="270.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.Jonas_MyTunesSolo.GUI.Controller.NewSongController">
+<AnchorPane prefHeight="272.0" prefWidth="258.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.Jonas_MyTunesSolo.GUI.Controller.NewSongController">
    <children>
-      <VBox layoutX="71.0" layoutY="44.0" prefHeight="210.0" prefWidth="128.0">
-         <children>
-            <TextField fx:id="txtTitle" prefHeight="14.0" prefWidth="128.0">
-               <VBox.margin>
-                  <Insets bottom="15.0" />
-               </VBox.margin>
-            </TextField>
-            <TextField fx:id="txtArtist">
-               <VBox.margin>
-                  <Insets bottom="55.0" />
-               </VBox.margin>
-            </TextField>
-            <TextField fx:id="txtFilePath" editable="false">
-               <VBox.margin>
-                  <Insets bottom="15.0" />
-               </VBox.margin></TextField>
-            <TextField fx:id="txtDuration" promptText="duration" />
-         </children>
-      </VBox>
-      <Text layoutX="39.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="title" />
-      <Text layoutX="28.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="artist" />
-      <Text layoutX="28.0" layoutY="181.0" strokeType="OUTSIDE" strokeWidth="0.0" text="file path" />
-      <Button fx:id="btnFileChooser" layoutX="189.0" layoutY="211.0" mnemonicParsing="false" onAction="#btnHandleFileChooser" text="filechooser" />
-      <Button fx:id="btnMenuAddSong" layoutX="13.0" layoutY="224.0" mnemonicParsing="false" onAction="#btnHandleMenuAddSong" text="ADD" />
-      <ComboBox fx:id="cmbGenre" layoutX="13.0" layoutY="123.0" prefWidth="150.0" />
-      <Text layoutX="31.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="genre, should be drop down options" />
-      <Button fx:id="btnAddGenre" layoutX="189.0" layoutY="122.0" mnemonicParsing="false" onAction="#btnHandleAddGenre" text="Add genre" />
+      <Button fx:id="btnFileChooser" layoutX="174.0" layoutY="141.0" mnemonicParsing="false" onAction="#btnHandleFileChooser" text="filechooser" />
+      <Button fx:id="btnMenuAddSong" layoutX="19.0" layoutY="217.0" mnemonicParsing="false" onAction="#btnHandleMenuAddSong" text="Add to library" />
+      <ComboBox fx:id="cmbGenre" layoutX="18.0" layoutY="95.0" prefWidth="150.0" />
+      <Button fx:id="btnAddGenre" layoutX="175.0" layoutY="95.0" mnemonicParsing="false" onAction="#btnHandleAddGenre" text="Add genre" />
+      <TextField fx:id="txtTitle" layoutX="19.0" layoutY="25.0" prefHeight="26.0" prefWidth="150.0" promptText="Insert title" />
+      <TextField fx:id="txtArtist" layoutX="19.0" layoutY="60.0" promptText="Insert Artist(s) or group" />
+      <TextField fx:id="txtFilePath" editable="false" layoutX="18.0" layoutY="178.0" prefHeight="26.0" prefWidth="230.0" promptText="File path" />
+      <TextField fx:id="txtDuration" layoutX="18.0" layoutY="141.0" promptText="duration" />
+      <Button fx:id="btnCancelSong" layoutX="196.0" layoutY="217.0" mnemonicParsing="false" onAction="#btnHandleCancelSong" text="Cancel" />
+      <Text layoutX="45.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add an audio file to your library" />
+      <Text layoutX="175.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title" />
+      <Text layoutX="175.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="By" />
+      <Button fx:id="btnEditSong" layoutX="103.0" layoutY="243.0" mnemonicParsing="false" onAction="#btnHandleEditSong" text="temp edit button" />
    </children>
 </AnchorPane>
