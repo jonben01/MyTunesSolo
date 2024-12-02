@@ -15,7 +15,7 @@
       <TextField fx:id="txtTitle" layoutX="19.0" layoutY="25.0" prefHeight="26.0" prefWidth="150.0" promptText="Insert title" />
       <TextField fx:id="txtArtist" layoutX="19.0" layoutY="60.0" promptText="Insert Artist(s) or group" />
       <TextField fx:id="txtFilePath" editable="false" layoutX="18.0" layoutY="178.0" prefHeight="26.0" prefWidth="230.0" promptText="File path" />
-      <TextField fx:id="txtDuration" layoutX="18.0" layoutY="141.0" promptText="duration" />
+      <TextField fx:id="txtDuration" editable="false" layoutX="18.0" layoutY="141.0" promptText="duration" />
       <Button fx:id="btnCancelSong" layoutX="196.0" layoutY="217.0" mnemonicParsing="false" onAction="#btnHandleCancelSong" text="Cancel" />
       <Text layoutX="45.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add an audio file to your library" />
       <Text layoutX="175.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title" />

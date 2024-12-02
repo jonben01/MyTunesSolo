@@ -101,6 +101,7 @@ public class SongsDAO_db implements ISongDataAccess {
         }
     }
     //I wish I didnt need this right now, but i cant figure out how to make things work without it
+    //this still works if the genreName isnt in the database, because of if statement in update method
     public Integer getGenreIdByName(String genreName) throws SQLException {
         String sql = "SELECT Id FROM dbo.Genre WHERE GenreName = ?";
         try (Connection connection = dbConnecter.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -108,9 +109,7 @@ public class SongsDAO_db implements ISongDataAccess {
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return rs.getInt("Id");
-
             }
-
         }
         return null;
     }
