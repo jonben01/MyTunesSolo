@@ -84,6 +84,8 @@ public class SongsDAO_db implements ISongDataAccess {
 
     @Override
     public void updateSong(Song songToBeEdited) throws SQLException {
+
+        //this works 😂
         songToBeEdited.setGenreId(getGenreIdByName(songToBeEdited.getGenreName()));
         String sql = "UPDATE dbo.Song SET title = ?, Artist = ?, GenreId = ? WHERE Id = ?";
         try (Connection connection = dbConnecter.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
