@@ -82,6 +82,7 @@ public class ViewController implements Initializable {
 
             NewSongController NSController = fxmlLoader.getController();
             NSController.setDataChangedFlag(dataChanged);
+            NSController.btnEditSong.setVisible(false);
 
             // Create a new stage
             Stage newSongStage = new Stage();
@@ -91,7 +92,7 @@ public class ViewController implements Initializable {
             newSongStage.initModality(Modality.APPLICATION_MODAL);
 
             // Set the scene with the loaded FXML file
-            newSongStage.setScene(new Scene(root, 300, 400));
+            newSongStage.setScene(new Scene(root));
 
             // Show the stage
             newSongStage.show();
@@ -129,8 +130,8 @@ public class ViewController implements Initializable {
     //TODO FINISH THIS AFTER DURATION HAS BEEN SORTED
     public void btnHandleEditSong(ActionEvent actionEvent) {
 
-    }
-     /*   Song songToBeEdited = tblSong.getSelectionModel().getSelectedItem();
+
+        Song songToBeEdited = tblSong.getSelectionModel().getSelectedItem();
 
         if (songToBeEdited == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -138,17 +139,38 @@ public class ViewController implements Initializable {
             alert.setHeaderText(null);
             alert.setContentText("Please select a song to edit");
             alert.showAndWait();
+        } else {
+
+            try {
+                // Load the FXML file
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/song-view.fxml"));
+                Parent root = fxmlLoader.load();
+
+                NewSongController NSController = fxmlLoader.getController();
+                NSController.setDataChangedFlag(dataChanged);
+                NSController.btnMenuAddSong.setVisible(false);
+                //pass the song with the song passer method
+                NSController.songToBeEditedPasser(songToBeEdited);
+
+                // Create a new stage
+                Stage newSongStage = new Stage();
+                newSongStage.setTitle("Add a new audio file");
+                newSongStage.setResizable(false);
+                //Sets modality, cant use previous window till this one is closed
+                newSongStage.initModality(Modality.APPLICATION_MODAL);
+
+                newSongStage.setScene(new Scene(root));
+                newSongStage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/song-view.fxml"));
-            Parent root = fxmlLoader.load()
-        }
-
-
     }
 
-    */
+
+
+
 
     public void btnHandleNewPlaylist(ActionEvent actionEvent) {
         //TODO IMPLEMENT THIS METHOD

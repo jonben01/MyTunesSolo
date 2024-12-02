@@ -8,6 +8,8 @@ import dk.easv.Jonas_MyTunesSolo.BLL.SongManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.sql.SQLException;
+
 public class SongModel {
 
 
@@ -49,5 +51,15 @@ public class SongModel {
     public void deleteSong(Song songToBeDeleted) throws SQLServerException {
         songsToBeViewed.remove(songToBeDeleted);
         songManager.deleteSong(songToBeDeleted);
+    }
+
+    public void updateSong(Song songToBeEdited) throws SQLException {
+        songManager.updateSong(songToBeEdited);
+
+        Song song = songsToBeViewed.get(songsToBeViewed.indexOf(songToBeEdited));
+        song.setTitle(songToBeEdited.getTitle());
+        song.setArtistName(songToBeEdited.getArtistName());
+        //TODO double check if this works with genreName or if it has to be genreId instead
+        song.setGenreName(songToBeEdited.getGenreName());
     }
 }

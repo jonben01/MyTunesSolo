@@ -5,6 +5,7 @@ import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.DAL.SongsDAO_db;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 public class SongManager {
@@ -25,5 +26,9 @@ public class SongManager {
 
     public void deleteSong(Song songToBeDeleted) throws SQLServerException {
         SongsDAO.deleteSong(songToBeDeleted);
+    }
+
+    public void updateSong(Song songToBeEdited) throws SQLException {
+        SongsDAO.updateSong(songToBeEdited);
     }
 }

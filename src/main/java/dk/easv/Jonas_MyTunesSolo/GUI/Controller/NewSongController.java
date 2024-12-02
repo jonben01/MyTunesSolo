@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.*;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -38,7 +39,14 @@ public class NewSongController implements Initializable {
     @FXML
     public TextField txtDuration;
     @FXML
+    public Button btnMenuAddSong;
+    @FXML
+    public Button btnEditSong;
+    @FXML
     private Button btnCancelSong;
+
+    private Song songToBeEdited;
+
 
     private GenreModel genreModel;
     private SongModel songModel;
@@ -106,6 +114,8 @@ public class NewSongController implements Initializable {
 
             Song newSong = new Song(-1, title, artist, genreId, newFilePath, duration);
             songModel.createSong(newSong);
+            //refreshes table in main view.
+            dataChangedFlag.set(true);
     }
 
     public void btnHandleFileChooser(ActionEvent actionEvent) {
@@ -123,7 +133,7 @@ public class NewSongController implements Initializable {
             try {
                 Media media = new Media(file.toURI().toString());
                 MediaPlayer mediaPlayer = new MediaPlayer(media);
-                //after reading documentation it sounds like it might not be the smartest solution? but idk what else to do here
+                //after reading documentation it sounds like this might not be the smartest solution? but idk what else to do here
                 //medialayer loads the song and gets duration from MediaPlayers getTotalDuration method and then sets it to seconds.
                 mediaPlayer.setOnReady(() -> {
                     double duration = mediaPlayer.getTotalDuration().toSeconds();
@@ -191,10 +201,10 @@ public class NewSongController implements Initializable {
         });
 
     }
+
     public void setDataChangedFlag(SimpleBooleanProperty dataChangedFlag) {
         this.dataChangedFlag = dataChangedFlag;
     }
-
 
     private String formatDuration(int durationSeconds) {
         //removes decimals, so it only gets whole minutes
@@ -204,8 +214,9 @@ public class NewSongController implements Initializable {
         //makes it user-friendly by formatting it to MM:SS
         return String.format("%02d:%02d", minutes, seconds);
     }
-    //Doing both formatDuration and then parsing it through this seem inefficient :)
-    //having songs go over one hour is unrealistic, so 92830 minutes and 10 seconds will do fine :)
+    //Doing both formatDuration and then parsing it through this seems inefficient :)
+    //having songs go over one hour is unrealistic, so 92830 minutes and 10 seconds will do fine, too bad we only show 2 digits.
+    //should fix at some point maybe
     private int durationParser () {
         try {
             String[] parts = txtDuration.getText().split(":");
@@ -218,8 +229,13 @@ public class NewSongController implements Initializable {
         }
     }
 
-    public void btnHandleEditSong(ActionEvent actionEvent) {
-        //TODO this should only show when you press edit song, and it should also have all the information from the selected song in the other view
+    public void btnHandleEditSong(ActionEvent actionEvent) throws SQLException {
+        songToBeEdited.setTitle(txtTitle.getText());
+        //TODO CHECK IF BELOW WORKS
+        songToBeEdited.setGenreId(Integer.parseInt(cmbGenre.getSelectionModel().getSelectedItem().toString()));
+        songToBeEdited.setArtistName(txtArtist.getText());
+        songModel.updateSong(songToBeEdited);
+        dataChangedFlag.set(true);
     }
 
     public void btnHandleCancelSong(ActionEvent actionEvent) {
@@ -227,5 +243,16 @@ public class NewSongController implements Initializable {
         Stage stage = (Stage) btnCancelSong.getScene().getWindow();
         stage.close();
 
+    }
+    public void songToBeEditedPasser(Song song) {
+        songToBeEdited = song;
+
+        if (song != null) {
+            txtTitle.setText(song.getTitle());
+            txtArtist.setText(song.getArtistName());
+            cmbGenre.getSelectionModel().select(song.getGenreName());
+            txtDuration.setText(formatDuration(song.getDuration()));
+            txtFilePath.setText(song.getSongFilePath());
+        }
     }
 }

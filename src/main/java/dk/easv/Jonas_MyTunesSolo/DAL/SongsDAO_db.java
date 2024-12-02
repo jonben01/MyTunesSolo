@@ -83,9 +83,35 @@ public class SongsDAO_db implements ISongDataAccess {
     }
 
     @Override
-    public void updateSong(Song song) {
-        //TODO implement this method
+    public void updateSong(Song song) throws SQLException {
+        Integer genreId = getGenreIdByName(song.getGenreName());
+        String sql = "UPDATE dbo.Song SET title = ?, Artist = ?, GenreId = ? WHERE Id = ?";
+        try (Connection connection = dbConnecter.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, song.getTitle());
+            pstmt.setString(2, song.getArtistName());
 
+            if (song.getGenreId() == null) {
+                pstmt.setNull(3, Types.INTEGER);
+            } else {
+                pstmt.setInt(3, genreId);
+            }
+            pstmt.setInt(4, song.getSongID());
+            pstmt.executeUpdate();
+
+        }
+    }
+    //I wish I didnt need this right now, but i cant figure out how to make things work without it
+    public Integer getGenreIdByName(String genreName) throws SQLException {
+        String sql = "SELECT Id FROM dbo.Genre WHERE GenreName = ?";
+        try (Connection connection = dbConnecter.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, genreName);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("Id");
+            }
+
+        }
+        return null;
     }
 
     @Override

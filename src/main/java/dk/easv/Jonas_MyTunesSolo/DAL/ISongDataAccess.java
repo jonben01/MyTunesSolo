@@ -3,6 +3,7 @@ package dk.easv.Jonas_MyTunesSolo.DAL;
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface ISongDataAccess {
@@ -13,7 +14,7 @@ public interface ISongDataAccess {
 
     Song createSong(Song newSong) throws SQLServerException;
 
-    void updateSong(Song song);
+    void updateSong(Song song) throws SQLException;
 
     void deleteSong(Song song) throws SQLServerException;
 }
