@@ -20,6 +20,6 @@
       <Text layoutX="45.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add an audio file to your library" />
       <Text layoutX="175.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title" />
       <Text layoutX="175.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="By" />
-      <Button fx:id="btnEditSong" layoutX="103.0" layoutY="243.0" mnemonicParsing="false" onAction="#btnHandleEditSong" text="temp edit button" />
+      <Button fx:id="btnEditSong" layoutX="20.0" layoutY="217.0" mnemonicParsing="false" onAction="#btnHandleEditSong" text="Edit in library" />
    </children>
 </AnchorPane>
