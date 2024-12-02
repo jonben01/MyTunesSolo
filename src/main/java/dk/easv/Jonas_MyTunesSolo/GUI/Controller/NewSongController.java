@@ -230,10 +230,11 @@ public class NewSongController implements Initializable {
     }
 
     public void btnHandleEditSong(ActionEvent actionEvent) throws SQLException {
+        //TODO CHECK IF BELOW WORKS, i pass on the genreName but not a genreId, why cant I make it work with just the name.
         songToBeEdited.setTitle(txtTitle.getText());
-        //TODO CHECK IF BELOW WORKS
-        songToBeEdited.setGenreId(Integer.parseInt(cmbGenre.getSelectionModel().getSelectedItem().toString()));
         songToBeEdited.setArtistName(txtArtist.getText());
+        songToBeEdited.setGenreName(cmbGenre.getSelectionModel().getSelectedItem().toString());
+
         songModel.updateSong(songToBeEdited);
         dataChangedFlag.set(true);
     }

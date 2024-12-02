@@ -83,19 +83,19 @@ public class SongsDAO_db implements ISongDataAccess {
     }
 
     @Override
-    public void updateSong(Song song) throws SQLException {
-        Integer genreId = getGenreIdByName(song.getGenreName());
+    public void updateSong(Song songToBeEdited) throws SQLException {
+        songToBeEdited.setGenreId(getGenreIdByName(songToBeEdited.getGenreName()));
         String sql = "UPDATE dbo.Song SET title = ?, Artist = ?, GenreId = ? WHERE Id = ?";
         try (Connection connection = dbConnecter.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, song.getTitle());
-            pstmt.setString(2, song.getArtistName());
+            pstmt.setString(1, songToBeEdited.getTitle());
+            pstmt.setString(2, songToBeEdited.getArtistName());
 
-            if (song.getGenreId() == null) {
+            if (songToBeEdited.getGenreId() == null) {
                 pstmt.setNull(3, Types.INTEGER);
             } else {
-                pstmt.setInt(3, genreId);
+                pstmt.setInt(3, songToBeEdited.getGenreId());
             }
-            pstmt.setInt(4, song.getSongID());
+            pstmt.setInt(4, songToBeEdited.getSongID());
             pstmt.executeUpdate();
 
         }
@@ -108,6 +108,7 @@ public class SongsDAO_db implements ISongDataAccess {
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return rs.getInt("Id");
+
             }
 
         }

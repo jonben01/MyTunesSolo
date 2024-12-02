@@ -55,11 +55,6 @@ public class SongModel {
 
     public void updateSong(Song songToBeEdited) throws SQLException {
         songManager.updateSong(songToBeEdited);
-
-        Song song = songsToBeViewed.get(songsToBeViewed.indexOf(songToBeEdited));
-        song.setTitle(songToBeEdited.getTitle());
-        song.setArtistName(songToBeEdited.getArtistName());
-        //TODO double check if this works with genreName or if it has to be genreId instead
-        song.setGenreName(songToBeEdited.getGenreName());
+        //might be missing something here, but code seems functional
     }
 }
