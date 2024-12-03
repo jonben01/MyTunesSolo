@@ -1,0 +1,28 @@
+.play-button {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-text-fill: black;
+    -fx-background-radius: 50%;
+    -fx-font-size: 24px;
+    -fx-padding: 3px;
+
+}
+
+.play-button:hover {
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+    -fx-cursor: hand;
+}
+
+
+.anchor-pane {
+    -fx-background-color: rgba(232, 232, 232, 0.8);
+}
+
+.anchor-pane2 {
+    -fx-background-color: black;
+}
+
+.text-white {
+    -fx-text-fill: white;
+}

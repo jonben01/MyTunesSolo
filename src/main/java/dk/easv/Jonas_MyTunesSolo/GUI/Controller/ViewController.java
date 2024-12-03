@@ -31,6 +31,8 @@ public class ViewController implements Initializable {
     @FXML
     public Slider volumeSlider;
     @FXML
+    public Button btnPlay;
+    @FXML
     TableColumn<Song, Integer> colDuration;
     @FXML
     TableColumn<Song, Integer> colGenre;
@@ -241,6 +243,8 @@ public class ViewController implements Initializable {
                 isPlaying = false;
             }
             //if a mediaplayer already exists, stop and dispose of the loaded media
+            //TODO hvad gør vi ved stop metoden? når vi kun checker efter playing eller paused
+            //TODO second todo, det er vel fint nok, når else statement bare spiller sangen?
             if (mediaPlayer != null) {
                 MediaPlayer.Status status = mediaPlayer.getStatus();
                 if (status == MediaPlayer.Status.PLAYING) {
@@ -267,19 +271,13 @@ public class ViewController implements Initializable {
 
         Button btnHandlePlay = (Button) actionEvent.getSource();
         if (isPlaying) {
-            btnHandlePlay.setText("Pause");
+            btnHandlePlay.setText("⏸");
         } else {
-            btnHandlePlay.setText("Play");
+            btnHandlePlay.setText("⏵");
         }
 
     }
 
-    public void btnHandlePause(ActionEvent actionEvent) {
-        //TODO IMPLEMENT THIS METHOD
-        if (isPlaying) {
-            mediaPlayer.pause();
-        }
-    }
 
     public void btnHandleReset(ActionEvent actionEvent) {
         //TODO IMPLEMENT THIS METHOD

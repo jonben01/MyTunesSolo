@@ -51,7 +51,6 @@ public class Song {
         this.genreId = genreId;
         this.songFilePath = songFilePath;
         this.duration = duration;
-
     }
 
     @Override
