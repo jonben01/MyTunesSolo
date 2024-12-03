@@ -65,7 +65,6 @@ public class NewSongController implements Initializable {
     }
 
     public void btnHandleMenuAddSong(ActionEvent actionEvent) throws SQLServerException, IOException {
-        //TODO THIS BUTTON SHOULD ONLY SHOW IF YOU CLICKED NEW BUTTON AND NOT IF YOU CLICKED EDIT BUTTON.
             String title = txtTitle.getText();
             String artist = txtArtist.getText();
             Genre selectedGenre = (Genre) this.cmbGenre.getSelectionModel().getSelectedItem();
@@ -231,11 +230,9 @@ public class NewSongController implements Initializable {
     }
 
     public void btnHandleEditSong(ActionEvent actionEvent) throws SQLException {
-        //TODO CHECK IF BELOW WORKS, i pass on the genreName but not a genreId, why cant I make it work with just the name.
         songToBeEdited.setTitle(txtTitle.getText());
         songToBeEdited.setArtistName(txtArtist.getText());
         songToBeEdited.setGenreName(cmbGenre.getSelectionModel().getSelectedItem().toString());
-
         songModel.updateSong(songToBeEdited);
         dataChangedFlag.set(true);
     }

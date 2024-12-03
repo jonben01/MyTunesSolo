@@ -34,6 +34,8 @@ public class ViewController implements Initializable {
     public Button btnPlay;
     public TextField txtSearcher;
     @FXML
+    public Label lblVolume;
+    @FXML
     TableColumn<Song, Integer> colDuration;
     @FXML
     TableColumn<Song, Integer> colGenre;
@@ -65,6 +67,8 @@ public class ViewController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+
+
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colArtist.setCellValueFactory(new PropertyValueFactory<>("artistName"));
         colGenre.setCellValueFactory(new PropertyValueFactory<>("genreName"));
@@ -89,7 +93,6 @@ public class ViewController implements Initializable {
                 throw new RuntimeException(e);
             }
         });
-
         //this is just stupid
         tblSong.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
            if (newValue != null) {
@@ -97,6 +100,18 @@ public class ViewController implements Initializable {
            }
         });
 
+        volumeSlider.setValue(25);
+        lblVolume.setText((int) volumeSlider.getValue() + "%");
+
+        volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (mediaPlayer != null) {
+                mediaPlayer.setVolume(newValue.doubleValue()/100);
+                lblVolume.setText((int) volumeSlider.getValue()+"%");
+            }
+            if (newValue != null) {
+                lblVolume.setText((int) volumeSlider.getValue()+"%");
+            }
+        });
     }
 
     @FXML
@@ -153,10 +168,7 @@ public class ViewController implements Initializable {
     }
 
 
-    //TODO FINISH THIS AFTER DURATION HAS BEEN SORTED
     public void btnHandleEditSong(ActionEvent actionEvent) {
-
-
         Song songToBeEdited = tblSong.getSelectionModel().getSelectedItem();
 
         if (songToBeEdited == null) {
@@ -166,12 +178,10 @@ public class ViewController implements Initializable {
             alert.setContentText("Please select a song to edit");
             alert.showAndWait();
         } else {
-
             try {
                 // Load the FXML file
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/song-view.fxml"));
                 Parent root = fxmlLoader.load();
-
                 NewSongController NSController = fxmlLoader.getController();
                 NSController.setDataChangedFlag(dataChanged);
                 NSController.btnMenuAddSong.setVisible(false);
@@ -187,7 +197,6 @@ public class ViewController implements Initializable {
 
                 newSongStage.setScene(new Scene(root));
                 newSongStage.show();
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -229,17 +238,14 @@ public class ViewController implements Initializable {
             mediaPlayer.stop();
             isPlaying = false;
             btnPlay.setText("⏵");
-
         }
-
-
     }
 
     public void btnHandlePlay(ActionEvent actionEvent) {
         Song selectedSong = tblSong.getSelectionModel().getSelectedItem();
         Button btnHandlePlay = (Button) actionEvent.getSource();
         //TODO make sure this shit doesnt suck ass
-        //could do an alert, but I think its better to nothing.
+        //could do an alert, but I think its better to do nothing.
         if (selectedSong == null) {
             return;
         }
@@ -289,6 +295,8 @@ public class ViewController implements Initializable {
             oldMediaURL = mediaURL;
             media = new Media(file.toURI().toString());
             mediaPlayer = new MediaPlayer(media);
+
+            mediaPlayer.setVolume(volumeSlider.getValue()/100);
             mediaPlayer.play();
             isPlaying = true;
             btnHandlePlay.setText("⏸");
