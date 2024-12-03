@@ -274,6 +274,7 @@ public class ViewController implements Initializable {
             btnHandlePlay.setText("⏸");
         } else {
             btnHandlePlay.setText("⏵");
+
         }
 
     }

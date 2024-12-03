@@ -2,7 +2,7 @@
     -fx-background-color: white;
     -fx-border-color: transparent;
     -fx-text-fill: black;
-    -fx-background-radius: 50%;
+    -fx-background-radius: 32%;
     -fx-font-size: 24px;
     -fx-padding: 3px;
 
@@ -20,8 +20,9 @@
 }
 
 .anchor-pane2 {
-    -fx-background-color: black;
+    -fx-background-color: grey;
 }
+/* make this the colour we want at the bottom later, black maybe? */
 
 .text-white {
     -fx-text-fill: white;
