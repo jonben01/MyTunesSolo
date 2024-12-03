@@ -51,9 +51,10 @@ public class ViewController implements Initializable {
 
     private Media media;
     private MediaPlayer mediaPlayer;
-    private String mediaURL = "";
     private String oldMediaURL;
     private boolean isPlaying = false;
+    private Song currentSong;
+
 
 
     public ViewController()  {
@@ -93,19 +94,26 @@ public class ViewController implements Initializable {
                 throw new RuntimeException(e);
             }
         });
-        //this is just stupid
+
         tblSong.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
            if (newValue != null) {
                btnPlay.setText("⏵");
            }
         });
-
+        //TODO REMEMBER TO DELETE THE LABEL IN FINISHED PRODUCT, DONT NEED THE % TO BE SEEN
+        volumeSlider.setMin(5);
         volumeSlider.setValue(25);
         lblVolume.setText((int) volumeSlider.getValue() + "%");
 
         volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (mediaPlayer != null) {
-                mediaPlayer.setVolume(newValue.doubleValue()/100);
+                //When I scale my double value (volume), the application refuses to play audible volume on 5% (depends on multiplier)
+                //I assume this is due to the value being <1, therefore I am limiting how quiet the volume can be, before its actually 0.
+                if(volumeSlider.getValue() < 5 && volumeSlider.getValue() > 0) {
+                    mediaPlayer.setVolume(0);
+                } else {
+                    mediaPlayer.setVolume(volumeSlider.getValue()/100 * 0.2);
+                }
                 lblVolume.setText((int) volumeSlider.getValue()+"%");
             }
             if (newValue != null) {
@@ -250,7 +258,7 @@ public class ViewController implements Initializable {
             return;
         }
         try {
-            mediaURL = selectedSong.getSongFilePath();
+            String mediaURL = selectedSong.getSongFilePath();
             File file = new File(mediaURL);
 
             //in case you delete a song in your song folder, while the program is running.
@@ -295,11 +303,11 @@ public class ViewController implements Initializable {
             oldMediaURL = mediaURL;
             media = new Media(file.toURI().toString());
             mediaPlayer = new MediaPlayer(media);
-
-            mediaPlayer.setVolume(volumeSlider.getValue()/100);
+            mediaPlayer.setVolume(volumeSlider.getValue()/100 * 0.2);
             mediaPlayer.play();
             isPlaying = true;
             btnHandlePlay.setText("⏸");
+            currentSong = selectedSong;
 
             //TODO make a better catch clause
         } catch (Exception e) {
