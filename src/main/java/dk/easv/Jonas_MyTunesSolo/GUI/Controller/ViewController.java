@@ -32,6 +32,7 @@ public class ViewController implements Initializable {
     public Slider volumeSlider;
     @FXML
     public Button btnPlay;
+    public TextField txtSearcher;
     @FXML
     TableColumn<Song, Integer> colDuration;
     @FXML
@@ -78,11 +79,15 @@ public class ViewController implements Initializable {
                 dataChanged.set(false);
             }
         });
-        /*
-        media = new Media(mediaURL);
-        mediaPlayer = new MediaPlayer(media);
+        //listener passes "newValue" as a query to the searchMovie method.
+        txtSearcher.textProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                songModel.searchMovie(newValue);
 
-         */
+            } catch (SQLServerException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
     }
 

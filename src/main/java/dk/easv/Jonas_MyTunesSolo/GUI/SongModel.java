@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class SongModel {
 
@@ -56,5 +57,10 @@ public class SongModel {
     public void updateSong(Song songToBeEdited) throws SQLException {
         songManager.updateSong(songToBeEdited);
         //might be missing something here, but code seems functional
+    }
+    public void searchMovie(String searchQuery) throws SQLServerException {
+        List<Song> searchResults = songManager.searchSongs(searchQuery);
+        songsToBeViewed.clear();
+        songsToBeViewed.addAll(searchResults);
     }
 }

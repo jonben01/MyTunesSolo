@@ -6,10 +6,12 @@ import dk.easv.Jonas_MyTunesSolo.DAL.SongsDAO_db;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SongManager {
 
+    private SongSearcher searcher = new SongSearcher();
     private SongsDAO_db SongsDAO;
 
     public SongManager() throws IOException {
@@ -30,5 +32,10 @@ public class SongManager {
 
     public void updateSong(Song songToBeEdited) throws SQLException {
         SongsDAO.updateSong(songToBeEdited);
+    }
+    public List<Song> searchSongs(String searchQuery) throws SQLServerException {
+        List<Song> allSongs = SongsDAO.getAllSongs();
+        List<Song> searchedResults = searcher.search(allSongs, searchQuery);
+        return searchedResults;
     }
 }

@@ -43,9 +43,9 @@
       <Text layoutX="19.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Playlists" />
       <Text layoutX="210.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Songs on Playlist" />
       <Button fx:id="btnDeleteSong" layoutX="573.0" layoutY="446.0" mnemonicParsing="false" onAction="#btnHandleDeleteSong" text="delete" />
-      <TextField layoutX="477.0" layoutY="48.0" promptText="song searcher" />
+      <TextField fx:id="txtSearcher" layoutX="473.0" layoutY="39.0" promptText="song searcher" />
       <Text layoutX="481.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="make it search for artist, genre and name" />
-      <AnchorPane styleClass="anchor-pane2" layoutX="4.0" layoutY="490.0" prefHeight="137.0" prefWidth="794.0">
+      <AnchorPane layoutY="490.0" prefHeight="137.0" prefWidth="794.0" styleClass="anchor-pane2">
          <children>
             <Button fx:id="btnPlay" layoutX="381.0" layoutY="69.0" mnemonicParsing="false" onAction="#btnHandlePlay" styleClass="play-button" text="⏵">
                <font>
@@ -57,15 +57,15 @@
             <Button fx:id="btnSkip" layoutX="476.0" layoutY="79.0" mnemonicParsing="false" onAction="#btnHandleSkip" text="play next song" />
             <Button fx:id="btnReset" layoutX="323.0" layoutY="79.0" mnemonicParsing="false" onAction="#btnHandleReset" text="reset" />
             <Button fx:id="btnGoBack" layoutX="224.0" layoutY="78.0" mnemonicParsing="false" onAction="#btnHandleGoBack" text="play last song" />
-            <Label styleClass="text-white" fx:id="lblCurrentlyPlaying" layoutX="91.0" layoutY="11.0" text="Currently playing:">
+            <Label fx:id="lblCurrentlyPlaying" layoutX="91.0" layoutY="11.0" styleClass="text-white" text="Currently playing:">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label styleClass="text-white" layoutX="92.0" layoutY="42.0" text="song current playtime" />
-            <Text styleClass="text-white" layoutX="316.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="song duration slider thing" />
-            <Label styleClass="text-white" layoutX="429.0" layoutY="115.0" text="stop should deselect song" />
-            <Label styleClass="text-white" layoutX="571.0" layoutY="44.0" text="song duration" />
+            <Label layoutX="92.0" layoutY="42.0" styleClass="text-white" text="song current playtime" />
+            <Text layoutX="316.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text-white" text="song duration slider thing" />
+            <Label layoutX="429.0" layoutY="115.0" styleClass="text-white" text="stop should deselect song" />
+            <Label layoutX="571.0" layoutY="44.0" styleClass="text-white" text="song duration" />
             <Slider fx:id="volumeSlider" layoutX="608.0" layoutY="17.0" />
             <Button fx:id="btnMute" layoutX="513.0" layoutY="11.0" mnemonicParsing="false" onAction="#btnHandleMute" text="mute/unmute" />
          </children>
