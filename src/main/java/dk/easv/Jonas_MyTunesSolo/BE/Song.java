@@ -53,6 +53,15 @@ public class Song {
         this.duration = duration;
     }
 
+    public String getFormattedDuration() {
+        //removes decimals, so it only gets whole minutes
+        int minutes = this.duration / 60;
+        //gets whats left after converting to minutes.
+        int seconds = this.duration % 60;
+        //makes it user-friendly by formatting it to MM:SS
+        return String.format("%02d:%02d", minutes, seconds);
+    }
+
     @Override
     public String toString() {
         return songId + " | " + title + " | " + artistName + " | " + genreId + " | " + songFilePath + " | " + duration;

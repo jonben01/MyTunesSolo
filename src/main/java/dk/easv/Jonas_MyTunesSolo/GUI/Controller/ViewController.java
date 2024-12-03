@@ -6,6 +6,8 @@ import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.GUI.SongModel;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,7 +38,7 @@ public class ViewController implements Initializable {
     @FXML
     public Label lblVolume;
     @FXML
-    TableColumn<Song, Integer> colDuration;
+    TableColumn<Song, String> colDuration;
     @FXML
     TableColumn<Song, Integer> colGenre;
     @FXML
@@ -73,7 +75,11 @@ public class ViewController implements Initializable {
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colArtist.setCellValueFactory(new PropertyValueFactory<>("artistName"));
         colGenre.setCellValueFactory(new PropertyValueFactory<>("genreName"));
-        colDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
+        //cellData.getValue gets a song. formats duration to MM:SS, uses javafx property to auto update.
+        colDuration.setCellValueFactory(cellData -> {
+            Song song = cellData.getValue();
+            return new SimpleStringProperty(song.getFormattedDuration());
+        });
         tblSong.setItems(songModel.getSongsToBeViewed());
 
         //TODO add comments to this, and in the other controllers
