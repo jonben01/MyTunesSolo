@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="577.0" prefWidth="748.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.Jonas_MyTunesSolo.GUI.Controller.ViewController">
@@ -18,7 +19,7 @@
           <TableColumn prefWidth="75.0" text="C2" />
         </columns>
       </TableView>
-      <TableView fx:id="tblSong" layoutX="421.0" layoutY="91.0" prefHeight="342.0" prefWidth="309.0">
+      <TableView fx:id="tblSong" layoutX="418.0" layoutY="91.0" prefHeight="342.0" prefWidth="309.0">
         <columns>
           <TableColumn fx:id="colTitle" prefWidth="89.5999755859375" text="Title" />
           <TableColumn fx:id="colArtist" prefWidth="79.9998779296875" text="Artist" />
@@ -39,20 +40,29 @@
       <Button fx:id="btnDeleteSongOnPlaylist" layoutX="294.0" layoutY="446.0" mnemonicParsing="false" onAction="#btnHandleDeleteSongOnPlaylist" text="Delete" />
       <Button fx:id="btnNewSong" layoutX="448.0" layoutY="446.0" mnemonicParsing="false" onAction="#btnHandleNewSong" text="new" />
       <Button fx:id="btnEditSong" layoutX="511.0" layoutY="446.0" mnemonicParsing="false" onAction="#btnHandleEditSong" text="edit" />
-      <Button layoutX="344.0" layoutY="521.0" mnemonicParsing="false" text="play/pause" />
-      <Button layoutX="432.0" layoutY="521.0" mnemonicParsing="false" text="play next song" />
-      <Button layoutX="233.0" layoutY="521.0" mnemonicParsing="false" text="play last song" />
+      <Button fx:id="btnPlay" layoutX="355.0" layoutY="521.0" mnemonicParsing="false" onAction="#btnHandlePlay" text="play" />
+      <Button fx:id="btnSkip" layoutX="501.0" layoutY="534.0" mnemonicParsing="false" onAction="#btnHandleSkip" text="play next song" />
+      <Button fx:id="btnGoBack" layoutX="166.0" layoutY="534.0" mnemonicParsing="false" onAction="#btnHandleGoBack" text="play last song" />
       <Text layoutX="309.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TEMPORARY" />
       <Text layoutX="19.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Playlists" />
       <Text layoutX="210.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Songs on Playlist" />
       <Button fx:id="btnDeleteSong" layoutX="573.0" layoutY="446.0" mnemonicParsing="false" onAction="#btnHandleDeleteSong" text="delete" />
-      <Slider layoutX="591.0" layoutY="489.0" />
-      <Button layoutX="641.0" layoutY="459.0" mnemonicParsing="false" text="mute/unmute" />
+      <Slider fx:id="volumeSlider" layoutX="591.0" layoutY="489.0" />
+      <Button fx:id="btnMute" layoutX="641.0" layoutY="459.0" mnemonicParsing="false" onAction="#btnHandleMute" text="mute/unmute" />
       <TextField layoutX="511.0" layoutY="41.0" promptText="song searcher" />
       <Text layoutX="518.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="make it search for artist, genre and name" />
       <Slider layoutX="205.0" layoutY="507.0" prefHeight="14.0" prefWidth="345.0" />
       <Text layoutX="308.0" layoutY="501.0" strokeType="OUTSIDE" strokeWidth="0.0" text="song duration slider thing" />
-      <Label layoutX="93.0" layoutY="505.0" text="song current playtime" />
+      <Label layoutX="78.0" layoutY="505.0" text="song current playtime" />
       <Label layoutX="552.0" layoutY="505.0" text="song duration" />
+      <Button fx:id="btnStop" layoutX="411.0" layoutY="534.0" mnemonicParsing="false" onAction="#btnHandleStop" text="Stop" />
+      <Label layoutX="411.0" layoutY="514.0" text="stop should deselect song" />
+      <Button fx:id="btnPause" layoutX="350.0" layoutY="547.0" mnemonicParsing="false" onAction="#btnHandlePause" text="pause" />
+      <Button fx:id="btnReset" layoutX="278.0" layoutY="534.0" mnemonicParsing="false" onAction="#btnHandleReset" text="reset" />
+      <Label fx:id="lblCurrentlyPlaying" layoutX="19.0" layoutY="475.0" text="Currently playing:">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
