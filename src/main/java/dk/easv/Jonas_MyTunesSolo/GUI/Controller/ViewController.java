@@ -50,6 +50,7 @@ public class ViewController implements Initializable {
     private Media media;
     private MediaPlayer mediaPlayer;
     private String mediaURL = "";
+    private String oldMediaURL;
     private boolean isPlaying = false;
 
 
@@ -87,6 +88,13 @@ public class ViewController implements Initializable {
             } catch (SQLServerException e) {
                 throw new RuntimeException(e);
             }
+        });
+
+        //this is just stupid
+        tblSong.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+           if (newValue != null) {
+               btnPlay.setText("⏵");
+           }
         });
 
     }
@@ -216,14 +224,22 @@ public class ViewController implements Initializable {
 
     public void btnHandleStop(ActionEvent actionEvent) {
         //TODO IMPLEMENT THIS METHOD
-        mediaPlayer.stop();
+        if (mediaPlayer != null) {
+            tblSong.getSelectionModel().clearSelection();
+            mediaPlayer.stop();
+            isPlaying = false;
+            btnPlay.setText("⏵");
+
+        }
+
 
     }
 
     public void btnHandlePlay(ActionEvent actionEvent) {
         Song selectedSong = tblSong.getSelectionModel().getSelectedItem();
+        Button btnHandlePlay = (Button) actionEvent.getSource();
         //TODO make sure this shit doesnt suck ass
-        //could do an alert, but it I think its better to just not do anything.
+        //could do an alert, but I think its better to nothing.
         if (selectedSong == null) {
             return;
         }
@@ -243,45 +259,44 @@ public class ViewController implements Initializable {
                 songModel.deleteSong(selectedSong);
                 return;
             }
-            if (isPlaying) {
-                mediaPlayer.pause();
-                isPlaying = false;
-            }
             //if a mediaplayer already exists, stop and dispose of the loaded media
             //TODO hvad gør vi ved stop metoden? når vi kun checker efter playing eller paused
             //TODO second todo, det er vel fint nok, når else statement bare spiller sangen?
             if (mediaPlayer != null) {
-                MediaPlayer.Status status = mediaPlayer.getStatus();
-                if (status == MediaPlayer.Status.PLAYING) {
-                    mediaPlayer.pause();
-                    isPlaying = false;
-                }
-                if (status == MediaPlayer.Status.PAUSED) {
-                    mediaPlayer.seek(mediaPlayer.getCurrentTime());
-                    mediaPlayer.play();
-                    isPlaying = true;
-                }
-            } else {
 
-                media = new Media(file.toURI().toString());
-                mediaPlayer = new MediaPlayer(media);
-                mediaPlayer.play();
-                isPlaying = true;
+                MediaPlayer.Status status = mediaPlayer.getStatus();
+                if (mediaURL.equals(oldMediaURL)) {
+                    if (status == MediaPlayer.Status.PLAYING) {
+                        mediaPlayer.pause();
+                        isPlaying = false;
+                        btnHandlePlay.setText("⏵");
+                    }
+                    if (status == MediaPlayer.Status.PAUSED) {
+                        mediaPlayer.seek(mediaPlayer.getCurrentTime());
+                        mediaPlayer.play();
+                        isPlaying = true;
+                        btnHandlePlay.setText("⏸");
+                    }
+                    return;
+                }
+                //TODO make play/pause button work better after this point
+                //TODO if you pick a new song, it will stay on pause.
+                mediaPlayer.stop();
+                mediaPlayer.dispose();
+                btnHandlePlay.setText("⏵");
+
             }
+            oldMediaURL = mediaURL;
+            media = new Media(file.toURI().toString());
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.play();
+            isPlaying = true;
+            btnHandlePlay.setText("⏸");
 
             //TODO make a better catch clause
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        Button btnHandlePlay = (Button) actionEvent.getSource();
-        if (isPlaying) {
-            btnHandlePlay.setText("⏸");
-        } else {
-            btnHandlePlay.setText("⏵");
-
-        }
-
     }
 
 
