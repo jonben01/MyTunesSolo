@@ -14,13 +14,12 @@
     -fx-cursor: hand;
 }
 
-
 .anchor-pane {
-    -fx-background-color: rgba(232, 232, 232, 0.8);
+    -fx-background-color: rgba(78, 78, 78, 0.8);
 }
 
 .anchor-pane2 {
-    -fx-background-color: grey;
+    -fx-background-color: rgba(43, 43, 43, 0.8);
 }
 /* make this the colour we want at the bottom later, black maybe? */
 

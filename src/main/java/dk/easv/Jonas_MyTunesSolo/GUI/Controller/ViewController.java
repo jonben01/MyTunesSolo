@@ -16,6 +16,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseDragEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Modality;
@@ -30,27 +32,21 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ViewController implements Initializable {
-    @FXML
-    public Slider volumeSlider;
-    @FXML
-    public Button btnPlay;
-    public TextField txtSearcher;
-    @FXML
-    public Label lblVolume;
-    @FXML
-    TableColumn<Song, String> colDuration;
-    @FXML
-    TableColumn<Song, Integer> colGenre;
-    @FXML
-    TableColumn<Song, Integer> colArtist;
-    @FXML
-    TableColumn<Song, String> colTitle;
-    @FXML
-    TableView<Song> tblSong;
+    @FXML public Slider volumeSlider;
+    @FXML public Button btnPlay;public TextField txtSearcher;
+    @FXML public Label lblVolume;
+    @FXML public Slider durationSlider;
+    @FXML public Label lblCurrentTime;
+    @FXML public Label lblSongDuration;
+    @FXML TableColumn<Song, String> colDuration;
+    @FXML TableColumn<Song, Integer> colGenre;
+    @FXML TableColumn<Song, Integer> colArtist;
+    @FXML TableColumn<Song, String> colTitle;
+    @FXML TableView<Song> tblSong;
 
+    private boolean isSliderDragging = false;
     private SongModel songModel;
     private SimpleBooleanProperty dataChanged;
-
     private Media media;
     private MediaPlayer mediaPlayer;
     private boolean isPlaying = false;
@@ -95,10 +91,13 @@ public class ViewController implements Initializable {
                 throw new RuntimeException(e);
             }
         });
-
+        //TODO make this work when you use search function, currently always sets text to "⏵"
         tblSong.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-           if (newValue != null) {
+           if (newValue != null && newValue != currentSong) {
                btnPlay.setText("⏵");
+           }
+           if (newValue == currentSong) {
+               btnPlay.setText("⏸");
            }
         });
         //TODO REMEMBER TO DELETE THE LABEL IN FINISHED PRODUCT, DONT NEED THE % TO BE SEEN
@@ -121,6 +120,7 @@ public class ViewController implements Initializable {
                 lblVolume.setText((int) volumeSlider.getValue()+"%");
             }
         });
+
     }
 
     @FXML
@@ -175,7 +175,6 @@ public class ViewController implements Initializable {
         }
 
     }
-
 
     public void btnHandleEditSong(ActionEvent actionEvent) {
         Song songToBeEdited = tblSong.getSelectionModel().getSelectedItem();
@@ -283,15 +282,13 @@ public class ViewController implements Initializable {
                     mediaPlayer.dispose();
                     btnHandlePlay.setText("⏵");
                 }
-                media = new Media(file.toURI().toString());
-                mediaPlayer = new MediaPlayer(media);
-                mediaPlayer.setVolume(volumeSlider.getValue() / 100 * 0.2);
-                mediaPlayer.play();
-                isPlaying = true;
-                btnHandlePlay.setText("⏸");
-                currentSong = selectedSong;
+                    playSelectedSong(selectedSong);
+                    btnHandlePlay.setText("⏸");
             } else {
                 MediaPlayer.Status status = mediaPlayer.getStatus();
+                if(selectedSong == currentSong) {
+                    btnHandlePlay.setText("⏸");
+                }
                 if (mediaPlayer != null) {
                     if (status == MediaPlayer.Status.PLAYING) {
                         mediaPlayer.pause();
@@ -312,6 +309,45 @@ public class ViewController implements Initializable {
         }
     }
 
+    //encapsulating the initial play part of previous method, it became way way way too long.
+    public void playSelectedSong(Song selectedSong) {
+        String mediaURL = selectedSong.getSongFilePath();
+        File file = new File(mediaURL);
+        media = new Media(file.toURI().toString());
+        mediaPlayer = new MediaPlayer(media);
+
+        mediaPlayer.setOnReady(() -> {
+            durationSlider.setMax(0.0);
+            durationSlider.setMax(mediaPlayer.getTotalDuration().toSeconds());
+            durationSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue != null) {
+                    mediaPlayer.seek(Duration.seconds(newValue.doubleValue()));
+                }
+            });
+            mediaPlayer.currentTimeProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    durationSlider.setValue(newValue.toSeconds());
+                }
+            });
+
+            mediaPlayer.setVolume(volumeSlider.getValue() / 100 * 0.2);
+            mediaPlayer.play();
+            lblSongDuration.setText(formatDuration((int) mediaPlayer.getTotalDuration().toSeconds()));
+            isPlaying = true;
+            currentSong = selectedSong;
+                });
+
+        mediaPlayer.currentTimeProperty().addListener((observable, oldValue, newValue) -> {
+            if (!durationSlider.isValueChanging()) {
+            lblCurrentTime.setText(formatDuration((int) newValue.toSeconds()));
+            }
+            if (durationSlider.isValueChanging()) {
+                lblCurrentTime.setText(formatDuration((int) newValue.toSeconds()));
+            }
+        });
+
+    }
+
 
     public void btnHandleReset(ActionEvent actionEvent) {
         //TODO IMPLEMENT THIS METHOD
@@ -328,6 +364,15 @@ public class ViewController implements Initializable {
 
     public void btnHandleMute(ActionEvent actionEvent) {
         //TODO IMPLEMENT THIS METHOD
+    }
+
+    private String formatDuration(int durationSeconds) {
+        //removes decimals, so it only gets whole minutes
+        int minutes = durationSeconds / 60;
+        //gets whats left after converting to minutes.
+        int seconds = durationSeconds % 60;
+        //makes it user-friendly by formatting it to MM:SS
+        return String.format("%02d:%02d", minutes, seconds);
     }
 
 }
