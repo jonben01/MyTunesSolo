@@ -419,7 +419,7 @@ public class ViewController implements Initializable {
 
         mediaPlayer.currentTimeProperty().addListener((observable, oldValue, newValue) -> {
             if (!durationSlider.isValueChanging()) {
-            lblCurrentTime.setText(formatDuration((int) newValue.toSeconds()));
+                lblCurrentTime.setText(formatDuration((int) newValue.toSeconds()));
             }
             if (durationSlider.isValueChanging()) {
                 lblCurrentTime.setText(formatDuration((int) newValue.toSeconds()));
