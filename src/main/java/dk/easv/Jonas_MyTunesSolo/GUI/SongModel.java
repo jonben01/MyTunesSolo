@@ -31,10 +31,9 @@ public class SongModel {
         songsToBeViewed.addAll(songManager.getAllSongs());
     }
 
-    public Song createSong(Song newSong) throws SQLServerException {
+    public void createSong(Song newSong) throws SQLServerException {
         Song songCreated = songManager.createSong(newSong);
         songsToBeViewed.add(songCreated);
-        return songCreated;
     }
 
     public Song getSongByFilePath(String filePath) {
@@ -56,8 +55,6 @@ public class SongModel {
 
     public void updateSong(Song songToBeEdited) throws SQLException {
         songManager.updateSong(songToBeEdited);
-        //might be missing something here, but code seems functional
-        //TODO remove above comment?
     }
     public void searchMovie(String searchQuery) throws SQLServerException {
         List<Song> searchResults = songManager.searchSongs(searchQuery);

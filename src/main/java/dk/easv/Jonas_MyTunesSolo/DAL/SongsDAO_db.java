@@ -11,10 +11,10 @@ import java.util.List;
 
 public class SongsDAO_db implements ISongDataAccess {
 
-    private DBConnecter dbConnecter;
+    private DBConnector dbConnector;
 
     public SongsDAO_db() throws IOException {
-        dbConnecter = new DBConnecter();
+        dbConnector = new DBConnector();
     }
 
 
@@ -22,7 +22,7 @@ public class SongsDAO_db implements ISongDataAccess {
     public List<Song> getAllSongs() {
         ArrayList<Song> allSongs = new ArrayList<>();
         //try with resources, auto closes database connection.
-        try (Connection connection = dbConnecter.getConnection(); Statement stmt = connection.createStatement()) {
+        try (Connection connection = dbConnector.getConnection(); Statement stmt = connection.createStatement()) {
             String sql = "SELECT s.Id, s.Title, s.Artist, s.GenreId, g.GenreName AS genreName, s.Duration, s.File_Path " +
                          "FROM dbo.Song s " +
                          "LEFT JOIN dbo.Genre g ON s.GenreId = g.Id ";
@@ -57,7 +57,7 @@ public class SongsDAO_db implements ISongDataAccess {
     public Song createSong(Song newSong) {
         String sql = "INSERT INTO dbo.Song (Title, Artist, GenreId, Duration, File_Path ) VALUES (?,?,?,?,?);";
 
-        try (Connection connection = dbConnecter.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        try (Connection connection = dbConnector.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
             pstmt.setString(1, newSong.getTitle());
             pstmt.setString(2, newSong.getArtistName());
@@ -88,7 +88,7 @@ public class SongsDAO_db implements ISongDataAccess {
         //this works 😂
         songToBeEdited.setGenreId(getGenreIdByName(songToBeEdited.getGenreName()));
         String sql = "UPDATE dbo.Song SET title = ?, Artist = ?, GenreId = ? WHERE Id = ?";
-        try (Connection connection = dbConnecter.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        try (Connection connection = dbConnector.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, songToBeEdited.getTitle());
             pstmt.setString(2, songToBeEdited.getArtistName());
 
@@ -106,7 +106,7 @@ public class SongsDAO_db implements ISongDataAccess {
     //this still works if the genreName isnt in the database, because of if statement in update method
     public Integer getGenreIdByName(String genreName) throws SQLException {
         String sql = "SELECT Id FROM dbo.Genre WHERE GenreName = ?";
-        try (Connection connection = dbConnecter.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        try (Connection connection = dbConnector.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, genreName);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -119,7 +119,7 @@ public class SongsDAO_db implements ISongDataAccess {
     @Override
     public void deleteSong(Song songToBeDeleted) throws SQLServerException {
         String sql = "DELETE FROM dbo.Song WHERE Id = ?";
-        try (Connection connection = dbConnecter.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        try (Connection connection = dbConnector.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
             pstmt.setInt(1, songToBeDeleted.getSongID());
             pstmt.executeUpdate();

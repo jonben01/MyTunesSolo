@@ -202,7 +202,6 @@ public class NewSongController implements Initializable {
     }
 
     public void setDataChangedFlag(SimpleBooleanProperty dataChangedFlag) {
-
         this.dataChangedFlag = dataChangedFlag;
     }
 

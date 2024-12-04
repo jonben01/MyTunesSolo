@@ -15,7 +15,7 @@
 }
 
 .anchor-pane {
-    -fx-background-color: rgba(78, 78, 78, 0.8);
+    -fx-background-color: rgba(23, 23, 23, 0.8);
 }
 
 .anchor-pane2 {
@@ -24,5 +24,83 @@
 /* make this the colour we want at the bottom later, black maybe? */
 
 .text-white {
+    -fx-text-fill: white;
+}
+
+.table-view {
+    -fx-border-color: rgba(43, 43, 43, 0.8); /* Border color */
+    -fx-border-width: 3px; /* Border thickness */
+    -fx-border-radius: 10px; /* Rounded corners for the border */
+    -fx-background-radius: 10px; /* Match background corners to the border */
+    -fx-padding: 0px; /* Padding inside the border for spacing */
+    -fx-background-color: rgba(43, 43, 43, 0.8); /* Background color inside the border (or transparent) */
+}
+.table-view .table-cell {
+    -fx-background-color: rgba(43, 43, 43, 0.8);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13;
+    -fx-border-width: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0 10px 0 10px;
+    -fx-alignment: center-left;
+    -fx-font-family: "Arial Black";
+
+}
+.table-view .table-row-cell {
+    -fx-background-color: rgba(43, 43, 43, 0.8);
+    -fx-border-width: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+/* Highlight the entire row when selected */
+.table-view .table-row-cell:selected {
+    -fx-background-color: #4CAF50; /* Highlight color (e.g., green) */
+    -fx-text-fill: white; /* Text color for selected rows */
+}
+
+/* Highlight the entire row on hover */
+.table-view .table-row-cell:hover {
+    -fx-background-color: #d0f0c0; /* Light green color for hover */
+}
+
+/* Ensure cells inherit the hover and selection styling */
+.table-view .table-row-cell:selected .table-cell {
+    -fx-background-color: #4CAF50; /* Make cells match the row's color */
+    -fx-text-fill: white; /* Ensure text remains readable on selection */
+}
+
+.table-view .table-row-cell:hover .table-cell {
+    -fx-background-color: #d0f0c0 /* Make cells match the row's color */
+}
+
+.table-view .column-header-background {
+    -fx-background-color: rgba(43, 43, 43, 0.8);
+}
+.table-view .table-row-cell:hover {
+    fx-background-color: rgba(117, 117, 117, 0.8);
+}
+
+.table-view .column-header {
+    -fx-background-color: rgba(43, 43, 43, 0.8); /* Header background color */
+    -fx-border-color: rgba(43, 43, 43, 0.8); /* Border around the header */
+    -fx-border-width: 0 0 0px 0; /* Border width (bottom border only) */
+}
+.table-view .column-header .label {
+    -fx-font-size: 16;
+    -fx-alignment: center-left;
+    -fx-padding: 0 10x 0 10px;
+    -fx-text-fill: white;
+}
+
+.table-view .column-header .label#colDuration {
+    -fx-font-size: 18;
+    -fx-alignment: center;
+    -fx-text-fill: white;
+}
+
+.duration-column {
+    -fx-alignment: center;
     -fx-text-fill: white;
 }

@@ -8,12 +8,12 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.Properties;
 
-public class DBConnecter {
+public class DBConnector {
 
     private static final String PROPERTY_FILE = "config/database.settings";
     private SQLServerDataSource dataSource;
 
-    public DBConnecter() throws IOException {
+    public DBConnector() throws IOException {
 
         Properties dbProps = new Properties();
         dbProps.load(new FileInputStream(PROPERTY_FILE));

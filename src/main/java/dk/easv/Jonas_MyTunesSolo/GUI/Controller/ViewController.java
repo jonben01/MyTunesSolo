@@ -3,7 +3,9 @@ package dk.easv.Jonas_MyTunesSolo.GUI.Controller;
 
 //TODO separate project imports and java imports
 import com.microsoft.sqlserver.jdbc.SQLServerException;
+import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
+import dk.easv.Jonas_MyTunesSolo.GUI.PlaylistModel;
 import dk.easv.Jonas_MyTunesSolo.GUI.SongModel;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -39,6 +41,8 @@ public class ViewController implements Initializable {
     @FXML public Label lblCurrentTime;
     @FXML public Label lblSongDuration;
     @FXML public Button btnMute;
+    @FXML TableView tblPlaylist;
+    @FXML TableColumn colPlaylistName;
     @FXML TableColumn<Song, String> colDuration;
     @FXML TableColumn<Song, Integer> colGenre;
     @FXML TableColumn<Song, Integer> colArtist;
@@ -53,17 +57,23 @@ public class ViewController implements Initializable {
     private MediaPlayer mediaPlayer;
     private boolean isPlaying = false;
     private Song currentSong;
+    private PlaylistModel playlistModel;
 
     public ViewController()  {
 
         try {
             songModel = new SongModel();
+            playlistModel = new PlaylistModel();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        //TODO INITIALIZE PLAYLIST TABLE
+        colPlaylistName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        tblPlaylist.setItems(playlistModel.getPlaylistsToBeViewed());
 
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colArtist.setCellValueFactory(new PropertyValueFactory<>("artistName"));
@@ -80,6 +90,8 @@ public class ViewController implements Initializable {
         dataChanged.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 songModel.refreshSong();
+                //I should probably make it check for these separately.
+                playlistModel.refreshPlaylist();
                 //reset flag, so code is reusable
                 dataChanged.set(false);
             }
@@ -205,7 +217,7 @@ public class ViewController implements Initializable {
 
                 // Create a new stage
                 Stage newSongStage = new Stage();
-                newSongStage.setTitle("Add a new audio file");
+                newSongStage.setTitle("Edit a song");
                 newSongStage.setResizable(false);
                 //Sets modality, cant use previous window till this one is closed
                 newSongStage.initModality(Modality.APPLICATION_MODAL);
@@ -219,11 +231,70 @@ public class ViewController implements Initializable {
     }
 
     public void btnHandleNewPlaylist(ActionEvent actionEvent) {
-        //TODO IMPLEMENT THIS METHOD
+        try {
+            // Load the FXML file
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/playlist-view.fxml"));
+            Parent root = fxmlLoader.load();
+
+            NewPlaylistController NPController = fxmlLoader.getController();
+            NPController.setDataChangedFlag(dataChanged);
+            NPController.btnMenuEditPlaylist.setVisible(false);
+
+            // Create a new stage
+            Stage newSongStage = new Stage();
+            newSongStage.setTitle("Add a new playlist");
+            newSongStage.setResizable(false);
+            //Sets modality, cant use previous window till this one is closed
+            newSongStage.initModality(Modality.APPLICATION_MODAL);
+
+            // Set the scene with the loaded FXML file
+            newSongStage.setScene(new Scene(root));
+
+            // Show the stage
+            newSongStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
     }
 
     public void btnHandleEditPlaylist(ActionEvent actionEvent) {
-        //TODO IMPLEMENT THIS METHOD
+        Playlist playlistToBeEdited = (Playlist) tblPlaylist.getSelectionModel().getSelectedItem();
+
+        if (playlistToBeEdited == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select a playlist to edit");
+            alert.showAndWait();
+        } else {
+                try {
+                    // Load the FXML file
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/playlist-view.fxml"));
+                    Parent root = fxmlLoader.load();
+
+                    NewPlaylistController NPController = fxmlLoader.getController();
+                    NPController.setDataChangedFlag(dataChanged);
+                    NPController.btnMenuAddPlaylist.setVisible(false);
+                    NPController.playlistToBeEditedPasser(playlistToBeEdited);
+
+                    // Create a new stage
+                    Stage newSongStage = new Stage();
+                    newSongStage.setTitle("Edit a playlist");
+                    newSongStage.setResizable(false);
+                    //Sets modality, cant use previous window till this one is closed
+                    newSongStage.initModality(Modality.APPLICATION_MODAL);
+
+                    // Set the scene with the loaded FXML file
+                    newSongStage.setScene(new Scene(root));
+
+                    // Show the stage
+                    newSongStage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+
+                }
+            }
     }
 
     public void btnHandleDeletePlaylist(ActionEvent actionEvent) {
@@ -247,12 +318,12 @@ public class ViewController implements Initializable {
     }
 
     public void btnHandleStop(ActionEvent actionEvent) {
-        //TODO IMPLEMENT THIS METHOD
         if (mediaPlayer != null) {
             tblSong.getSelectionModel().clearSelection();
             mediaPlayer.stop();
             isPlaying = false;
             btnPlay.setText("⏵");
+            currentSong = null;
         }
     }
 
@@ -307,6 +378,7 @@ public class ViewController implements Initializable {
                         mediaPlayer.play();
                         isPlaying = true;
                         btnHandlePlay.setText("⏸");
+                    }else {
                     }
                 }
             }

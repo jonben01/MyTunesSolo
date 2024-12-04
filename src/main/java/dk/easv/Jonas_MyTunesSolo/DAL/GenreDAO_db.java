@@ -1,7 +1,6 @@
 package dk.easv.Jonas_MyTunesSolo.DAL;
 
 import dk.easv.Jonas_MyTunesSolo.BE.Genre;
-import dk.easv.Jonas_MyTunesSolo.BE.Song;
 
 
 import java.io.IOException;
@@ -11,10 +10,10 @@ import java.util.List;
 
 public class GenreDAO_db implements IGenreDataAccess {
 
-    private DBConnecter dbConnector;
+    private DBConnector dbConnector;
 
     public GenreDAO_db() throws IOException {
-        dbConnector = new DBConnecter();
+        dbConnector = new DBConnector();
     }
 
     @Override
