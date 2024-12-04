@@ -53,11 +53,8 @@ public class ViewController implements Initializable {
 
     private Media media;
     private MediaPlayer mediaPlayer;
-    private String oldMediaURL;
     private boolean isPlaying = false;
     private Song currentSong;
-
-
 
     public ViewController()  {
 
@@ -69,8 +66,6 @@ public class ViewController implements Initializable {
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-
 
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colArtist.setCellValueFactory(new PropertyValueFactory<>("artistName"));
@@ -260,32 +255,44 @@ public class ViewController implements Initializable {
         Button btnHandlePlay = (Button) actionEvent.getSource();
         //TODO make sure this shit doesnt suck ass
         //could do an alert, but I think its better to do nothing.
-        if (selectedSong == null) {
+        if (selectedSong == null && currentSong == null) {
             return;
         }
         try {
-            String mediaURL = selectedSong.getSongFilePath();
-            File file = new File(mediaURL);
+            //if theres a song selected but it isnt equal to the currentSong run this
+            //if there is no song selected and it isnt equal to currentSong, do not run this
+            if (selectedSong != null && !selectedSong.equals(currentSong)) {
+                String mediaURL = selectedSong.getSongFilePath();
+                File file = new File(mediaURL);
 
-            //in case you delete a song in your song folder, while the program is running.
-            //checks if, in this case, the file path exists.
-            if (!file.exists()) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Song does not exist, deleting from library");
-                alert.showAndWait();
-                //makes sure to delete the deleted song.
-                songModel.deleteSong(selectedSong);
-                return;
-            }
-            //if a mediaplayer already exists, stop and dispose of the loaded media
-            //TODO hvad gør vi ved stop metoden? når vi kun checker efter playing eller paused
-            //TODO second todo, det er vel fint nok, når else statement bare spiller sangen?
-            if (mediaPlayer != null) {
-
+                //in case you delete a song in your song folder, while the program is running.
+                //checks if, in this case, the file path exists.
+                if (!file.exists()) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Song does not exist, deleting from library");
+                    alert.showAndWait();
+                    //makes sure to delete the deleted song.
+                    songModel.deleteSong(selectedSong);
+                    return;
+                }
+                //if a mediaplayer already exists, stop and dispose of the loaded media
+                if (mediaPlayer != null) {
+                    mediaPlayer.stop();
+                    mediaPlayer.dispose();
+                    btnHandlePlay.setText("⏵");
+                }
+                media = new Media(file.toURI().toString());
+                mediaPlayer = new MediaPlayer(media);
+                mediaPlayer.setVolume(volumeSlider.getValue() / 100 * 0.2);
+                mediaPlayer.play();
+                isPlaying = true;
+                btnHandlePlay.setText("⏸");
+                currentSong = selectedSong;
+            } else {
                 MediaPlayer.Status status = mediaPlayer.getStatus();
-                if (mediaURL.equals(oldMediaURL)) {
+                if (mediaPlayer != null) {
                     if (status == MediaPlayer.Status.PLAYING) {
                         mediaPlayer.pause();
                         isPlaying = false;
@@ -297,24 +304,8 @@ public class ViewController implements Initializable {
                         isPlaying = true;
                         btnHandlePlay.setText("⏸");
                     }
-                    return;
                 }
-                //TODO make play/pause button work better after this point
-                //TODO if you pick a new song, it will stay on pause.
-                mediaPlayer.stop();
-                mediaPlayer.dispose();
-                btnHandlePlay.setText("⏵");
-
             }
-            oldMediaURL = mediaURL;
-            media = new Media(file.toURI().toString());
-            mediaPlayer = new MediaPlayer(media);
-            mediaPlayer.setVolume(volumeSlider.getValue()/100 * 0.2);
-            mediaPlayer.play();
-            isPlaying = true;
-            btnHandlePlay.setText("⏸");
-            currentSong = selectedSong;
-
             //TODO make a better catch clause
         } catch (Exception e) {
             e.printStackTrace();
