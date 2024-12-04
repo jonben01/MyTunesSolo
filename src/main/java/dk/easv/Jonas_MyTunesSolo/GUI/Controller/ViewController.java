@@ -38,13 +38,15 @@ public class ViewController implements Initializable {
     @FXML public Slider durationSlider;
     @FXML public Label lblCurrentTime;
     @FXML public Label lblSongDuration;
+    @FXML public Button btnMute;
     @FXML TableColumn<Song, String> colDuration;
     @FXML TableColumn<Song, Integer> colGenre;
     @FXML TableColumn<Song, Integer> colArtist;
     @FXML TableColumn<Song, String> colTitle;
     @FXML TableView<Song> tblSong;
 
-    private boolean isSliderDragging = false;
+    private double savedVolume;
+    private boolean muted = false;
     private SongModel songModel;
     private SimpleBooleanProperty dataChanged;
     private Media media;
@@ -104,6 +106,8 @@ public class ViewController implements Initializable {
         volumeSlider.setMin(5);
         volumeSlider.setValue(25);
         lblVolume.setText((int) volumeSlider.getValue() + "%");
+        savedVolume = volumeSlider.getValue()/100 *0.2;
+
 
         volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (mediaPlayer != null) {
@@ -118,6 +122,9 @@ public class ViewController implements Initializable {
             }
             if (newValue != null) {
                 lblVolume.setText((int) volumeSlider.getValue()+"%");
+                savedVolume = volumeSlider.getValue()/100 * 0.2;
+                btnMute.setText("mute");
+                muted = false;
             }
         });
 
@@ -332,6 +339,7 @@ public class ViewController implements Initializable {
 
             mediaPlayer.setVolume(volumeSlider.getValue() / 100 * 0.2);
             mediaPlayer.play();
+            btnMute.setText("mute");
             lblSongDuration.setText(formatDuration((int) mediaPlayer.getTotalDuration().toSeconds()));
             isPlaying = true;
             currentSong = selectedSong;
@@ -345,7 +353,6 @@ public class ViewController implements Initializable {
                 lblCurrentTime.setText(formatDuration((int) newValue.toSeconds()));
             }
         });
-
     }
 
 
@@ -364,6 +371,18 @@ public class ViewController implements Initializable {
 
     public void btnHandleMute(ActionEvent actionEvent) {
         //TODO IMPLEMENT THIS METHOD
+        if (mediaPlayer != null) {
+            if (!muted) {
+                muted = true;
+                mediaPlayer.setVolume(0);
+                btnMute.setText("unmute");
+
+            } else {
+                muted = false;
+                mediaPlayer.setVolume(savedVolume);
+                btnMute.setText("mute");
+            }
+        }
     }
 
     private String formatDuration(int durationSeconds) {
