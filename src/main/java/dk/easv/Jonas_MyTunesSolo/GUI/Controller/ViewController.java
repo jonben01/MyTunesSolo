@@ -7,8 +7,11 @@ import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.GUI.PlaylistModel;
 import dk.easv.Jonas_MyTunesSolo.GUI.SongModel;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +20,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Modality;
@@ -26,6 +30,8 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -67,7 +73,6 @@ public class ViewController implements Initializable {
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         //TODO INITIALIZE PLAYLIST TABLE
         colPlaylistName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tblPlaylist.setItems(playlistModel.getPlaylistsToBeViewed());
@@ -375,7 +380,6 @@ public class ViewController implements Initializable {
                         mediaPlayer.play();
                         isPlaying = true;
                         btnHandlePlay.setText("⏸");
-                    }else {
                     }
                 }
             }
@@ -385,6 +389,9 @@ public class ViewController implements Initializable {
         }
     }
 
+
+    private boolean isSliderChanging = false;
+
     //encapsulating the initial play part of previous method, it became way way way too long.
     public void playSelectedSong(Song selectedSong) {
         String mediaURL = selectedSong.getSongFilePath();
@@ -393,16 +400,23 @@ public class ViewController implements Initializable {
         mediaPlayer = new MediaPlayer(media);
 
         mediaPlayer.setOnReady(() -> {
-            durationSlider.setMax(0.0);
             durationSlider.setMax(mediaPlayer.getTotalDuration().toSeconds());
+            durationSlider.setOnMousePressed(event -> isSliderChanging = true);
+            durationSlider.setOnMouseReleased(event -> {
+                isSliderChanging = false;
+                mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
+            });
+
             durationSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue != null) {
-                    mediaPlayer.seek(Duration.seconds(newValue.doubleValue()));
+                if (isSliderChanging) {
+                    lblCurrentTime.setText(formatDuration(newValue.intValue()));
                 }
             });
+
             mediaPlayer.currentTimeProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
+                if (!isSliderChanging) {
                     durationSlider.setValue(newValue.toSeconds());
+                    lblCurrentTime.setText(formatDuration((int) newValue.toSeconds()));
                 }
             });
 
@@ -412,16 +426,6 @@ public class ViewController implements Initializable {
             lblSongDuration.setText(formatDuration((int) mediaPlayer.getTotalDuration().toSeconds()));
             isPlaying = true;
             currentSong = selectedSong;
-
-                });
-
-        mediaPlayer.currentTimeProperty().addListener((observable, oldValue, newValue) -> {
-            if (!durationSlider.isValueChanging()) {
-                lblCurrentTime.setText(formatDuration((int) newValue.toSeconds()));
-            }
-            if (durationSlider.isValueChanging()) {
-                lblCurrentTime.setText(formatDuration((int) newValue.toSeconds()));
-            }
         });
     }
 
