@@ -2,6 +2,7 @@ package dk.easv.Jonas_MyTunesSolo.GUI;
 
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
+import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.BLL.PlaylistManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,7 +19,6 @@ public class PlaylistModel {
         playlistManager = new PlaylistManager();
         playlistsToBeViewed = FXCollections.observableArrayList();
         playlistsToBeViewed.addAll(playlistManager.getAllPlaylists());
-
     }
 
     public void createNewPlaylist(Playlist newPlaylist) throws SQLException {
@@ -44,4 +44,5 @@ public class PlaylistModel {
         playlistsToBeViewed.remove(playlistToBeDeleted);
         playlistManager.deleteSong(playlistToBeDeleted);
     }
+
 }

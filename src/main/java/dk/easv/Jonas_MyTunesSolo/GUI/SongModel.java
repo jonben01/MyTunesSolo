@@ -56,7 +56,7 @@ public class SongModel {
     public void updateSong(Song songToBeEdited) throws SQLException {
         songManager.updateSong(songToBeEdited);
     }
-    public void searchMovie(String searchQuery) throws SQLServerException {
+    public void searchSongs(String searchQuery) throws SQLServerException {
         List<Song> searchResults = songManager.searchSongs(searchQuery);
         songsToBeViewed.clear();
         songsToBeViewed.addAll(searchResults);

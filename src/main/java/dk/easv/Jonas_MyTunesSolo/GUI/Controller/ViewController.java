@@ -6,6 +6,7 @@ import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.GUI.PlaylistModel;
+import dk.easv.Jonas_MyTunesSolo.GUI.PlaylistSongsModel;
 import dk.easv.Jonas_MyTunesSolo.GUI.SongModel;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -30,6 +31,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,14 +39,17 @@ import java.util.ResourceBundle;
 
 
 public class ViewController implements Initializable {
-    @FXML public Slider volumeSlider;
-    @FXML public Button btnPlay;public TextField txtSearcher;
-    @FXML public Label lblVolume;
-    @FXML public Slider durationSlider;
-    @FXML public Label lblCurrentTime;
-    @FXML public Label lblSongDuration;
-    @FXML public Button btnMute;
-    @FXML TableColumn colPlaylistName;
+    @FXML public TableView<Song> tblPlaylistSongs;
+    @FXML public TableColumn<Song, String> colPlaylistSongTitle;
+    @FXML private Slider volumeSlider;
+    @FXML private Button btnPlay;public TextField txtSearcher;
+    @FXML private Label lblVolume;
+    @FXML private Slider durationSlider;
+    @FXML private Label lblCurrentTime;
+    @FXML private Label lblSongDuration;
+    @FXML private Button btnMute;
+    @FXML private Label lblCurrentlyPlaying;
+    @FXML TableColumn<Playlist, String> colPlaylistName;
     @FXML TableColumn<Song, String> colDuration;
     @FXML TableColumn<Song, Integer> colGenre;
     @FXML TableColumn<Song, Integer> colArtist;
@@ -61,6 +66,7 @@ public class ViewController implements Initializable {
     private boolean isPlaying = false;
     private Song currentSong;
     private PlaylistModel playlistModel;
+    private PlaylistSongsModel playlistSongsModel;
     private boolean isSliderChanging = false;
 
     public ViewController()  {
@@ -68,15 +74,28 @@ public class ViewController implements Initializable {
         try {
             songModel = new SongModel();
             playlistModel = new PlaylistModel();
+            playlistSongsModel = new PlaylistSongsModel();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //TODO INITIALIZE PLAYLIST TABLE
+        //TODO INITIALIZE PLAYLIST TABLE add total duration and number of songs
         colPlaylistName.setCellValueFactory(new PropertyValueFactory<>("name"));
         tblPlaylist.setItems(playlistModel.getPlaylistsToBeViewed());
+
+        tblPlaylistSongs.setItems(playlistSongsModel.getPlaylistSongsToBeViewed());
+
+        //TODO playlist songs get selected playlist and that too bruh moment - what the fuck did i write here???
+        colPlaylistSongTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+
+        tblPlaylist.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                    playlistSongsModel.refreshPlaylistSongs((Playlist) newValue);
+            }
+            else playlistSongsModel.refreshPlaylistSongs(null);
+        });
 
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colArtist.setCellValueFactory(new PropertyValueFactory<>("artistName"));
@@ -95,14 +114,20 @@ public class ViewController implements Initializable {
                 songModel.refreshSong();
                 //I should probably make it check for these separately.
                 playlistModel.refreshPlaylist();
+                //TODO make this work lol
+                Playlist selectedPlaylist = tblPlaylist.getSelectionModel().getSelectedItem();
+                if (selectedPlaylist != null) {
+                        playlistSongsModel.refreshPlaylistSongs(selectedPlaylist);
+                        tblPlaylist.getSelectionModel().select(selectedPlaylist);
+                }
                 //reset flag, so code is reusable
                 dataChanged.set(false);
             }
         });
-        //listener passes "newValue" as a query to the searchMovie method.
+        //listener passes "newValue" as a query to the searchSong method.
         txtSearcher.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
-                songModel.searchMovie(newValue);
+                songModel.searchSongs(newValue);
 
             } catch (SQLServerException e) {
                 throw new RuntimeException(e);
@@ -191,8 +216,9 @@ public class ViewController implements Initializable {
                 if (fileToDelete.exists()) {
                     fileToDelete.delete();
                 }
-
                 tblSong.setItems(songModel.getSongsToBeViewed());
+                dataChanged.set(true);
+
             }
         }
 
@@ -312,8 +338,8 @@ public class ViewController implements Initializable {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 playlistModel.deletePlaylist(playlistToBeDeleted);
-                tblPlaylist.setItems(playlistModel.getPlaylistsToBeViewed());
             }
+            tblPlaylist.setItems(playlistModel.getPlaylistsToBeViewed());
         }
     }
 
@@ -396,6 +422,7 @@ public class ViewController implements Initializable {
                         mediaPlayer.play();
                         isPlaying = true;
                         btnHandlePlay.setText("⏸");
+
                     }
                 }
             }
@@ -442,6 +469,7 @@ public class ViewController implements Initializable {
             lblSongDuration.setText(formatDuration((int) mediaPlayer.getTotalDuration().toSeconds()));
             isPlaying = true;
             currentSong = selectedSong;
+            lblCurrentlyPlaying.setText(currentSong.getTitle());
         });
     }
 

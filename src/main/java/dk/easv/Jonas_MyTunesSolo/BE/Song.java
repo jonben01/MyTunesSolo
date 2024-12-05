@@ -64,7 +64,14 @@ public class Song {
 
     @Override
     public String toString() {
+        return title + " ";
+    }
+
+    //Only using toString for the list view now, and I think it looks better with just the title.
+    /*
+        public String toString() {
         return songId + " | " + title + " | " + artistName + " | " + genreId + " | " + songFilePath + " | " + duration;
     }
+     */
 }
 
