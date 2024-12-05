@@ -1,5 +1,6 @@
 package dk.easv.Jonas_MyTunesSolo.GUI;
 
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.BLL.PlaylistSongsManager;
@@ -30,5 +31,10 @@ public class PlaylistSongsModel {
         }
         playlistSongsToBeViewed.clear();
         playlistSongsToBeViewed.addAll(playlistSongsManager.getAllPlaylistSongs(playlist));
+    }
+
+    public void moveSongToPlaylist(Song songToMove, Playlist selectedPlaylist) throws SQLServerException {
+        playlistSongsToBeViewed.add(songToMove);
+        playlistSongsManager.moveSongToPlaylist(songToMove, selectedPlaylist);
     }
 }

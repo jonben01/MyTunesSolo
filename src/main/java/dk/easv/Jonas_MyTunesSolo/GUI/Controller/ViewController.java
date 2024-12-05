@@ -347,8 +347,18 @@ public class ViewController implements Initializable {
         //TODO IMPLEMENT THIS METHOD
     }
 
-    public void btnHandleMoveSongToPlaylist(ActionEvent actionEvent) {
-        //TODO IMPLEMENT THIS METHOD
+    public void btnHandleMoveSongToPlaylist(ActionEvent actionEvent) throws SQLServerException {
+        Song songToMove = tblSong.getSelectionModel().getSelectedItem();
+        Playlist selectedPlaylist = tblPlaylist.getSelectionModel().getSelectedItem();
+        if (songToMove != null && selectedPlaylist != null) {
+            playlistSongsModel.moveSongToPlaylist(songToMove, selectedPlaylist);
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Please a song and a playlist");
+        }
     }
 
 

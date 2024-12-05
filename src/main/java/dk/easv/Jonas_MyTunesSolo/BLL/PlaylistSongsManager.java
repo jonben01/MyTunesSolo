@@ -1,5 +1,6 @@
 package dk.easv.Jonas_MyTunesSolo.BLL;
 
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.DAL.PlaylistSongsDAO_db;
@@ -17,5 +18,9 @@ public class PlaylistSongsManager {
 
     public ObservableList<Song> getAllPlaylistSongs(Playlist playlist) {
         return playlistSongsDAO.getAllPlaylistSongs(playlist);
+    }
+
+    public void moveSongToPlaylist(Song songToMove, Playlist selectedPlaylist) throws SQLServerException {
+        playlistSongsDAO.moveSongToPlaylist(songToMove, selectedPlaylist);
     }
 }
