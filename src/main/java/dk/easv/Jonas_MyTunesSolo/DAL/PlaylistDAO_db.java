@@ -71,7 +71,15 @@ public class PlaylistDAO_db implements IPlaylistDataAccess{
     }
 
     @Override
-    public void deletePlaylist(Playlist playlist) {
+    public void deletePlaylist(Playlist playlist) throws SQLServerException {
+        String sql = "DELETE FROM dbo.Playlist WHERE Id = ?";
+        try(Connection connection = dbConnector.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, playlist.getId());
+            pstmt.executeUpdate();
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 }

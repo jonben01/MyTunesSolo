@@ -44,13 +44,13 @@ public class ViewController implements Initializable {
     @FXML public Label lblCurrentTime;
     @FXML public Label lblSongDuration;
     @FXML public Button btnMute;
-    @FXML TableView tblPlaylist;
     @FXML TableColumn colPlaylistName;
     @FXML TableColumn<Song, String> colDuration;
     @FXML TableColumn<Song, Integer> colGenre;
     @FXML TableColumn<Song, Integer> colArtist;
     @FXML TableColumn<Song, String> colTitle;
     @FXML TableView<Song> tblSong;
+    @FXML TableView<Playlist> tblPlaylist;
 
     private double savedVolume;
     private boolean muted = false;
@@ -61,6 +61,7 @@ public class ViewController implements Initializable {
     private boolean isPlaying = false;
     private Song currentSong;
     private PlaylistModel playlistModel;
+    private boolean isSliderChanging = false;
 
     public ViewController()  {
 
@@ -299,8 +300,21 @@ public class ViewController implements Initializable {
             }
     }
 
-    public void btnHandleDeletePlaylist(ActionEvent actionEvent) {
-        //TODO IMPLEMENT THIS METHOD
+    public void btnHandleDeletePlaylist(ActionEvent actionEvent) throws SQLServerException {
+        Playlist playlistToBeDeleted = tblPlaylist.getSelectionModel().getSelectedItem();
+
+        if (playlistToBeDeleted != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Playlist deletion confirmation");
+            alert.setHeaderText("");
+            alert.setContentText("Are you sure you want to delete playlist: " + playlistToBeDeleted.getName());
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                playlistModel.deletePlaylist(playlistToBeDeleted);
+                tblPlaylist.setItems(playlistModel.getPlaylistsToBeViewed());
+            }
+        }
     }
 
     public void btnHandleMoveSongUp(ActionEvent actionEvent) {
@@ -344,6 +358,11 @@ public class ViewController implements Initializable {
                 String mediaURL = selectedSong.getSongFilePath();
                 File file = new File(mediaURL);
 
+                //TODO make this work, if you search and select again, it will treat the new song as != to current song.
+                if(selectedSong == currentSong) {
+                    btnHandlePlay.setText("⏸");
+                }
+
                 //in case you delete a song in your song folder, while the program is running.
                 //checks if, in this case, the file path exists.
                 if (!file.exists()) {
@@ -366,9 +385,6 @@ public class ViewController implements Initializable {
                     btnHandlePlay.setText("⏸");
             } else {
                 MediaPlayer.Status status = mediaPlayer.getStatus();
-                if(selectedSong == currentSong) {
-                    btnHandlePlay.setText("⏸");
-                }
                 if (mediaPlayer != null) {
                     if (status == MediaPlayer.Status.PLAYING) {
                         mediaPlayer.pause();
@@ -390,7 +406,7 @@ public class ViewController implements Initializable {
     }
 
 
-    private boolean isSliderChanging = false;
+
 
     //encapsulating the initial play part of previous method, it became way way way too long.
     public void playSelectedSong(Song selectedSong) {

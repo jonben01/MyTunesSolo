@@ -31,4 +31,8 @@ public class PlaylistManager {
     public void updatePlaylist(Playlist playlistToBeEdited) throws SQLServerException {
         playlistDAO.updatePlaylist(playlistToBeEdited);
     }
+
+    public void deleteSong(Playlist playlistToBeDeleted) throws SQLServerException {
+        playlistDAO.deletePlaylist(playlistToBeDeleted);
+    }
 }

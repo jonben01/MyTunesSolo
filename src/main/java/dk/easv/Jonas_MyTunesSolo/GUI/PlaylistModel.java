@@ -39,4 +39,9 @@ public class PlaylistModel {
     public void updatePlaylist(Playlist playlistToBeEdited) throws SQLServerException {
         playlistManager.updatePlaylist(playlistToBeEdited);
     }
+
+    public void deletePlaylist(Playlist playlistToBeDeleted) throws SQLServerException {
+        playlistsToBeViewed.remove(playlistToBeDeleted);
+        playlistManager.deleteSong(playlistToBeDeleted);
+    }
 }
