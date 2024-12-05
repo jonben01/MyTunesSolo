@@ -1,3 +1,6 @@
+/*
+    change this so its an actual shape maybe, make separate for play button, and maybe the other 2 buttons there.
+ */
 .button {
     -fx-background-color: white;
     -fx-border-color: transparent;
@@ -12,7 +15,6 @@
     -fx-cursor: hand;
 }
 
-
 .anchor-pane {
     -fx-background-color: rgba(23, 23, 23, 0.8);
 }
@@ -20,7 +22,7 @@
 .anchor-pane2 {
     -fx-background-color: rgba(43, 43, 43, 0.8);
 }
-/* make this the colour we want at the bottom later, black maybe? */
+
 
 .text-white {
     -fx-text-fill: white;

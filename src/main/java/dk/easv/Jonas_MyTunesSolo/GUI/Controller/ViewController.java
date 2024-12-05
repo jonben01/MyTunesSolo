@@ -1,6 +1,5 @@
 package dk.easv.Jonas_MyTunesSolo.GUI.Controller;
 
-
 //TODO separate project imports and java imports
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
@@ -8,11 +7,8 @@ import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.GUI.PlaylistModel;
 import dk.easv.Jonas_MyTunesSolo.GUI.PlaylistSongsModel;
 import dk.easv.Jonas_MyTunesSolo.GUI.SongModel;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,7 +17,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Modality;
@@ -31,12 +26,8 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
-import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
 
 public class ViewController implements Initializable {
     @FXML public TableView<Song> tblPlaylistSongs;
@@ -89,12 +80,15 @@ public class ViewController implements Initializable {
 
         //TODO playlist songs get selected playlist and that too bruh moment - what the fuck did i write here???
         colPlaylistSongTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-
+        //TODO fix this, so that when I delete/edit a song on the selected playlist, it doesnt remove my selection and just updates the list.
         tblPlaylist.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                     playlistSongsModel.refreshPlaylistSongs((Playlist) newValue);
             }
-            else playlistSongsModel.refreshPlaylistSongs(null);
+            else {
+                tblPlaylistSongs.setItems(playlistSongsModel.getPlaylistSongsToBeViewed());
+                playlistSongsModel.refreshPlaylistSongs(null);
+            }
         });
 
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -217,11 +211,9 @@ public class ViewController implements Initializable {
                     fileToDelete.delete();
                 }
                 tblSong.setItems(songModel.getSongsToBeViewed());
-                dataChanged.set(true);
 
             }
         }
-
     }
 
     public void btnHandleEditSong(ActionEvent actionEvent) {
@@ -359,6 +351,8 @@ public class ViewController implements Initializable {
         //TODO IMPLEMENT THIS METHOD
     }
 
+
+    //TODO delete this method, make sure there arent any unforeseen consequences.
     public void btnHandleStop(ActionEvent actionEvent) {
         if (mediaPlayer != null) {
             tblSong.getSelectionModel().clearSelection();
@@ -422,7 +416,6 @@ public class ViewController implements Initializable {
                         mediaPlayer.play();
                         isPlaying = true;
                         btnHandlePlay.setText("⏸");
-
                     }
                 }
             }
@@ -431,8 +424,6 @@ public class ViewController implements Initializable {
             e.printStackTrace();
         }
     }
-
-
 
 
     //encapsulating the initial play part of previous method, it became way way way too long.
@@ -462,7 +453,6 @@ public class ViewController implements Initializable {
                     lblCurrentTime.setText(formatDuration((int) newValue.toSeconds()));
                 }
             });
-
             mediaPlayer.setVolume(volumeSlider.getValue() / 100 * 0.2);
             mediaPlayer.play();
             btnMute.setText("mute");
@@ -476,6 +466,7 @@ public class ViewController implements Initializable {
 
     public void btnHandleReset(ActionEvent actionEvent) {
         //TODO IMPLEMENT THIS METHOD
+        // make this a part of the btnHandleGoBack instead.
         mediaPlayer.seek(Duration.seconds(0));
     }
 
