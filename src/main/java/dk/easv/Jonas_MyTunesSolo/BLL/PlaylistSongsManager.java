@@ -23,4 +23,8 @@ public class PlaylistSongsManager {
     public void moveSongToPlaylist(Song songToMove, Playlist selectedPlaylist) throws SQLServerException {
         playlistSongsDAO.moveSongToPlaylist(songToMove, selectedPlaylist);
     }
+
+    public void deleteSongOnPlaylist(Song playlistSongToBeDeleted, Playlist playlistToDeleteFrom) throws SQLServerException {
+        playlistSongsDAO.deleteSongOnPlaylist(playlistSongToBeDeleted, playlistToDeleteFrom);
+    }
 }

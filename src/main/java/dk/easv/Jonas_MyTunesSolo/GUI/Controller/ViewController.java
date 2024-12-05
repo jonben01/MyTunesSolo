@@ -32,6 +32,7 @@ import java.util.ResourceBundle;
 public class ViewController implements Initializable {
     @FXML public TableView<Song> tblPlaylistSongs;
     @FXML public TableColumn<Song, String> colPlaylistSongTitle;
+    @FXML public TableColumn<Playlist, Integer> colPlaylistSongs;
     @FXML private Slider volumeSlider;
     @FXML private Button btnPlay;public TextField txtSearcher;
     @FXML private Label lblVolume;
@@ -74,6 +75,7 @@ public class ViewController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         //TODO INITIALIZE PLAYLIST TABLE add total duration and number of songs
         colPlaylistName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colPlaylistSongs.setCellValueFactory(new PropertyValueFactory<>("songCount"));
         tblPlaylist.setItems(playlistModel.getPlaylistsToBeViewed());
 
         tblPlaylistSongs.setItems(playlistSongsModel.getPlaylistSongsToBeViewed());
@@ -102,17 +104,18 @@ public class ViewController implements Initializable {
         tblSong.setItems(songModel.getSongsToBeViewed());
 
         //TODO add comments to this, and in the other controllers
+        //TODO fix selections dropping after changing anything.
         dataChanged = new SimpleBooleanProperty(false);
         dataChanged.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                songModel.refreshSong();
-                //I should probably make it check for these separately.
-                playlistModel.refreshPlaylist();
-                //TODO make this work lol
                 Playlist selectedPlaylist = tblPlaylist.getSelectionModel().getSelectedItem();
+                songModel.refreshSong();
+                playlistModel.refreshPlaylist();
+
+                //TODO make this work lol
                 if (selectedPlaylist != null) {
-                        playlistSongsModel.refreshPlaylistSongs(selectedPlaylist);
-                        tblPlaylist.getSelectionModel().select(selectedPlaylist);
+                    playlistSongsModel.refreshPlaylistSongs(selectedPlaylist);
+                    tblPlaylist.getSelectionModel().select(selectedPlaylist);
                 }
                 //reset flag, so code is reusable
                 dataChanged.set(false);
@@ -343,22 +346,34 @@ public class ViewController implements Initializable {
         //TODO IMPLEMENT THIS METHOD
     }
 
-    public void btnHandleDeleteSongOnPlaylist(ActionEvent actionEvent) {
-        //TODO IMPLEMENT THIS METHOD
+    public void btnHandleDeleteSongOnPlaylist(ActionEvent actionEvent) throws SQLServerException {
+        //TODO not sure if i want to add a confirmation for deletion here
+        Song playlistSongToBeDeleted = tblPlaylistSongs.getSelectionModel().getSelectedItem();
+        Playlist playlistToDeleteFrom = tblPlaylist.getSelectionModel().getSelectedItem();
+        if (playlistSongToBeDeleted != null && playlistToDeleteFrom != null) {
+            playlistSongsModel.deleteSongOnPlaylist(playlistSongToBeDeleted, playlistToDeleteFrom);
+            dataChanged.set(true);
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select a song to delete from your playlist");
+        }
     }
 
     public void btnHandleMoveSongToPlaylist(ActionEvent actionEvent) throws SQLServerException {
         Song songToMove = tblSong.getSelectionModel().getSelectedItem();
-        Playlist selectedPlaylist = tblPlaylist.getSelectionModel().getSelectedItem();
-        if (songToMove != null && selectedPlaylist != null) {
-            playlistSongsModel.moveSongToPlaylist(songToMove, selectedPlaylist);
-        }
-        else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Please a song and a playlist");
-        }
+
+            Playlist selectedPlaylist = tblPlaylist.getSelectionModel().getSelectedItem();
+            if (songToMove != null && selectedPlaylist != null) {
+                playlistSongsModel.moveSongToPlaylist(songToMove, selectedPlaylist);
+            }
+            else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Please a song and a playlist");
+            }
     }
 
 

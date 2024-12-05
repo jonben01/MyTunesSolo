@@ -31,9 +31,13 @@ public class Playlist {
         this.name = name;
     }
 
+    public Playlist(int id, String name, int songCount) {
+        this.id = id;
+        this.name = name;
+        this.songCount = songCount;
+    }
     public Playlist(int id, String name) {
         this.id = id;
         this.name = name;
-        this.songCount = 0;
     }
 }

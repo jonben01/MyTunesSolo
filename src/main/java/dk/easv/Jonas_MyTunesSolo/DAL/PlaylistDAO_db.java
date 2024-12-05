@@ -27,8 +27,9 @@ public class PlaylistDAO_db implements IPlaylistDataAccess{
 
                 int id =rs.getInt("Id");
                 String name = rs.getString("Name");
+                int songCount = rs.getInt("SongCount");
 
-                Playlist playlist = new Playlist(id, name);
+                Playlist playlist = new Playlist(id, name, songCount);
                 allPlaylists.add(playlist);
             }
             return allPlaylists;
@@ -45,7 +46,7 @@ public class PlaylistDAO_db implements IPlaylistDataAccess{
 
             pstmt.setString(1, newPlaylist.getName());
 
-            Playlist createdPlaylist = new Playlist(newPlaylist.getId(), newPlaylist.getName());
+            Playlist createdPlaylist = new Playlist(newPlaylist.getId(), newPlaylist.getName(), newPlaylist.getSongCount());
             pstmt.executeUpdate();
             return createdPlaylist;
 

@@ -37,4 +37,9 @@ public class PlaylistSongsModel {
         playlistSongsToBeViewed.add(songToMove);
         playlistSongsManager.moveSongToPlaylist(songToMove, selectedPlaylist);
     }
+
+    public void deleteSongOnPlaylist(Song playlistSongToBeDeleted, Playlist playlistToDeleteFrom) throws SQLServerException {
+        playlistSongsToBeViewed.remove(playlistSongToBeDeleted);
+        playlistSongsManager.deleteSongOnPlaylist(playlistSongToBeDeleted, playlistToDeleteFrom);
+    }
 }
