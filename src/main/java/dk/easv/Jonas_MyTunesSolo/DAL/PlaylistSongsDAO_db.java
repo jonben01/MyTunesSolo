@@ -74,6 +74,10 @@ public class PlaylistSongsDAO_db {
 
         String sql = "INSERT INTO dbo.PlaylistSongs (SongId, PlaylistId, OrderIndex) VALUES (?,?,?);";
 
+        String increaseSongCountSQL =  "UPDATE dbo.Playlist " +
+                                       "SET SongCount = SongCount + 1" +
+                                       "WHERE Id = ?;";
+
         try(Connection connection = dbConnector.getConnection()) {
             int nextOrderIndex = 1;
             try(PreparedStatement pstmt = connection.prepareStatement(getOrderIndexSQL)) {
@@ -83,6 +87,10 @@ public class PlaylistSongsDAO_db {
                 if (rs.next()) {
                     nextOrderIndex = rs.getInt("NextOrderIndex");
                 }
+            }
+            try (PreparedStatement pstmt = connection.prepareStatement(increaseSongCountSQL)) {
+                pstmt.setInt(1, selectedPlaylist.getId());
+                pstmt.executeUpdate();
             }
 
             Integer generatedId = null;
@@ -119,6 +127,10 @@ public class PlaylistSongsDAO_db {
         String deletionSQL = "DELETE FROM dbo.PlaylistSongs " +
                              "WHERE PlaylistSongId = ?;";
 
+        String decreaseSongCountSQL = "UPDATE dbo.Playlist " +
+                                      "SET SongCount = SongCount - 1" +
+                                      "WHERE Id = ?;";
+
 
         String orderUpdateSQL = "UPDATE dbo.PlaylistSongs " +
                                 "SET OrderIndex = OrderIndex - 1 " +
@@ -128,6 +140,10 @@ public class PlaylistSongsDAO_db {
 
             try (PreparedStatement pstmt = connection.prepareStatement(deletionSQL)) {
                 pstmt.setInt(1, playlistSong.getPsId());
+                pstmt.executeUpdate();
+            }
+            try (PreparedStatement pstmt = connection.prepareStatement(decreaseSongCountSQL)) {
+                pstmt.setInt(1, playlistSong.getPlaylistId());
                 pstmt.executeUpdate();
             }
 
