@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class PlaylistSongsModel {
     private PlaylistSongsManager playlistSongsManager;
@@ -42,5 +43,13 @@ public class PlaylistSongsModel {
     public void deleteSongOnPlaylist(PlaylistSong playlistSong) throws SQLServerException {
         playlistSongsToBeViewed.remove(playlistSong);
         playlistSongsManager.deleteSongOnPlaylist(playlistSong);
+    }
+
+    public void moveSongOnPlaylistDown(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) throws SQLException {
+        playlistSongsManager.moveSongOnPlaylistDown(playlistSong, playlistSongList);
+    }
+
+    public void moveSongOnPlaylistUp(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) throws SQLServerException {
+        playlistSongsManager.moveSongOnPlaylistUp(playlistSong, playlistSongList);
     }
 }

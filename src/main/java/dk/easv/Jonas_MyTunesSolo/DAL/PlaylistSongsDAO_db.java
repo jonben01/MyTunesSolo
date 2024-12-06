@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class PlaylistSongsDAO_db {
 
@@ -157,5 +158,110 @@ public class PlaylistSongsDAO_db {
             throw new RuntimeException(e);
         }
 
+    }
+    //TODO figure out why this updates the song above it? and not the song with the orderIndex above it.
+    public void moveSongOnPlaylistUp(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) throws SQLServerException {
+        //Cant move a song into the abyss.
+        if (playlistSong.getOrderIndex() <= 1) {
+            return;
+        }
+
+        int aboveOrderIndex = playlistSong.getOrderIndex() - 1;
+        int selectedSongOrderIndex = playlistSong.getOrderIndex();
+        System.out.println("Above songs order index should be: " + aboveOrderIndex);
+        System.out.println("Selected song order index should be: " + selectedSongOrderIndex);
+
+        String updateAboveSQL = "UPDATE dbo.PlaylistSongs " +
+                                "SET OrderIndex = ?" +
+                                "WHERE PlaylistId = ? AND OrderIndex = ?;";
+
+        String updateSelectedSQL = "UPDATE dbo.PlaylistSongs " +
+                                   "SET OrderIndex = ? " +
+                                   "WHERE PlaylistSongId = ?;";
+
+        //try with resources to auto close connection.
+        try (Connection connection = dbConnector.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement pstmt = connection.prepareStatement(updateAboveSQL)) {
+                pstmt.setInt(1, selectedSongOrderIndex);
+                pstmt.setInt(2, playlistSong.getPlaylistId());
+                pstmt.setInt(3, aboveOrderIndex);
+                int rowsUpdated = pstmt.executeUpdate();
+                System.out.println("rows updated when running update above SQL: " + rowsUpdated);
+            }
+            try (PreparedStatement pstmt = connection.prepareStatement(updateSelectedSQL)) {
+                pstmt.setInt(1, aboveOrderIndex);
+                pstmt.setInt(2, playlistSong.getPsId());
+                pstmt.executeUpdate();
+
+                System.out.println("PlaylistId = " + playlistSong.getPlaylistId());
+                System.out.println("Orderindex = " + playlistSong.getOrderIndex());
+            }
+            connection.commit();
+            for (PlaylistSong song : playlistSongList) {
+                if(song.getOrderIndex() == aboveOrderIndex && song.getPlaylistId() == playlistSong.getPlaylistId()) {
+                    song.setOrderIndex(selectedSongOrderIndex);
+                    break;
+                }
+            }
+            playlistSong.setOrderIndex(aboveOrderIndex);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void moveSongOnPlaylistDown(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) throws SQLException {
+        //TODO add boundary, so we cant go to abyss.
+        int maxOrderIndex;
+
+        int belowOrderIndex = playlistSong.getOrderIndex() + 1;
+        int selectedSongOrderIndex = playlistSong.getOrderIndex();
+
+        String updateBelowSQL = "UPDATE dbo.PlaylistSongs " +
+                                "SET OrderIndex = ?" +
+                                "WHERE PlaylistId = ? AND OrderIndex = ?;";
+        //get max order index for the playlist, so we cant go above it.
+        String maxOrderIndexSQL = "SELECT MAX(OrderIndex) AS MaxOrderIndex FROM dbo.PlaylistSongs " +
+                                  "Where PlaylistId = ?;";
+
+        String updateSelectedSQL = "UPDATE dbo.PlaylistSongs " +
+                                   "SET OrderIndex = ? " +
+                                   "WHERE PlaylistSongId = ?;";
+        try (Connection connection = dbConnector.getConnection()) {
+            try (PreparedStatement pstmt = connection.prepareStatement(maxOrderIndexSQL)) {
+                pstmt.setInt(1, playlistSong.getPlaylistId());
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        maxOrderIndex = rs.getInt("MaxOrderIndex");
+                    } else {
+                        return;
+                    }
+                }
+            }
+            if (playlistSong.getOrderIndex() >= maxOrderIndex) {
+                return;
+            }
+            try (PreparedStatement pstmt = connection.prepareStatement(updateBelowSQL)) {
+                pstmt.setInt(1, selectedSongOrderIndex);
+                pstmt.setInt(2, playlistSong.getPlaylistId());
+                pstmt.setInt(3, belowOrderIndex);
+                pstmt.executeUpdate();
+
+            }
+            try (PreparedStatement pstmt = connection.prepareStatement(updateSelectedSQL)) {
+                pstmt.setInt(1, belowOrderIndex);
+                pstmt.setInt(2, playlistSong.getPsId());
+                pstmt.executeUpdate();
+            }
+
+            for (PlaylistSong song : playlistSongList) {
+                if(song.getOrderIndex() == belowOrderIndex && song.getPlaylistId() == playlistSong.getPlaylistId()) {
+                    song.setOrderIndex(selectedSongOrderIndex);
+                    break;
+                }
+            }
+            playlistSong.setOrderIndex(belowOrderIndex);
+        }
     }
 }

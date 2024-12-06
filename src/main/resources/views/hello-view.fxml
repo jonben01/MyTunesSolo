@@ -65,7 +65,7 @@
             <Label fx:id="lblCurrentTime" layoutX="151.0" layoutY="94.0" styleClass="text-white" text="00:00" />
             <Label fx:id="lblSongDuration" layoutX="782.0" layoutY="94.0" styleClass="text-white" text="00:00" />
             <Slider fx:id="volumeSlider" layoutX="740.0" layoutY="30.0" />
-            <Button fx:id="btnMute" layoutX="640.0" layoutY="24.0" mnemonicParsing="false" onAction="#btnHandleMute" text="mute/unmute" />
+            <Button fx:id="btnMute" layoutX="640.0" layoutY="24.0" mnemonicParsing="false" onAction="#btnHandleMute" text="🔈  🔉 🔊 🔇" />
             <Label fx:id="lblVolume" layoutX="819.0" layoutY="47.0" styleClass="text-white" text="Label" />
          </children>
       </AnchorPane>

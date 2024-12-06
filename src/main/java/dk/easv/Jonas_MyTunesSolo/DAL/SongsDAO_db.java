@@ -119,6 +119,14 @@ public class SongsDAO_db implements ISongDataAccess {
     @Override
     public void deleteSong(Song songToBeDeleted) throws SQLServerException {
         String sql = "DELETE FROM dbo.Song WHERE Id = ?";
+
+        // TODO Update song count on playlists that contain the deleted song, as many times as the song is on there :)
+
+
+
+
+
+
         try (Connection connection = dbConnector.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
             pstmt.setInt(1, songToBeDeleted.getSongID());

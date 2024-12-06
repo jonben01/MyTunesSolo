@@ -27,7 +27,9 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLOutput;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -340,12 +342,18 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void btnHandleMoveSongUp(ActionEvent actionEvent) {
-        //TODO IMPLEMENT THIS METHOD
+    public void btnHandleMoveSongUp(ActionEvent actionEvent) throws SQLServerException {
+        PlaylistSong playlistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
+        List<PlaylistSong> playlistSongList = new ArrayList<PlaylistSong>(tblPlaylistSongs.getSelectionModel().getSelectedItems());
+        playlistSongsModel.moveSongOnPlaylistUp(playlistSong, playlistSongList);
+        dataChanged.set(true);
     }
 
-    public void btnHandleMoveSongDown(ActionEvent actionEvent) {
-        //TODO IMPLEMENT THIS METHOD
+    public void btnHandleMoveSongDown(ActionEvent actionEvent) throws SQLException {
+        PlaylistSong playlistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
+        List<PlaylistSong> playlistSongList = new ArrayList<PlaylistSong>(tblPlaylistSongs.getSelectionModel().getSelectedItems());
+        playlistSongsModel.moveSongOnPlaylistDown(playlistSong, playlistSongList);
+        dataChanged.set(true);
     }
 
     public void btnHandleDeleteSongOnPlaylist(ActionEvent actionEvent) throws SQLServerException {

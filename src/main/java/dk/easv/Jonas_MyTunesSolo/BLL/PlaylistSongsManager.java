@@ -8,6 +8,7 @@ import dk.easv.Jonas_MyTunesSolo.DAL.PlaylistSongsDAO_db;
 import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class PlaylistSongsManager {
 
@@ -30,4 +31,11 @@ public class PlaylistSongsManager {
     }
 
 
+    public void moveSongOnPlaylistDown(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) throws SQLException {
+        playlistSongsDAO.moveSongOnPlaylistDown(playlistSong, playlistSongList);
+    }
+
+    public void moveSongOnPlaylistUp(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) throws SQLServerException {
+        playlistSongsDAO.moveSongOnPlaylistUp(playlistSong, playlistSongList);
+    }
 }

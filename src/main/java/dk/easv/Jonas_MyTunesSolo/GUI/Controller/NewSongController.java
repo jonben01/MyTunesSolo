@@ -115,6 +115,9 @@ public class NewSongController implements Initializable {
             songModel.createSong(newSong);
             //refreshes table in main view.
             dataChangedFlag.set(true);
+            Stage stage = (Stage) btnMenuAddSong.getScene().getWindow();
+            stage.close();
+
     }
 
     public void btnHandleFileChooser(ActionEvent actionEvent) {
@@ -234,6 +237,8 @@ public class NewSongController implements Initializable {
         songToBeEdited.setGenreName(cmbGenre.getSelectionModel().getSelectedItem().toString());
         songModel.updateSong(songToBeEdited);
         dataChangedFlag.set(true);
+        Stage stage = (Stage) btnEditSong.getScene().getWindow();
+        stage.close();
     }
 
     public void btnHandleCancelSong(ActionEvent actionEvent) {
