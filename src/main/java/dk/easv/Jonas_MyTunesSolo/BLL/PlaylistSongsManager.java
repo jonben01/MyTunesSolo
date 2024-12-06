@@ -22,7 +22,6 @@ public class PlaylistSongsManager {
     }
 
     public PlaylistSong moveSongToPlaylist(Song songToMove, Playlist selectedPlaylist) throws SQLServerException {
-        playlistSongsDAO.moveSongToPlaylist(songToMove, selectedPlaylist);
         return playlistSongsDAO.moveSongToPlaylist(songToMove, selectedPlaylist);
     }
 
