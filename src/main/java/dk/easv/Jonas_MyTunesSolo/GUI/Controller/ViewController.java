@@ -355,7 +355,7 @@ public class ViewController implements Initializable {
 
         if (playlistSongToBeDeleted != null) {
             playlistSongsModel.deleteSongOnPlaylist(playlistSongToBeDeleted);
-            dataChanged.set(true);
+            System.out.println(dataChanged + "");
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -370,6 +370,7 @@ public class ViewController implements Initializable {
             Playlist selectedPlaylist = tblPlaylist.getSelectionModel().getSelectedItem();
             if (songToMove != null && selectedPlaylist != null) {
                 playlistSongsModel.moveSongToPlaylist(songToMove, selectedPlaylist);
+                dataChanged.set(true);
             }
             else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
