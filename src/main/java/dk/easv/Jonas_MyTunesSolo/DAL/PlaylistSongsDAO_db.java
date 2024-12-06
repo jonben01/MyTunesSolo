@@ -105,14 +105,7 @@ public class PlaylistSongsDAO_db {
             }
 
             PlaylistSong playlistSong = new PlaylistSong(generatedId, selectedPlaylist.getId(), songToMove, nextOrderIndex);
-            /*
-            playlistSong.setPsId(generatedId);
-            playlistSong.setSong(songToMove);
-            playlistSong.setPlaylistId(selectedPlaylist.getId());
-            playlistSong.setOrderIndex(nextOrderIndex);
-             */
 
-            System.out.println("this song has the playlist song Id of: " + generatedId);
             return playlistSong;
 
         } catch (SQLException e) {
@@ -121,27 +114,25 @@ public class PlaylistSongsDAO_db {
     }
 
 
-    //TODO redo all this stupid aa code, including above
-    // currently deletes all duplicates, but idk how to make it so it always knows orderIndex OR so i can only have one
-    // instance of the same song on a playlist (currently will always create one new one)
+    //TODO make sure this works when we start editing the order of a playlist
     public void deleteSongOnPlaylist(PlaylistSong playlistSong) throws SQLServerException {
         String deletionSQL = "DELETE FROM dbo.PlaylistSongs " +
                              "WHERE PlaylistSongId = ?;";
 
 
-        String orderUpdateSQL = "UPDATE dbo.PlaylistSongs SET OrderIndex = OrderIndex -1 " +
-                                "WHERE PlaylistSongId = ? AND OrderIndex > ?;";
+        String orderUpdateSQL = "UPDATE dbo.PlaylistSongs " +
+                                "SET OrderIndex = OrderIndex - 1 " +
+                                "WHERE PlaylistId = ? AND OrderIndex > ?;";
 
         try (Connection connection = dbConnector.getConnection()) {
-            Integer psId = playlistSong.getPsId();
 
             try (PreparedStatement pstmt = connection.prepareStatement(deletionSQL)) {
-                pstmt.setInt(1, psId);
+                pstmt.setInt(1, playlistSong.getPsId());
                 pstmt.executeUpdate();
             }
 
             try (PreparedStatement pstmt = connection.prepareStatement(orderUpdateSQL)) {
-                pstmt.setInt(1, playlistSong.getPsId());
+                pstmt.setInt(1, playlistSong.getPlaylistId());
                 pstmt.setInt(2, playlistSong.getOrderIndex());
                 pstmt.executeUpdate();
             }

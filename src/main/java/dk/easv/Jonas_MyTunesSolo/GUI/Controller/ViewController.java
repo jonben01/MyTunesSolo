@@ -27,6 +27,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLOutput;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -353,7 +354,6 @@ public class ViewController implements Initializable {
         PlaylistSong playlistSongToBeDeleted = tblPlaylistSongs.getSelectionModel().getSelectedItem();
 
         if (playlistSongToBeDeleted != null) {
-
             playlistSongsModel.deleteSongOnPlaylist(playlistSongToBeDeleted);
             dataChanged.set(true);
         } else {

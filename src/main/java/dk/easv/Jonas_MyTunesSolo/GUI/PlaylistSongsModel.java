@@ -40,7 +40,7 @@ public class PlaylistSongsModel {
     }
 
     public void deleteSongOnPlaylist(PlaylistSong playlistSong) throws SQLServerException {
-        playlistSongsToBeViewed.remove(playlistSong.getSong().getSongID());
+        playlistSongsToBeViewed.remove(playlistSong);
         playlistSongsManager.deleteSongOnPlaylist(playlistSong);
     }
 }
