@@ -3,6 +3,7 @@ package dk.easv.Jonas_MyTunesSolo.GUI.Controller;
 //TODO separate project imports and java imports
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
+import dk.easv.Jonas_MyTunesSolo.BE.PlaylistSong;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.GUI.PlaylistModel;
 import dk.easv.Jonas_MyTunesSolo.GUI.PlaylistSongsModel;
@@ -30,7 +31,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ViewController implements Initializable {
-    @FXML public TableView<Song> tblPlaylistSongs;
+    @FXML public TableView<PlaylistSong> tblPlaylistSongs;
     @FXML public TableColumn<Song, String> colPlaylistSongTitle;
     @FXML public TableColumn<Playlist, Integer> colPlaylistSongs;
     @FXML private Slider volumeSlider;
@@ -81,7 +82,7 @@ public class ViewController implements Initializable {
         tblPlaylistSongs.setItems(playlistSongsModel.getPlaylistSongsToBeViewed());
 
         //TODO playlist songs get selected playlist and that too bruh moment - what the fuck did i write here???
-        colPlaylistSongTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+        colPlaylistSongTitle.setCellValueFactory(new PropertyValueFactory<>("SongTitle"));
         //TODO fix this, so that when I delete/edit a song on the selected playlist, it doesnt remove my selection and just updates the list.
         tblPlaylist.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -348,10 +349,12 @@ public class ViewController implements Initializable {
 
     public void btnHandleDeleteSongOnPlaylist(ActionEvent actionEvent) throws SQLServerException {
         //TODO not sure if i want to add a confirmation for deletion here
-        Song playlistSongToBeDeleted = tblPlaylistSongs.getSelectionModel().getSelectedItem();
-        Playlist playlistToDeleteFrom = tblPlaylist.getSelectionModel().getSelectedItem();
-        if (playlistSongToBeDeleted != null && playlistToDeleteFrom != null) {
-            playlistSongsModel.deleteSongOnPlaylist(playlistSongToBeDeleted, playlistToDeleteFrom);
+        // change this when the table correctly shows playlistSongs
+        PlaylistSong playlistSongToBeDeleted = tblPlaylistSongs.getSelectionModel().getSelectedItem();
+
+        if (playlistSongToBeDeleted != null) {
+
+            playlistSongsModel.deleteSongOnPlaylist(playlistSongToBeDeleted);
             dataChanged.set(true);
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);

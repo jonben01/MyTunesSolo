@@ -9,7 +9,10 @@ public class Song {
     private String songFilePath;
     private int duration;
     private Integer genreId;
+    private Integer psId;
 
+    public Integer getPSId() {return psId;}
+    public void setPSId(Integer psId) {this.psId = psId;}
 
     //Getters and setters for variables
     public int getSongID() {return songId;}
@@ -51,6 +54,16 @@ public class Song {
         this.genreId = genreId;
         this.songFilePath = songFilePath;
         this.duration = duration;
+    }
+    //TODO i did this at 3 am so this is likely superfluous
+    public Song(int songId, String title, String artistName, String songFilePath, int duration, Integer genreId, Integer psId) {
+        this.songId = songId;
+        this.title = title;
+        this.artistName = artistName;
+        this.songFilePath = songFilePath;
+        this.duration = duration;
+        this.genreId = genreId;
+        this.psId = psId;
     }
 
     public String getFormattedDuration() {
