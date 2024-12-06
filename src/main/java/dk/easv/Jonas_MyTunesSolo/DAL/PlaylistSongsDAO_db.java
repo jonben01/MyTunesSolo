@@ -32,7 +32,8 @@ public class PlaylistSongsDAO_db {
                      "FROM dbo.Song s " +
                      "JOIN PlaylistSongs ps " +
                      "ON s.Id = ps.SongId " +
-                     "WHERE ps.PlaylistId = ?;";
+                     "WHERE ps.PlaylistId = ?" +
+                     "ORDER BY OrderIndex;";
 
         try (Connection connection = dbConnector.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -168,8 +169,6 @@ public class PlaylistSongsDAO_db {
 
         int aboveOrderIndex = playlistSong.getOrderIndex() - 1;
         int selectedSongOrderIndex = playlistSong.getOrderIndex();
-        System.out.println("Above songs order index should be: " + aboveOrderIndex);
-        System.out.println("Selected song order index should be: " + selectedSongOrderIndex);
 
         String updateAboveSQL = "UPDATE dbo.PlaylistSongs " +
                                 "SET OrderIndex = ?" +
@@ -187,15 +186,12 @@ public class PlaylistSongsDAO_db {
                 pstmt.setInt(2, playlistSong.getPlaylistId());
                 pstmt.setInt(3, aboveOrderIndex);
                 int rowsUpdated = pstmt.executeUpdate();
-                System.out.println("rows updated when running update above SQL: " + rowsUpdated);
             }
             try (PreparedStatement pstmt = connection.prepareStatement(updateSelectedSQL)) {
                 pstmt.setInt(1, aboveOrderIndex);
                 pstmt.setInt(2, playlistSong.getPsId());
                 pstmt.executeUpdate();
 
-                System.out.println("PlaylistId = " + playlistSong.getPlaylistId());
-                System.out.println("Orderindex = " + playlistSong.getOrderIndex());
             }
             connection.commit();
             for (PlaylistSong song : playlistSongList) {

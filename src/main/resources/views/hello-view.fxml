@@ -53,10 +53,10 @@
                </font>
             </Button>
             <Slider fx:id="durationSlider" layoutX="190.0" layoutY="96.0" prefHeight="14.0" prefWidth="592.0" />
-            <Button fx:id="btnStop" layoutX="517.0" layoutY="56.0" mnemonicParsing="false" onAction="#btnHandleStop" text="Stop" />
-            <Button fx:id="btnSkip" layoutX="573.0" layoutY="56.0" mnemonicParsing="false" onAction="#btnHandleSkip" text="play next song" />
-            <Button fx:id="btnReset" layoutX="403.0" layoutY="56.0" mnemonicParsing="false" onAction="#btnHandleReset" text="reset" />
-            <Button fx:id="btnGoBack" layoutX="295.0" layoutY="56.0" mnemonicParsing="false" onAction="#btnHandleGoBack" text="play last song" />
+            <Button fx:id="btnStop" layoutX="502.0" layoutY="56.0" mnemonicParsing="false" onAction="#btnHandleStop" text="Stop" />
+            <Button fx:id="btnSkip" layoutX="554.0" layoutY="56.0" mnemonicParsing="false" onAction="#btnHandleSkip" text="play next song" />
+            <Button fx:id="btnReset" layoutX="400.0" layoutY="53.0" mnemonicParsing="false" onAction="#btnHandleReset" text="reset" />
+            <Button fx:id="btnGoBack" layoutX="258.0" layoutY="53.0" mnemonicParsing="false" onAction="#btnHandleGoBack" text="play last song" />
             <Label fx:id="lblCurrentlyPlaying" layoutX="25.0" layoutY="10.0" styleClass="text-white" text="Currently playing:">
                <font>
                   <Font size="18.0" />
@@ -65,7 +65,7 @@
             <Label fx:id="lblCurrentTime" layoutX="151.0" layoutY="94.0" styleClass="text-white" text="00:00" />
             <Label fx:id="lblSongDuration" layoutX="782.0" layoutY="94.0" styleClass="text-white" text="00:00" />
             <Slider fx:id="volumeSlider" layoutX="740.0" layoutY="30.0" />
-            <Button fx:id="btnMute" layoutX="640.0" layoutY="24.0" mnemonicParsing="false" onAction="#btnHandleMute" text="🔈  🔉 🔊 🔇" />
+            <Button fx:id="btnMute" layoutX="691.0" layoutY="18.0" mnemonicParsing="false" onAction="#btnHandleMute" text="🔉 " />
             <Label fx:id="lblVolume" layoutX="819.0" layoutY="47.0" styleClass="text-white" text="Label" />
          </children>
       </AnchorPane>

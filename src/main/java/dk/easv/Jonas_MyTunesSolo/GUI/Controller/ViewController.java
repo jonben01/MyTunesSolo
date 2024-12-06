@@ -164,8 +164,8 @@ public class ViewController implements Initializable {
             if (newValue != null) {
                 lblVolume.setText((int) volumeSlider.getValue()+"%");
                 savedVolume = volumeSlider.getValue()/100 * 0.2;
-                btnMute.setText("mute");
                 muted = false;
+                updateMuteButton();
             }
         });
 
@@ -387,6 +387,28 @@ public class ViewController implements Initializable {
                 alert.setContentText("Please a song and a playlist");
             }
     }
+    public void updateMuteButton() {
+        //TODO get icons instead maybe, unicode looks ass
+        if(muted) {
+            btnMute.setText("\uD83D\uDD07");
+            return;
+        }
+        if (volumeSlider.getValue() >=0 && volumeSlider.getValue() < 6) {
+                    btnMute.setText("\uD83D\uDD07");
+
+        }
+        if (volumeSlider.getValue() >=6 && volumeSlider.getValue() < 35) {
+                    btnMute.setText("\uD83D\uDD08");
+
+        }
+        if (volumeSlider.getValue() >=35 && volumeSlider.getValue() < 70) {
+                    btnMute.setText("🔉");
+
+        }
+        if(volumeSlider.getValue() >= 70 && volumeSlider.getValue() < 101) {
+                    btnMute.setText("🔊");
+        }
+    }
 
 
     //TODO delete this method, make sure there arent any unforeseen consequences.
@@ -492,7 +514,7 @@ public class ViewController implements Initializable {
             });
             mediaPlayer.setVolume(volumeSlider.getValue() / 100 * 0.2);
             mediaPlayer.play();
-            btnMute.setText("mute");
+            updateMuteButton();
             lblSongDuration.setText(formatDuration((int) mediaPlayer.getTotalDuration().toSeconds()));
             isPlaying = true;
             currentSong = selectedSong;
@@ -521,12 +543,12 @@ public class ViewController implements Initializable {
             if (!muted) {
                 muted = true;
                 mediaPlayer.setVolume(0);
-                btnMute.setText("unmute");
+                updateMuteButton();
 
             } else {
                 muted = false;
                 mediaPlayer.setVolume(savedVolume);
-                btnMute.setText("mute");
+                updateMuteButton();
             }
         }
     }
