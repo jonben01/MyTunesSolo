@@ -179,7 +179,7 @@ public class NewSongController implements Initializable {
             newGenreStage.initModality(Modality.APPLICATION_MODAL);
 
             // Set the scene with the loaded FXML file
-            newGenreStage.setScene(new Scene(root, 500, 400));
+            newGenreStage.setScene(new Scene(root));
 
             // Show the stage
             newGenreStage.show();

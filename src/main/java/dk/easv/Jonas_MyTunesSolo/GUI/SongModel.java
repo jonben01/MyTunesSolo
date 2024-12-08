@@ -47,6 +47,15 @@ public class SongModel {
         }
         return null;
     }
+    //same as prior method, but for ID
+    public Song getSongByID(int id) {
+        for (Song song : songManager.getAllSongs()) {
+            if (song.getSongID() == id) {
+                return song;
+            }
+        }
+        return null;
+    }
 
     public void deleteSong(Song songToBeDeleted) throws SQLServerException {
         songsToBeViewed.remove(songToBeDeleted);

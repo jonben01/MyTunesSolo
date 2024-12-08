@@ -81,6 +81,8 @@ public class PlaylistSongsDAO_db {
                                        "WHERE Id = ?;";
 
         try(Connection connection = dbConnector.getConnection()) {
+            //noticeable performance issues without batching
+            connection.setAutoCommit(false);
             int nextOrderIndex = 1;
             try(PreparedStatement pstmt = connection.prepareStatement(getOrderIndexSQL)) {
                 //runs orderIndex sql where the selected playlists id matches.
@@ -103,6 +105,8 @@ public class PlaylistSongsDAO_db {
                 // put it before
                 pstmt.setInt(3, nextOrderIndex);
                 pstmt.executeUpdate();
+
+                connection.commit();
 
                 try (ResultSet rs = pstmt.getGeneratedKeys()) {
                     if (rs.next()) {
@@ -148,7 +152,6 @@ public class PlaylistSongsDAO_db {
                 pstmt.setInt(1, playlistSong.getPlaylistId());
                 pstmt.executeUpdate();
             }
-
             try (PreparedStatement pstmt = connection.prepareStatement(orderUpdateSQL)) {
                 pstmt.setInt(1, playlistSong.getPlaylistId());
                 pstmt.setInt(2, playlistSong.getOrderIndex());
@@ -166,7 +169,6 @@ public class PlaylistSongsDAO_db {
         if (playlistSong.getOrderIndex() <= 1) {
             return;
         }
-
         int aboveOrderIndex = playlistSong.getOrderIndex() - 1;
         int selectedSongOrderIndex = playlistSong.getOrderIndex();
 
@@ -191,7 +193,6 @@ public class PlaylistSongsDAO_db {
                 pstmt.setInt(1, aboveOrderIndex);
                 pstmt.setInt(2, playlistSong.getPsId());
                 pstmt.executeUpdate();
-
             }
             connection.commit();
             for (PlaylistSong song : playlistSongList) {

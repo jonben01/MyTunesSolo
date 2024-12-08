@@ -6,12 +6,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="272.0" prefWidth="258.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.Jonas_MyTunesSolo.GUI.Controller.NewSongController">
+<AnchorPane prefHeight="272.0" prefWidth="258.0" styleClass="anchor-pane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.Jonas_MyTunesSolo.GUI.Controller.NewSongController">
    <children>
       <Button fx:id="btnFileChooser" layoutX="174.0" layoutY="141.0" mnemonicParsing="false" onAction="#btnHandleFileChooser" text="filechooser" />
       <Button fx:id="btnMenuAddSong" layoutX="19.0" layoutY="217.0" mnemonicParsing="false" onAction="#btnHandleMenuAddSong" text="Add to library" />
-      <ComboBox fx:id="cmbGenre" layoutX="18.0" layoutY="95.0" prefWidth="150.0" />
-      <Button fx:id="btnAddGenre" layoutX="175.0" layoutY="95.0" mnemonicParsing="false" onAction="#btnHandleAddGenre" text="Add genre" />
+      <ComboBox fx:id="cmbGenre" layoutX="18.0" layoutY="95.0" prefWidth="150.0" promptText="select a genre" />
+      <Button fx:id="btnAddGenre" layoutX="174.0" layoutY="88.0" mnemonicParsing="false" onAction="#btnHandleAddGenre" text="Add genre" />
       <TextField fx:id="txtTitle" layoutX="19.0" layoutY="25.0" prefHeight="26.0" prefWidth="150.0" promptText="Insert title" />
       <TextField fx:id="txtArtist" layoutX="19.0" layoutY="60.0" promptText="Insert Artist(s) or group" />
       <TextField fx:id="txtFilePath" editable="false" layoutX="18.0" layoutY="178.0" prefHeight="26.0" prefWidth="230.0" promptText="File path" />

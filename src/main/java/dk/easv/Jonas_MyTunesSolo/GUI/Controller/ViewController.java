@@ -18,6 +18,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Modality;
@@ -37,6 +40,7 @@ public class ViewController implements Initializable {
     @FXML public TableView<PlaylistSong> tblPlaylistSongs;
     @FXML public TableColumn<Song, String> colPlaylistSongTitle;
     @FXML public TableColumn<Playlist, Integer> colPlaylistSongs;
+    @FXML public Label lblCurrentArtist;
     @FXML private Slider volumeSlider;
     @FXML private Button btnPlay;public TextField txtSearcher;
     @FXML private Label lblVolume;
@@ -81,8 +85,20 @@ public class ViewController implements Initializable {
         colPlaylistName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colPlaylistSongs.setCellValueFactory(new PropertyValueFactory<>("songCount"));
         tblPlaylist.setItems(playlistModel.getPlaylistsToBeViewed());
-
         tblPlaylistSongs.setItems(playlistSongsModel.getPlaylistSongsToBeViewed());
+        tblPlaylistSongs.setPlaceholder(new Label("Drag songs here!"));
+
+
+        tblSong.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+           if (newValue != null) {
+               tblPlaylistSongs.getSelectionModel().clearSelection();
+           }
+        });
+        tblPlaylistSongs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                tblSong.getSelectionModel().clearSelection();
+            }
+        });
 
         //TODO playlist songs get selected playlist and that too bruh moment - what the fuck did i write here???
         colPlaylistSongTitle.setCellValueFactory(new PropertyValueFactory<>("SongTitle"));
@@ -156,6 +172,7 @@ public class ViewController implements Initializable {
                 //I assume this is due to the value being <1, therefore I am limiting how quiet the volume can be, before its actually 0.
                 if(volumeSlider.getValue() < 5 && volumeSlider.getValue() > 0) {
                     mediaPlayer.setVolume(0);
+                    muted = true;
                 } else {
                     mediaPlayer.setVolume(volumeSlider.getValue()/100 * 0.2);
                 }
@@ -168,6 +185,54 @@ public class ViewController implements Initializable {
                 updateMuteButton();
             }
         });
+        //TODO test if this could brick something somewhere
+        //Drag and drop song -> playlist start
+        tblSong.setOnDragDetected(event -> {
+            Song selectedSong = tblSong.getSelectionModel().getSelectedItem();
+            //making sure you're actually dragging something.
+            if (selectedSong != null) {
+                //using javafx dragboard to handle the dragging actions
+                Dragboard dragboard = tblSong.startDragAndDrop(TransferMode.COPY);
+                //passing song by Id(String.valueOf) as content to the dragboard.
+                ClipboardContent content = new ClipboardContent();
+                content.putString(String.valueOf(selectedSong.getSongID()));
+                dragboard.setContent(content);
+                //stops the event from getting picked up by other listeners
+                event.consume();
+            }
+        });
+        //making the table accept the drag and drop
+        tblPlaylistSongs.setOnDragOver(event -> {
+            //checks if the dragboard has a string.
+            if(event.getDragboard().hasString()) {
+                //makes tblPlaylistSongs accept the data transfer
+                event.acceptTransferModes(TransferMode.COPY);
+            }
+            event.consume();
+        });
+
+        tblPlaylistSongs.setOnDragDropped(event -> {
+           Dragboard dragboard = event.getDragboard();
+            //check if dragboard has a string.
+           if (dragboard.hasString()) {
+               //uses getSongById to get a song to move.
+               String songId = dragboard.getString();
+               Song song = songModel.getSongByID(Integer.parseInt(songId));
+               Playlist playlist = tblPlaylist.getSelectionModel().getSelectedItem();
+               if (playlist != null && song != null) {
+                   try {
+                       //runs moveSongToPlayList as long as conditions of if statement are met.
+                       playlistSongsModel.moveSongToPlaylist(song, playlist);
+                       //refreshes gui.
+                       dataChanged.set(true);
+                   } catch (SQLServerException e) {
+                       throw new RuntimeException(e);
+                   }
+               }
+           }
+           event.consume();
+        });
+        //TODO implement drag and drop on delete buttons for respective table views.
 
     }
 
@@ -372,6 +437,7 @@ public class ViewController implements Initializable {
         }
     }
 
+    //Legacy code lmao. Added drag and drop to handle this instead, but leaving it here anyway. button is invisible in the fxml
     public void btnHandleMoveSongToPlaylist(ActionEvent actionEvent) throws SQLServerException {
         Song songToMove = tblSong.getSelectionModel().getSelectedItem();
 
@@ -387,6 +453,7 @@ public class ViewController implements Initializable {
                 alert.setContentText("Please a song and a playlist");
             }
     }
+
     public void updateMuteButton() {
         //TODO get icons instead maybe, unicode looks ass
         if(muted) {
@@ -423,7 +490,16 @@ public class ViewController implements Initializable {
     }
 
     public void btnHandlePlay(ActionEvent actionEvent) {
-        Song selectedSong = tblSong.getSelectionModel().getSelectedItem();
+        Song selectedSong = null;
+        
+        if (tblSong.getSelectionModel().getSelectedItem() != null) {
+            selectedSong = tblSong.getSelectionModel().getSelectedItem();
+        }
+        if (tblPlaylistSongs.getSelectionModel().getSelectedItem() != null) {
+            PlaylistSong playlistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
+            selectedSong = playlistSong.getSong();
+        }
+        
         Button btnHandlePlay = (Button) actionEvent.getSource();
         //TODO make sure this shit doesnt suck ass
         //could do an alert, but I think its better to do nothing.
@@ -519,9 +595,33 @@ public class ViewController implements Initializable {
             isPlaying = true;
             currentSong = selectedSong;
             lblCurrentlyPlaying.setText(currentSong.getTitle());
+            lblCurrentArtist.setText(currentSong.getArtistName());
+            //TODO explain double colon :: method reference operator.
+            //TODO also fix this, right now it just plays next song no matter what.
+            // right now it always thinks we're playing from the song table, so if we arent, it will go play the next song
+            // on the song table anyway.
+            mediaPlayer.setOnEndOfMedia(this::playNextSong);
+            tblSong.getSelectionModel().select(currentSong);
         });
     }
-
+    //TODO Fix this method (not here), it makes the pause button play
+    private void playNextSong() {
+        List<Song> songOrder = songModel.getSongsToBeViewed();
+        //should probably dispose of the mediaplayers media, if nothing happens here.
+        if (songOrder.isEmpty()) {
+            return;
+        }
+        int currentIndex = songOrder.indexOf(currentSong);
+        //first part ensures we get the next index. Modulo only has an effect when we're at the songOrder.size
+        //on a six song long list, the last index is 5, and thus it will loop back to 0: (5 + 1) % 6 = 0
+        int nextIndex = (currentIndex + 1) % songOrder.size();
+        Song nextSong = songOrder.get(nextIndex);
+        playSelectedSong(nextSong);
+    }
+    //TODO IMPLEMENT THIS METHOD
+    private void playNextPlaylistSong() {
+        List<PlaylistSong> playlistSongOrder = playlistSongsModel.getPlaylistSongsToBeViewed();
+    }
 
     public void btnHandleReset(ActionEvent actionEvent) {
         //TODO IMPLEMENT THIS METHOD
@@ -546,8 +646,8 @@ public class ViewController implements Initializable {
                 updateMuteButton();
 
             } else {
-                muted = false;
                 mediaPlayer.setVolume(savedVolume);
+                muted = false;
                 updateMuteButton();
             }
         }
