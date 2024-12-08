@@ -428,7 +428,6 @@ public class ViewController implements Initializable {
 
         if (playlistSongToBeDeleted != null) {
             playlistSongsModel.deleteSongOnPlaylist(playlistSongToBeDeleted);
-            System.out.println(dataChanged + "");
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
