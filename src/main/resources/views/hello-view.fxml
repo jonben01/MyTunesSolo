@@ -48,8 +48,8 @@
          <children>
             <TableView fx:id="tblPlaylist" fixedCellSize="25.0" prefHeight="384.0" prefWidth="186.0">
               <columns>
-                <TableColumn fx:id="colPlaylistName" prefWidth="108.00005793571472" text="Playlist" />
-                <TableColumn fx:id="colPlaylistSongs" prefWidth="71.199951171875" text="Songs" />
+                <TableColumn fx:id="colPlaylistName" prefWidth="136.00000262260437" text="Playlist" />
+                <TableColumn fx:id="colPlaylistSongs" prefWidth="67.199951171875" text="Songs" />
               </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -96,7 +96,8 @@
          <children>
             <TableView fx:id="tblPlaylistSongs" prefHeight="369.0" prefWidth="260.0">
               <columns>
-                <TableColumn fx:id="colPlaylistSongTitle" prefWidth="75.0" text="Title" />
+                  <TableColumn fx:id="colOrderIndex" prefWidth="37.59991526603699" text="#" />
+                <TableColumn fx:id="colPlaylistSongTitle" prefWidth="201.60003280639648" text="Title" />
               </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

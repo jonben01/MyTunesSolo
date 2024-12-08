@@ -65,12 +65,12 @@ public class PlaylistSongsDAO_db {
         }
         return allPlaylistSongs;
     }
-
+    //TODO FIGURE OUT WHY INSERTING A SONG SOMETIMES BRICKS THE ORDERINDEX, IT IS RECREATABLE. - dont know if it actually matters in regard to play next song.
     public PlaylistSong moveSongToPlaylist(Song songToMove, Playlist selectedPlaylist) throws SQLServerException {
-        //COALESCE runs through the column to find non-null entries, if there are none its null and will default to 0 (+1)
+        //COALESCE runs through the column to find non-null entries, if there are none its null and will default to 0 (+1) //change to -1 +1 instead
         //MAX finds the maximum value (if there are any valid values) combined these find the maximum non-null value
         //This ensures we will always have a valid "nextOrderIndex" as if there are 0 songs, it will be 1, if there are 10 songs it will be 11
-        String getOrderIndexSQL = "SELECT COALESCE(MAX(OrderIndex), 0) + 1 AS NextOrderIndex " +
+        String getOrderIndexSQL = "SELECT COALESCE(MAX(OrderIndex), -1) + 1 AS NextOrderIndex " +
                                   "FROM PlaylistSongs ps " +
                                   "WHERE ps.PlaylistId = ?;";
 
@@ -83,7 +83,7 @@ public class PlaylistSongsDAO_db {
         try(Connection connection = dbConnector.getConnection()) {
             //noticeable performance issues without batching
             connection.setAutoCommit(false);
-            int nextOrderIndex = 1;
+            int nextOrderIndex = 0;
             try(PreparedStatement pstmt = connection.prepareStatement(getOrderIndexSQL)) {
                 //runs orderIndex sql where the selected playlists id matches.
                 pstmt.setInt(1, selectedPlaylist.getId());
@@ -143,6 +143,7 @@ public class PlaylistSongsDAO_db {
                                 "WHERE PlaylistId = ? AND OrderIndex > ?;";
 
         try (Connection connection = dbConnector.getConnection()) {
+            connection.setAutoCommit(false);
 
             try (PreparedStatement pstmt = connection.prepareStatement(deletionSQL)) {
                 pstmt.setInt(1, playlistSong.getPsId());
@@ -157,16 +158,22 @@ public class PlaylistSongsDAO_db {
                 pstmt.setInt(2, playlistSong.getOrderIndex());
                 pstmt.executeUpdate();
             }
+            connection.commit();
 
         } catch (SQLException e) {
+            try (Connection connection = dbConnector.getConnection()) {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
             throw new RuntimeException(e);
         }
-
     }
+
     //TODO figure out why this updates the song above it? and not the song with the orderIndex above it.
     public void moveSongOnPlaylistUp(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) throws SQLServerException {
         //Cant move a song into the abyss.
-        if (playlistSong.getOrderIndex() <= 1) {
+        if (playlistSong.getOrderIndex() <= 0) {
             return;
         }
         int aboveOrderIndex = playlistSong.getOrderIndex() - 1;
@@ -194,7 +201,7 @@ public class PlaylistSongsDAO_db {
                 pstmt.setInt(2, playlistSong.getPsId());
                 pstmt.executeUpdate();
             }
-            connection.commit();
+
             for (PlaylistSong song : playlistSongList) {
                 if(song.getOrderIndex() == aboveOrderIndex && song.getPlaylistId() == playlistSong.getPlaylistId()) {
                     song.setOrderIndex(selectedSongOrderIndex);
@@ -202,8 +209,14 @@ public class PlaylistSongsDAO_db {
                 }
             }
             playlistSong.setOrderIndex(aboveOrderIndex);
+            connection.commit();
 
         } catch (SQLException e) {
+            try (Connection connection = dbConnector.getConnection()) {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
             throw new RuntimeException(e);
         }
     }
@@ -226,6 +239,7 @@ public class PlaylistSongsDAO_db {
                                    "SET OrderIndex = ? " +
                                    "WHERE PlaylistSongId = ?;";
         try (Connection connection = dbConnector.getConnection()) {
+            connection.setAutoCommit(false);
             try (PreparedStatement pstmt = connection.prepareStatement(maxOrderIndexSQL)) {
                 pstmt.setInt(1, playlistSong.getPlaylistId());
                 try (ResultSet rs = pstmt.executeQuery()) {
@@ -259,6 +273,15 @@ public class PlaylistSongsDAO_db {
                 }
             }
             playlistSong.setOrderIndex(belowOrderIndex);
+            connection.commit();
+            //rolling back if an error occurs - i noticed sometimes when I spam some methods here, there's a gap in my orderIndex.
+        } catch (SQLException e) {
+            try (Connection connection = dbConnector.getConnection()) {
+                connection.rollback();
+            } catch (SQLException exception) {
+                throw new RuntimeException(exception);
+            }
+            throw new RuntimeException();
         }
     }
 }

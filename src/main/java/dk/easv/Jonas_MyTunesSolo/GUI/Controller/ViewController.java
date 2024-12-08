@@ -41,6 +41,7 @@ public class ViewController implements Initializable {
     @FXML public TableColumn<Song, String> colPlaylistSongTitle;
     @FXML public TableColumn<Playlist, Integer> colPlaylistSongs;
     @FXML public Label lblCurrentArtist;
+    @FXML public TableColumn<PlaylistSong, Integer> colOrderIndex;
     @FXML private Slider volumeSlider;
     @FXML private Button btnPlay;public TextField txtSearcher;
     @FXML private Label lblVolume;
@@ -68,6 +69,8 @@ public class ViewController implements Initializable {
     private PlaylistModel playlistModel;
     private PlaylistSongsModel playlistSongsModel;
     private boolean isSliderChanging = false;
+    private PlaylistSong currentPlaylistSong = null;
+    private boolean isPlayingFromPlaylist = false;
 
     public ViewController()  {
 
@@ -87,7 +90,8 @@ public class ViewController implements Initializable {
         tblPlaylist.setItems(playlistModel.getPlaylistsToBeViewed());
         tblPlaylistSongs.setItems(playlistSongsModel.getPlaylistSongsToBeViewed());
         tblPlaylistSongs.setPlaceholder(new Label("Drag songs here!"));
-
+        tblPlaylistSongs.setId("Playlist-Songs");
+        colOrderIndex.setCellValueFactory(new PropertyValueFactory<>("formattedOrderIndex"));
 
         tblSong.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
            if (newValue != null) {
@@ -125,6 +129,8 @@ public class ViewController implements Initializable {
 
         //TODO add comments to this, and in the other controllers
         //TODO fix selections dropping after changing anything.
+        //refreshes gui when data has changed, I regret making it this way now
+        //ideally it should only update whatever is relevant, right now its taking a big toll on performance
         dataChanged = new SimpleBooleanProperty(false);
         dataChanged.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -428,6 +434,7 @@ public class ViewController implements Initializable {
 
         if (playlistSongToBeDeleted != null) {
             playlistSongsModel.deleteSongOnPlaylist(playlistSongToBeDeleted);
+            dataChanged.set(true);
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -455,6 +462,7 @@ public class ViewController implements Initializable {
 
     public void updateMuteButton() {
         //TODO get icons instead maybe, unicode looks ass
+        //TODO fix this shit dude
         if(muted) {
             btnMute.setText("\uD83D\uDD07");
             return;
@@ -478,6 +486,7 @@ public class ViewController implements Initializable {
 
 
     //TODO delete this method, make sure there arent any unforeseen consequences.
+    //TODO by that i mean literally just remove fxid and onAction from fxml
     public void btnHandleStop(ActionEvent actionEvent) {
         if (mediaPlayer != null) {
             tblSong.getSelectionModel().clearSelection();
@@ -490,7 +499,7 @@ public class ViewController implements Initializable {
 
     public void btnHandlePlay(ActionEvent actionEvent) {
         Song selectedSong = null;
-        
+
         if (tblSong.getSelectionModel().getSelectedItem() != null) {
             selectedSong = tblSong.getSelectionModel().getSelectedItem();
         }
@@ -498,7 +507,7 @@ public class ViewController implements Initializable {
             PlaylistSong playlistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
             selectedSong = playlistSong.getSong();
         }
-        
+
         Button btnHandlePlay = (Button) actionEvent.getSource();
         //TODO make sure this shit doesnt suck ass
         //could do an alert, but I think its better to do nothing.
@@ -535,8 +544,8 @@ public class ViewController implements Initializable {
                     mediaPlayer.dispose();
                     btnHandlePlay.setText("⏵");
                 }
-                    playSelectedSong(selectedSong);
-                    btnHandlePlay.setText("⏸");
+                playSelectedSong(selectedSong);
+                btnHandlePlay.setText("⏸");
             } else {
                 MediaPlayer.Status status = mediaPlayer.getStatus();
                 if (mediaPlayer != null) {

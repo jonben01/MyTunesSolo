@@ -28,4 +28,7 @@ public class PlaylistSong {
     public String getSongTitle() {
         return song != null ? song.getTitle() : "";
     }
+    public String getFormattedOrderIndex() {
+        return orderIndex + 1 + ".";
+    }
 }
