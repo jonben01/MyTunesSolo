@@ -79,7 +79,6 @@ public class NewGenreController implements Initializable {
         this.genreDataChangedFlag = genreDataChangedFlag;
     }
 
-
     public void btnHandleCancelGenre(ActionEvent actionEvent) {
         Stage stage = (Stage) btnCancelGenre.getScene().getWindow();
         stage.close();
