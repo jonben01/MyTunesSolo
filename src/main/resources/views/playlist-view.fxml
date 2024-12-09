@@ -3,14 +3,12 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.Jonas_MyTunesSolo.GUI.Controller.NewPlaylistController">
+<AnchorPane prefHeight="81.0" prefWidth="177.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.Jonas_MyTunesSolo.GUI.Controller.NewPlaylistController">
    <children>
-      <Button fx:id="btnMenuAddPlaylist" layoutX="48.0" layoutY="164.0" mnemonicParsing="false" onAction="#btnMenuHandleAddPlaylist" text="add playlist" />
-      <Button fx:id="btnMenuEditPlaylist" layoutX="156.0" layoutY="164.0" mnemonicParsing="false" onAction="#btnHandleMenuEditPlaylist" text="edit playliust" />
-      <TextField fx:id="txtPlaylistName" layoutX="48.0" layoutY="100.0" promptText="playlistname" />
-      <Button fx:id="btnCancelPlaylist" layoutX="319.0" layoutY="164.0" mnemonicParsing="false" onAction="#btnHandleCancelPlaylist" text="cancel" />
-      <Text layoutX="217.0" layoutY="117.0" strokeType="OUTSIDE" strokeWidth="0.0" text="playlist nam" />
+      <Button fx:id="btnMenuAddPlaylist" layoutX="14.0" layoutY="45.0" mnemonicParsing="false" onAction="#btnMenuHandleAddPlaylist" text="add playlist" />
+      <Button fx:id="btnMenuEditPlaylist" layoutX="14.0" layoutY="45.0" mnemonicParsing="false" onAction="#btnHandleMenuEditPlaylist" text="edit playliust" />
+      <TextField fx:id="txtPlaylistName" layoutX="14.0" layoutY="14.0" promptText="playlistname" />
+      <Button fx:id="btnCancelPlaylist" layoutX="114.0" layoutY="45.0" mnemonicParsing="false" onAction="#btnHandleCancelPlaylist" text="cancel" />
    </children>
 </AnchorPane>

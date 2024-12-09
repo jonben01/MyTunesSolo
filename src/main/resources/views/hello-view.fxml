@@ -10,27 +10,27 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="979.0" styleClass="anchor-pane" stylesheets="@../css/stylesheet1.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.Jonas_MyTunesSolo.GUI.Controller.ViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="979.0" styleClass="anchor-pane" stylesheets="@../css/stylesheet1.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.Jonas_MyTunesSolo.GUI.Controller.ViewController">
    <children>
-      <AnchorPane layoutX="6.0" layoutY="467.0" prefHeight="107.0" prefWidth="966.0" styleClass="anchor-pane2">
+      <AnchorPane layoutX="6.0" layoutY="467.0" prefHeight="94.0" prefWidth="966.0" styleClass="anchor-pane2">
          <children>
-            <Slider fx:id="durationSlider" layoutX="150.0" layoutY="85.0" prefHeight="14.0" prefWidth="676.0" />
-            <Button fx:id="btnSkip" layoutX="512.0" layoutY="37.0" mnemonicParsing="false" onAction="#btnHandleSkip" text="⏭" />
-            <Button fx:id="btnGoBack" layoutX="402.0" layoutY="37.0" mnemonicParsing="false" onAction="#btnHandleGoBack" text="⏮" />
+            <Slider fx:id="durationSlider" layoutX="150.0" layoutY="65.0" prefHeight="14.0" prefWidth="676.0" />
+            <Button fx:id="btnSkip" layoutX="513.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnHandleSkip" styleClass="media-buttons" text="⏭" />
+            <Button fx:id="btnGoBack" layoutX="393.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnHandleGoBack" styleClass="media-buttons" text="⏮" />
             <Label fx:id="lblCurrentlyPlaying" layoutX="14.0" layoutY="6.0" styleClass="text-white">
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
             </Label>
-            <Label fx:id="lblCurrentTime" layoutX="118.0" layoutY="83.0" styleClass="text-white" text="00:00" />
-            <Label fx:id="lblSongDuration" layoutX="826.0" layoutY="83.0" styleClass="text-white" text="00:00" />
-            <Slider fx:id="volumeSlider" layoutX="740.0" layoutY="24.0" />
-            <Button fx:id="btnMute" layoutX="700.0" layoutY="11.0" mnemonicParsing="false" onAction="#btnHandleMute" text="🔉 " />
-            <Label fx:id="lblVolume" layoutX="884.0" layoutY="22.0" styleClass="text-white" text="delete this" />
-            <Button fx:id="btnPlay" layoutX="462.0" layoutY="37.0" mnemonicParsing="false" onAction="#btnHandlePlay" styleClass="play-button" text="⏵">
+            <Label fx:id="lblCurrentTime" layoutX="118.0" layoutY="64.0" styleClass="text-white" text="00:00" />
+            <Label fx:id="lblSongDuration" layoutX="826.0" layoutY="64.0" styleClass="text-white" text="00:00" />
+            <Slider fx:id="volumeSlider" layoutX="779.0" layoutY="19.0" prefHeight="14.0" prefWidth="161.0" />
+            <Button fx:id="btnMute" layoutX="728.0" layoutY="6.0" mnemonicParsing="false" onAction="#btnHandleMute" text="🔉 " />
+            <Button fx:id="btnPlay" layoutX="453.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnHandlePlay" styleClass="media-buttons" text="⏵">
                <font>
                   <Font size="18.0" />
                </font>
@@ -40,15 +40,14 @@
                   <Font size="13.0" />
                </font>
             </Label>
-            <Label layoutX="826.0" layoutY="48.0" text="in volume listener too" textFill="WHITE" />
          </children>
       </AnchorPane>
       <VBox layoutX="6.0" layoutY="45.0" prefHeight="418.0" prefWidth="219.0">
          <children>
             <TableView fx:id="tblPlaylist" fixedCellSize="25.0" prefHeight="384.0" prefWidth="186.0">
               <columns>
-                <TableColumn fx:id="colPlaylistName" prefWidth="136.00000262260437" text="Playlist" />
-                <TableColumn fx:id="colPlaylistSongs" prefWidth="67.199951171875" text="Songs" />
+                <TableColumn fx:id="colPlaylistName" prefWidth="136.00000262260437" sortable="false" text="Playlist" />
+                <TableColumn fx:id="colPlaylistSongs" prefWidth="67.199951171875" sortable="false" text="Songs" />
               </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -70,12 +69,13 @@
                 <TableColumn fx:id="colTitle" prefWidth="165.59994196891785" resizable="false" styleClass="table-view" text="Title" />
                 <TableColumn fx:id="colArtist" prefWidth="151.99989318847656" resizable="false" text="Artist" />
                   <TableColumn fx:id="colGenre" prefWidth="84.8001708984375" resizable="false" text="Genre" />
-                  <TableColumn fx:id="colDuration" prefWidth="67.1998291015625" resizable="false" styleClass="duration-column" text="🕑" />
+                  <TableColumn fx:id="colDuration" prefWidth="67.1998291015625" resizable="false" styleClass="colDuration" text="🕑" />
               </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
+            <Line endX="100.0" startX="-100.0" />
             <HBox prefHeight="26.0" prefWidth="441.0">
                <children>
                   <Button fx:id="btnNewSong" mnemonicParsing="false" onAction="#btnHandleNewSong" text="+" />
@@ -111,13 +111,15 @@
             </HBox>
          </children>
       </VBox>
-      <HBox layoutX="6.0" layoutY="3.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="966.0">
+      <AnchorPane fx:id="titlePane" onMouseDragged="#handleMoved" onMousePressed="#handleClicked" prefHeight="40.0" prefWidth="979.0" styleClass="anchor-pane3">
          <children>
-            <Button fx:id="btnCloseApplication" mnemonicParsing="false" onAction="#btnHandleCloseApplication" prefWidth="0.0" text="✕" />
-            <Button fx:id="btnMinimizeApplication" mnemonicParsing="false" onAction="#btnHandleMinimizeApplication" text="−" />
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="MAKE THIS HBOX HAVE SAME COLOUR AS ANCHOR PANE 2" />
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="-----ALSO MAKE THE BUTTON BE THEIR OWN STYLE CLASS - MAKE EXIT BUTTON TURN RED" />
+            <Button fx:id="btnCloseApplication" layoutX="927.0" layoutY="1.0" mnemonicParsing="false" onAction="#btnHandleCloseApplication" prefWidth="0.0" styleClass="exit-button" text="✕" />
+            <Button fx:id="btnMinimizeApplication" layoutX="876.0" layoutY="1.0" mnemonicParsing="false" onAction="#btnHandleMinimizeApplication" styleClass="minimize-button" text="-" />
+            <Text fill="WHITE" layoutX="14.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="World-of-MyTunes(BAD) ">
+               <font>
+                  <Font size="24.0" />
+               </font></Text>
          </children>
-      </HBox>
+      </AnchorPane>
    </children>
 </AnchorPane>

@@ -65,10 +65,7 @@ public class NewSongController implements Initializable {
     }
 
     public void btnHandleMenuAddSong(ActionEvent actionEvent) throws SQLServerException, IOException {
-            String title = txtTitle.getText();
-            String artist = txtArtist.getText();
-            Genre selectedGenre = (Genre) this.cmbGenre.getSelectionModel().getSelectedItem();
-            int duration = durationParser();
+
 
             if (txtFilePath.getText() == null || txtFilePath.getText().equals("")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -78,7 +75,19 @@ public class NewSongController implements Initializable {
                 alert.showAndWait();
                 return;
             }
-
+            if (txtTitle.getText() == null || txtTitle.getText().equals("")
+                    || txtArtist.getText() == null || txtArtist.getText().equals("")) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Please fill out name and artist");
+                alert.showAndWait();
+                return;
+            }
+            String title = txtTitle.getText();
+            String artist = txtArtist.getText();
+            Genre selectedGenre = (Genre) this.cmbGenre.getSelectionModel().getSelectedItem();
+            int duration = durationParser();
             String songDestinationDir = "src/main/resources/Songs";
             Path songDestinationPath = Paths.get(songDestinationDir, new File(txtFilePath.getText()).getName());
 
@@ -173,7 +182,7 @@ public class NewSongController implements Initializable {
 
             // Create a new stage
             Stage newGenreStage = new Stage();
-            newGenreStage.setTitle("New genre");
+            newGenreStage.setTitle("Genre Window");
             newGenreStage.setResizable(false);
             //Sets modality, cant use previous window till this one is closed
             newGenreStage.initModality(Modality.APPLICATION_MODAL);

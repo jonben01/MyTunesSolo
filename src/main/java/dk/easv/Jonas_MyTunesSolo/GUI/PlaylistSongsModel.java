@@ -52,4 +52,5 @@ public class PlaylistSongsModel {
     public void moveSongOnPlaylistUp(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) throws SQLServerException {
         playlistSongsManager.moveSongOnPlaylistUp(playlistSong, playlistSongList);
     }
+
 }
