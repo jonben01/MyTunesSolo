@@ -1,13 +1,15 @@
 package dk.easv.Jonas_MyTunesSolo.GUI.Controller;
 
-//TODO separate project imports and java imports
-import com.microsoft.sqlserver.jdbc.SQLServerException;
+//PROJECT IMPORTS
 import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
 import dk.easv.Jonas_MyTunesSolo.BE.PlaylistSong;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.GUI.PlaylistModel;
 import dk.easv.Jonas_MyTunesSolo.GUI.PlaylistSongsModel;
 import dk.easv.Jonas_MyTunesSolo.GUI.SongModel;
+//LIBRARY IMPORTS
+import com.microsoft.sqlserver.jdbc.SQLServerException;
+//JAVA IMPORTS
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
@@ -29,7 +31,6 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;

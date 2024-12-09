@@ -1,12 +1,13 @@
 package dk.easv.Jonas_MyTunesSolo.DAL;
-
-import com.microsoft.sqlserver.jdbc.SQLServerException;
+//PROJECT IMPORTS
 import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
 import dk.easv.Jonas_MyTunesSolo.BE.PlaylistSong;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
+//LIBRARY IMPORTS
+import com.microsoft.sqlserver.jdbc.SQLServerException;
+//JAVA IMPORTS
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

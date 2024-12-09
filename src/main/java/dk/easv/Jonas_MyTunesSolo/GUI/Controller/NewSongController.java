@@ -1,10 +1,13 @@
 package dk.easv.Jonas_MyTunesSolo.GUI.Controller;
 
-import com.microsoft.sqlserver.jdbc.SQLServerException;
+//PROJECT IMPORTS
 import dk.easv.Jonas_MyTunesSolo.BE.Genre;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.GUI.GenreModel;
 import dk.easv.Jonas_MyTunesSolo.GUI.SongModel;
+//LIBRARY IMPORTS
+import com.microsoft.sqlserver.jdbc.SQLServerException;
+//JAVA IMPORTS
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,7 +21,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.media.Media;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -28,22 +30,14 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class NewSongController implements Initializable {
-    @FXML
-    public TextField txtFilePath;
-    @FXML
-    public TextField txtArtist;
-    @FXML
-    public TextField txtTitle;
-    @FXML
-    public ComboBox cmbGenre;
-    @FXML
-    public TextField txtDuration;
-    @FXML
-    public Button btnMenuAddSong;
-    @FXML
-    public Button btnEditSong;
-    @FXML
-    private Button btnCancelSong;
+    @FXML public TextField txtFilePath;
+    @FXML public TextField txtArtist;
+    @FXML public TextField txtTitle;
+    @FXML public ComboBox cmbGenre;
+    @FXML public TextField txtDuration;
+    @FXML public Button btnMenuAddSong;
+    @FXML public Button btnEditSong;
+    @FXML private Button btnCancelSong;
 
     private Song songToBeEdited;
 

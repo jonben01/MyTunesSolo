@@ -1,7 +1,7 @@
 package dk.easv.Jonas_MyTunesSolo.BLL;
-
+//PROJECT IMPORTS
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
-
+//JAVA IMPORTS
 import java.util.ArrayList;
 import java.util.List;
 

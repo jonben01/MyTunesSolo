@@ -1,7 +1,5 @@
 package dk.easv.Jonas_MyTunesSolo.BE;
 
-import javax.xml.namespace.QName;
-
 public class Playlist {
     private int id;
     private String name;

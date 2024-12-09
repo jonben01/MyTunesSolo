@@ -1,9 +1,9 @@
 package dk.easv.Jonas_MyTunesSolo;
 
+//JAVA IMPORTS
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 

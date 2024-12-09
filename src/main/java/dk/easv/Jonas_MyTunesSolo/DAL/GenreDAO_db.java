@@ -1,8 +1,8 @@
 package dk.easv.Jonas_MyTunesSolo.DAL;
 
+//PROJECT IMPORTS
 import dk.easv.Jonas_MyTunesSolo.BE.Genre;
-
-
+//JAVA IMPORTS
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
@@ -35,13 +35,13 @@ public class GenreDAO_db implements IGenreDataAccess {
             }
             return allGenres;
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public Genre createGenre(Genre newGenre) throws Exception {
+    public Genre createGenre(Genre newGenre) throws SQLException {
         String sql = "INSERT INTO dbo.Genre (genreName) VALUES (?);";
 
         try (Connection conn = dbConnector.getConnection()) {
@@ -68,7 +68,7 @@ public class GenreDAO_db implements IGenreDataAccess {
         catch (SQLException ex)
         {
             ex.printStackTrace();
-            throw new Exception("Could not create movie", ex);
+            throw new SQLException("Could not create movie", ex);
         }
 
     }

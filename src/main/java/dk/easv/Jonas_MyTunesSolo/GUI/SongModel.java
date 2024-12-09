@@ -7,13 +7,10 @@ import dk.easv.Jonas_MyTunesSolo.BLL.SongManager;
 //JAVA IMPORTS
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import java.sql.SQLException;
 import java.util.List;
 
 public class SongModel {
-
-
 
     private ObservableList<Song> songsToBeViewed;
     private SongManager songManager;
