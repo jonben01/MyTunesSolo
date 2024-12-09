@@ -42,6 +42,8 @@ public class ViewController implements Initializable {
     @FXML public TableColumn<Playlist, Integer> colPlaylistSongs;
     @FXML public Label lblCurrentArtist;
     @FXML public TableColumn<PlaylistSong, Integer> colOrderIndex;
+    @FXML public Button btnCloseApplication;
+    @FXML public Button btnMinimizeApplication;
     @FXML private Slider volumeSlider;
     @FXML private Button btnPlay;public TextField txtSearcher;
     @FXML private Label lblVolume;
@@ -64,7 +66,6 @@ public class ViewController implements Initializable {
     private SimpleBooleanProperty dataChanged;
     private Media media;
     private MediaPlayer mediaPlayer;
-    private boolean isPlaying = false;
     private Song currentSong;
     private PlaylistModel playlistModel;
     private PlaylistSongsModel playlistSongsModel;
@@ -138,7 +139,8 @@ public class ViewController implements Initializable {
                 songModel.refreshSong();
                 playlistModel.refreshPlaylist();
 
-                //TODO make this work lol
+                //TODO if i delete a song it should refresh the selected playlists songs, currently it doesnt update when
+                // i delete a song.
                 if (selectedPlaylist != null) {
                     playlistSongsModel.refreshPlaylistSongs(selectedPlaylist);
                     tblPlaylist.getSelectionModel().select(selectedPlaylist);
@@ -147,6 +149,7 @@ public class ViewController implements Initializable {
                 dataChanged.set(false);
             }
         });
+
         //listener passes "newValue" as a query to the searchSong method.
         txtSearcher.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
@@ -156,15 +159,7 @@ public class ViewController implements Initializable {
                 throw new RuntimeException(e);
             }
         });
-        //TODO make this work when you use search function, currently always sets text to "⏵"
-        tblSong.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-           if (newValue != null && newValue != currentSong) {
-               btnPlay.setText("⏵");
-           }
-           if (newValue == currentSong) {
-               btnPlay.setText("⏸");
-           }
-        });
+
         //TODO REMEMBER TO DELETE THE LABEL IN FINISHED PRODUCT, DONT NEED THE % TO BE SEEN
         volumeSlider.setMin(5);
         volumeSlider.setValue(25);
@@ -191,13 +186,15 @@ public class ViewController implements Initializable {
                 updateMuteButton();
             }
         });
+
+
         //TODO test if this could brick something somewhere
         //Drag and drop song -> playlist start
         tblSong.setOnDragDetected(event -> {
             Song selectedSong = tblSong.getSelectionModel().getSelectedItem();
             //making sure you're actually dragging something.
             if (selectedSong != null) {
-                //using javafx dragboard to handle the dragging actions
+                //using javafx dragboard to handle the dragging actions, using copy as we want to keep the song on both tables
                 Dragboard dragboard = tblSong.startDragAndDrop(TransferMode.COPY);
                 //passing song by Id(String.valueOf) as content to the dragboard.
                 ClipboardContent content = new ClipboardContent();
@@ -214,6 +211,7 @@ public class ViewController implements Initializable {
                 //makes tblPlaylistSongs accept the data transfer
                 event.acceptTransferModes(TransferMode.COPY);
             }
+            //stops the event from getting picked up by other listeners
             event.consume();
         });
 
@@ -229,13 +227,14 @@ public class ViewController implements Initializable {
                    try {
                        //runs moveSongToPlayList as long as conditions of if statement are met.
                        playlistSongsModel.moveSongToPlaylist(song, playlist);
-                       //refreshes gui.
+                       //refreshes gui after drag and drop success.
                        dataChanged.set(true);
                    } catch (SQLServerException e) {
                        throw new RuntimeException(e);
                    }
                }
            }
+            //stops the event from getting picked up by other listeners
            event.consume();
         });
         //TODO implement drag and drop on delete buttons for respective table views.
@@ -485,33 +484,24 @@ public class ViewController implements Initializable {
     }
 
 
-    //TODO delete this method, make sure there arent any unforeseen consequences.
-    //TODO by that i mean literally just remove fxid and onAction from fxml
-    public void btnHandleStop(ActionEvent actionEvent) {
-        if (mediaPlayer != null) {
-            tblSong.getSelectionModel().clearSelection();
-            mediaPlayer.stop();
-            isPlaying = false;
-            btnPlay.setText("⏵");
-            currentSong = null;
-        }
-    }
-
     public void btnHandlePlay(ActionEvent actionEvent) {
         Song selectedSong = null;
+        PlaylistSong selectedPlaylistSong = null;
 
         if (tblSong.getSelectionModel().getSelectedItem() != null) {
             selectedSong = tblSong.getSelectionModel().getSelectedItem();
+            isPlayingFromPlaylist = false;
         }
         if (tblPlaylistSongs.getSelectionModel().getSelectedItem() != null) {
-            PlaylistSong playlistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
-            selectedSong = playlistSong.getSong();
-        }
-
+            selectedPlaylistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
+            selectedSong = selectedPlaylistSong.getSong();
+            isPlayingFromPlaylist = true;
+            currentPlaylistSong = selectedPlaylistSong;
+        } else { currentPlaylistSong = null; }
         Button btnHandlePlay = (Button) actionEvent.getSource();
         //TODO make sure this shit doesnt suck ass
         //could do an alert, but I think its better to do nothing.
-        if (selectedSong == null && currentSong == null) {
+        if (selectedSong == null && currentSong == null && selectedPlaylistSong == null ) {
             return;
         }
         try {
@@ -520,11 +510,6 @@ public class ViewController implements Initializable {
             if (selectedSong != null && !selectedSong.equals(currentSong)) {
                 String mediaURL = selectedSong.getSongFilePath();
                 File file = new File(mediaURL);
-
-                //TODO make this work, if you search and select again, it will treat the new song as != to current song.
-                if(selectedSong == currentSong) {
-                    btnHandlePlay.setText("⏸");
-                }
 
                 //in case you delete a song in your song folder, while the program is running.
                 //checks if, in this case, the file path exists.
@@ -536,29 +521,25 @@ public class ViewController implements Initializable {
                     alert.showAndWait();
                     //makes sure to delete the deleted song.
                     songModel.deleteSong(selectedSong);
+                    dataChanged.set(true);
                     return;
                 }
-                //if a mediaplayer already exists, stop and dispose of the loaded media
+                //if a mediaplayer already exists, stop and dispose
                 if (mediaPlayer != null) {
                     mediaPlayer.stop();
                     mediaPlayer.dispose();
-                    btnHandlePlay.setText("⏵");
                 }
-                playSelectedSong(selectedSong);
-                btnHandlePlay.setText("⏸");
+                    playSelectedSong(selectedSong, isPlayingFromPlaylist);
+
             } else {
                 MediaPlayer.Status status = mediaPlayer.getStatus();
                 if (mediaPlayer != null) {
                     if (status == MediaPlayer.Status.PLAYING) {
                         mediaPlayer.pause();
-                        isPlaying = false;
-                        btnHandlePlay.setText("⏵");
                     }
                     if (status == MediaPlayer.Status.PAUSED) {
                         mediaPlayer.seek(mediaPlayer.getCurrentTime());
                         mediaPlayer.play();
-                        isPlaying = true;
-                        btnHandlePlay.setText("⏸");
                     }
                 }
             }
@@ -568,14 +549,17 @@ public class ViewController implements Initializable {
         }
     }
 
-
     //encapsulating the initial play part of previous method, it became way way way too long.
-    public void playSelectedSong(Song selectedSong) {
+    //this could be made a lot better still, but imagine this being inside the btnHandlePlay() - shouldve done it more tbh.
+    //Tried making an overloaded method, but adding a boolean parameter made it easier to work with
+    public void playSelectedSong(Song selectedSong, boolean playingFromPlaylist) {
+        isPlayingFromPlaylist = playingFromPlaylist;
+
         String mediaURL = selectedSong.getSongFilePath();
         File file = new File(mediaURL);
         media = new Media(file.toURI().toString());
         mediaPlayer = new MediaPlayer(media);
-
+        //when the mediaPlayer is ready to play, set durations sliders "length", and handle mouse events.
         mediaPlayer.setOnReady(() -> {
             durationSlider.setMax(mediaPlayer.getTotalDuration().toSeconds());
             durationSlider.setOnMousePressed(event -> isSliderChanging = true);
@@ -583,24 +567,40 @@ public class ViewController implements Initializable {
                 isSliderChanging = false;
                 mediaPlayer.seek(Duration.seconds(durationSlider.getValue()));
             });
-
+            //This listener makes it so, if you drag the slider, it will update the label to show where in the song
+            //the slider thumb is at - when thumb is dropped the listener a few lines up will make the media player seek.
             durationSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
                 if (isSliderChanging) {
                     lblCurrentTime.setText(formatDuration(newValue.intValue()));
                 }
             });
-
+            //this listener makes the slider thumb follow the songs' playtime.
             mediaPlayer.currentTimeProperty().addListener((observable, oldValue, newValue) -> {
                 if (!isSliderChanging) {
                     durationSlider.setValue(newValue.toSeconds());
                     lblCurrentTime.setText(formatDuration((int) newValue.toSeconds()));
                 }
             });
+            //maybe having 1 billion listeners in this method is a bad idea, idk
+            //sets play button depending on mediaPlayer status with switch statement
+            mediaPlayer.statusProperty().addListener((observable, oldValue, newValue) -> {
+                switch (newValue) {
+                    case PLAYING:
+                        btnPlay.setText("⏸");
+                        break;
+                    case PAUSED:
+                    case STOPPED:
+                        btnPlay.setText("⏵");
+                        break;
+                    default:
+                        break;
+                }
+            });
             mediaPlayer.setVolume(volumeSlider.getValue() / 100 * 0.2);
             mediaPlayer.play();
             updateMuteButton();
             lblSongDuration.setText(formatDuration((int) mediaPlayer.getTotalDuration().toSeconds()));
-            isPlaying = true;
+
             currentSong = selectedSong;
             lblCurrentlyPlaying.setText(currentSong.getTitle());
             lblCurrentArtist.setText(currentSong.getArtistName());
@@ -608,14 +608,19 @@ public class ViewController implements Initializable {
             //TODO also fix this, right now it just plays next song no matter what.
             // right now it always thinks we're playing from the song table, so if we arent, it will go play the next song
             // on the song table anyway.
-            mediaPlayer.setOnEndOfMedia(this::playNextSong);
-            tblSong.getSelectionModel().select(currentSong);
+            if (isPlayingFromPlaylist) {
+                mediaPlayer.setOnEndOfMedia(this::playNextPlaylistSong);
+                tblPlaylistSongs.getSelectionModel().select(currentPlaylistSong);
+            } else{
+                mediaPlayer.setOnEndOfMedia(this::playNextSong);
+                tblSong.getSelectionModel().select(currentSong);
+            }
         });
     }
+
     //TODO Fix this method (not here), it makes the pause button play
     private void playNextSong() {
         List<Song> songOrder = songModel.getSongsToBeViewed();
-        //should probably dispose of the mediaplayers media, if nothing happens here.
         if (songOrder.isEmpty()) {
             return;
         }
@@ -624,25 +629,82 @@ public class ViewController implements Initializable {
         //on a six song long list, the last index is 5, and thus it will loop back to 0: (5 + 1) % 6 = 0
         int nextIndex = (currentIndex + 1) % songOrder.size();
         Song nextSong = songOrder.get(nextIndex);
-        playSelectedSong(nextSong);
+        playSelectedSong(nextSong, false);
     }
     //TODO IMPLEMENT THIS METHOD
+    //I wanted to use the orderIndex I made, but it would be more complicated.
     private void playNextPlaylistSong() {
         List<PlaylistSong> playlistSongOrder = playlistSongsModel.getPlaylistSongsToBeViewed();
+        if (playlistSongOrder.isEmpty()) {
+            return;
+        }
+
+        int currentIndex = playlistSongOrder.indexOf(currentPlaylistSong);
+        int nextIndex = (currentIndex + 1) % playlistSongOrder.size();
+        PlaylistSong nextPlaylistSong = playlistSongOrder.get(nextIndex);
+        currentPlaylistSong = nextPlaylistSong;
+        playSelectedSong(nextPlaylistSong.getSong(), true);
     }
 
-    public void btnHandleReset(ActionEvent actionEvent) {
-        //TODO IMPLEMENT THIS METHOD
-        // make this a part of the btnHandleGoBack instead.
-        mediaPlayer.seek(Duration.seconds(0));
+    private void playPreviousPlaylistSong() {
+        List<PlaylistSong> playlistSongOrder = playlistSongsModel.getPlaylistSongsToBeViewed();
+        if (playlistSongOrder.isEmpty()) {
+            return;
+        }
+
+        int currentIndex = playlistSongOrder.indexOf(currentPlaylistSong);
+        int nextIndex = (currentIndex - 1 + playlistSongOrder.size()) % playlistSongOrder.size();
+        PlaylistSong nextPlaylistSong = playlistSongOrder.get(nextIndex);
+        currentPlaylistSong = nextPlaylistSong;
+        playSelectedSong(nextPlaylistSong.getSong(), true);
     }
+    private void playPreviousSong() {
+        List<Song> songOrder = songModel.getSongsToBeViewed();
+        if (songOrder.isEmpty()) {
+            return;
+        }
+        int currentIndex = songOrder.indexOf(currentSong);
+        //first part ensures we get the next index. Modulo only has an effect when we're at the songOrder.size
+        //on a six song long list, the last index is 5, and thus it will loop back to 0: (5 + 1) % 6 = 0
+        int nextIndex = (currentIndex - 1 + songOrder.size()) % songOrder.size();
+        Song nextSong = songOrder.get(nextIndex);
+        playSelectedSong(nextSong, false);
+    }
+
 
     public void btnHandleSkip(ActionEvent actionEvent) {
-        //TODO IMPLEMENT THIS METHOD
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
+            if (isPlayingFromPlaylist) {
+                playNextPlaylistSong();
+            } else {
+                playNextSong();
+            }
+        }
     }
-
+    //shouldve given it a better name
     public void btnHandleGoBack(ActionEvent actionEvent) {
-        //TODO IMPLEMENT THIS METHOD
+        if (mediaPlayer != null && mediaPlayer.getCurrentTime().toSeconds() >= 5) {
+            mediaPlayer.seek(Duration.seconds(0));
+            if (isPlayingFromPlaylist) {
+                tblPlaylistSongs.getSelectionModel().select(currentPlaylistSong);
+            } else {
+                tblSong.getSelectionModel().select(currentSong);
+            }
+            return;
+        }
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
+
+            if (isPlayingFromPlaylist) {
+                playPreviousPlaylistSong();
+            } else {
+                playPreviousSong();
+            }
+        }
+
     }
 
     public void btnHandleMute(ActionEvent actionEvent) {
@@ -670,4 +732,16 @@ public class ViewController implements Initializable {
         return String.format("%02d:%02d", minutes, seconds);
     }
 
+    public void btnHandleCloseApplication(ActionEvent actionEvent) {
+        Stage stage = (Stage) btnCloseApplication.getScene().getWindow();
+        if (mediaPlayer != null) {
+            mediaPlayer.dispose();
+        }
+        stage.close();
+    }
+
+    public void btnHandleMinimizeApplication(ActionEvent actionEvent) {
+        Stage stage = (Stage) btnMinimizeApplication.getScene().getWindow();
+        stage.setIconified(true);
+    }
 }
