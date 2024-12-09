@@ -21,6 +21,7 @@ public class NewGenreController implements Initializable {
     @FXML public TextField txtGenreName;
     @FXML public Button btnAddGenre;
     @FXML public Button btnDeleteGenre;
+    public Button btnCancelGenre;
 
     private GenreModel genreModel;
     private SimpleBooleanProperty dataChangedFlag;
@@ -79,4 +80,8 @@ public class NewGenreController implements Initializable {
     }
 
 
+    public void btnHandleCancelGenre(ActionEvent actionEvent) {
+        Stage stage = (Stage) btnCancelGenre.getScene().getWindow();
+        stage.close();
+    }
 }
