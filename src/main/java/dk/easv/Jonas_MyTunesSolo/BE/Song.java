@@ -55,16 +55,6 @@ public class Song {
         this.songFilePath = songFilePath;
         this.duration = duration;
     }
-    //TODO i did this at 3 am so this is likely superfluous
-    public Song(int songId, String title, String artistName, String songFilePath, int duration, Integer genreId, Integer psId) {
-        this.songId = songId;
-        this.title = title;
-        this.artistName = artistName;
-        this.songFilePath = songFilePath;
-        this.duration = duration;
-        this.genreId = genreId;
-        this.psId = psId;
-    }
 
     public String getFormattedDuration() {
         //removes decimals, so it only gets whole minutes
@@ -79,12 +69,5 @@ public class Song {
     public String toString() {
         return title + " ";
     }
-
-    //Only using toString for the list view now, and I think it looks better with just the title.
-    /*
-        public String toString() {
-        return songId + " | " + title + " | " + artistName + " | " + genreId + " | " + songFilePath + " | " + duration;
-    }
-     */
 }
 

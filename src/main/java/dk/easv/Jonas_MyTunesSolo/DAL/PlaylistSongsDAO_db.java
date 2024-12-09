@@ -3,8 +3,6 @@ package dk.easv.Jonas_MyTunesSolo.DAL;
 import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
 import dk.easv.Jonas_MyTunesSolo.BE.PlaylistSong;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
-//LIBRARY IMPORTS
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 //JAVA IMPORTS
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -66,8 +64,7 @@ public class PlaylistSongsDAO_db {
         }
         return allPlaylistSongs;
     }
-    //TODO FIGURE OUT WHY INSERTING A SONG SOMETIMES BRICKS THE ORDERINDEX, IT IS RECREATABLE. - dont know if it actually matters in regard to play next song.
-    public PlaylistSong moveSongToPlaylist(Song songToMove, Playlist selectedPlaylist) throws SQLServerException {
+    public PlaylistSong moveSongToPlaylist(Song songToMove, Playlist selectedPlaylist) {
         //COALESCE runs through the column to find non-null entries, if there are none its null and will default to 0 (+1) //change to -1 +1 instead
         //MAX finds the maximum value (if there are any valid values) combined these find the maximum non-null value
         //This ensures we will always have a valid "nextOrderIndex" as if there are 0 songs, it will be 1, if there are 10 songs it will be 11
@@ -102,8 +99,7 @@ public class PlaylistSongsDAO_db {
             try (PreparedStatement pstmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 pstmt.setInt(1, songToMove.getSongID());
                 pstmt.setInt(2, selectedPlaylist.getId());
-                //TODO make entry id work
-                // put it before
+
                 pstmt.setInt(3, nextOrderIndex);
                 pstmt.executeUpdate();
 
@@ -112,9 +108,6 @@ public class PlaylistSongsDAO_db {
                 try (ResultSet rs = pstmt.getGeneratedKeys()) {
                     if (rs.next()) {
                         generatedId = rs.getInt(1);
-                        //songToMove.setPSId(Id);
-                    } else {
-                        throw new SQLException("No ID generated for song to move");
                     }
                 }
             }
@@ -128,9 +121,7 @@ public class PlaylistSongsDAO_db {
         }
     }
 
-
-    //TODO make sure this works when we start editing the order of a playlist
-    public void deleteSongOnPlaylist(PlaylistSong playlistSong) throws SQLServerException {
+    public void deleteSongOnPlaylist(PlaylistSong playlistSong) {
         String deletionSQL = "DELETE FROM dbo.PlaylistSongs " +
                              "WHERE PlaylistSongId = ?;";
 
@@ -171,8 +162,7 @@ public class PlaylistSongsDAO_db {
         }
     }
 
-    //TODO figure out why this updates the song above it? and not the song with the orderIndex above it.
-    public void moveSongOnPlaylistUp(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) throws SQLServerException {
+    public void moveSongOnPlaylistUp(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) {
         //Cant move a song into the abyss.
         if (playlistSong.getOrderIndex() <= 0) {
             return;
@@ -222,8 +212,7 @@ public class PlaylistSongsDAO_db {
         }
     }
 
-    public void moveSongOnPlaylistDown(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) throws SQLException {
-        //TODO add boundary, so we cant go to abyss.
+    public void moveSongOnPlaylistDown(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) {
         int maxOrderIndex;
 
         int belowOrderIndex = playlistSong.getOrderIndex() + 1;

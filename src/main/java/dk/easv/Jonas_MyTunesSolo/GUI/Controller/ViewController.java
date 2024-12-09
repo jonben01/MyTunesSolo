@@ -116,10 +116,9 @@ public class ViewController implements Initializable {
             }
         });
 
-        //TODO playlist songs get selected playlist and that too bruh moment - what the fuck did i write here???
         colPlaylistSongTitle.setCellValueFactory(new PropertyValueFactory<>("SongTitle"));
         //TODO fix this, so that when I delete/edit a song on the selected playlist, it doesnt remove my selection and just updates the list.
-
+        // if thats possible, might just live without it
         tblPlaylist.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                     playlistSongsModel.refreshPlaylistSongs((Playlist) newValue);
@@ -174,7 +173,6 @@ public class ViewController implements Initializable {
             }
         });
 
-        //TODO REMEMBER TO DELETE THE LABEL IN FINISHED PRODUCT, DONT NEED THE % TO BE SEEN
         volumeSlider.setMin(5);
         volumeSlider.setValue(25);
         savedVolume = volumeSlider.getValue()/100 *0.2;
@@ -438,8 +436,6 @@ public class ViewController implements Initializable {
     }
 
     public void btnHandleDeleteSongOnPlaylist(ActionEvent actionEvent) throws SQLServerException {
-        //TODO not sure if i want to add a confirmation for deletion here
-        // change this when the table correctly shows playlistSongs
         PlaylistSong playlistSongToBeDeleted = tblPlaylistSongs.getSelectionModel().getSelectedItem();
 
         if (playlistSongToBeDeleted != null) {
@@ -471,8 +467,6 @@ public class ViewController implements Initializable {
     }
 
     public void updateMuteButton() {
-        //TODO get icons instead maybe, unicode looks ass
-        //TODO fix this shit dude
         if(muted) {
             btnMute.setText("\uD83D\uDD07");
             return;
@@ -513,8 +507,6 @@ public class ViewController implements Initializable {
             currentPlaylistSong = selectedPlaylistSong;
         } else { currentPlaylistSong = null; }
         Button btnHandlePlay = (Button) actionEvent.getSource();
-        //TODO make sure this shit doesnt suck ass
-        //could do an alert, but I think its better to do nothing.
         if (selectedSong == null && currentSong == null && selectedPlaylistSong == null ) {
             return;
         }
@@ -557,7 +549,6 @@ public class ViewController implements Initializable {
                     }
                 }
             }
-            //TODO make a better catch clause
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -627,7 +618,6 @@ public class ViewController implements Initializable {
             lblCurrentlyPlaying.setText(currentSong.getTitle());
             lblCurrentArtist.setText(currentSong.getArtistName());
 
-            //TODO explain double colon :: method reference operator.
             if (isPlayingFromPlaylist) {
                 //when set on end of media is triggered, mediaPlayer calls playNextPlaylistSong
                 mediaPlayer.setOnEndOfMedia(this::playNextPlaylistSong);

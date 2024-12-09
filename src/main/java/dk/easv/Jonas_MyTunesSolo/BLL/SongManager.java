@@ -23,7 +23,7 @@ public class SongManager {
         return SongsDAO.getAllSongs();
     }
 
-    public Song createSong(Song newSong) throws SQLServerException {
+    public Song createSong(Song newSong) {
         return SongsDAO.createSong(newSong);
     }
 
@@ -34,7 +34,7 @@ public class SongManager {
     public void updateSong(Song songToBeEdited) throws SQLException {
         SongsDAO.updateSong(songToBeEdited);
     }
-    public List<Song> searchSongs(String searchQuery) throws SQLServerException {
+    public List<Song> searchSongs(String searchQuery) {
         List<Song> allSongs = SongsDAO.getAllSongs();
         List<Song> searchedResults = searcher.search(allSongs, searchQuery);
         return searchedResults;

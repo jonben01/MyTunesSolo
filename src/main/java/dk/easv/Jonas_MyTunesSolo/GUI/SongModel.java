@@ -28,7 +28,7 @@ public class SongModel {
         songsToBeViewed.addAll(songManager.getAllSongs());
     }
 
-    public void createSong(Song newSong) throws SQLServerException {
+    public void createSong(Song newSong) {
         Song songCreated = songManager.createSong(newSong);
         songsToBeViewed.add(songCreated);
     }
