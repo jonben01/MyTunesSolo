@@ -79,7 +79,7 @@
     -fx-border-color: transparent;
     -fx-text-fill: white;
     -fx-cursor: hand;
-    -fx-background-color: rgba(120, 120, 120, 0.8);
+    -fx-background-color: rgba(100, 100, 100, 0.8);
 }
 
 
@@ -100,7 +100,7 @@ HBox {
 
 .anchor-pane {
     -fx-background-color: rgba(11, 11, 14, 0.86);
-    -fx-border-width: 0.5px;
+    -fx-border-width: 0.6px;
     -fx-border-color: black;
 }
 
@@ -111,8 +111,8 @@ HBox {
     -fx-background-radius: 10px;
 }
 .anchor-pane3 {
-    -fx-background-color: rgba(80, 80, 80, 0.8);
-    -fx-border-width: 0.5px;
+    -fx-background-color: rgba(70, 70, 70, 0.8);
+    -fx-border-width: 0.6px;
     -fx-border-color: black;
     -fx-pref-width: 979;
     -fx-pref-height: 40;
@@ -201,15 +201,20 @@ HBox {
     -fx-padding: 0 8px 0, 0px;
     -fx-text-fill: white;
 }
-.table-view .column-header.colDuration .label {
-    -fx-font-size: 18;
+.table-view .table-cell.colOrderIndex {
+    -fx-background-color: rgba(43, 43, 43, 0.8);
     -fx-text-fill: white;
-    -fx-padding: 0 15px 0, 0px;
-}
-.duration-column {
+    -fx-font-weight: normal;
+    -fx-font-size: 10;
+    -fx-border-width: 0;
+    -fx-background-insets: 0px;
+    -fx-padding: 0 0px 0 0px;
     -fx-alignment: center;
-    -fx-text-fill: white;
+    -fx-font-family: "Arial Black";
+    -fx-border-radius: 0;
+    -fx-pref-width: 35
 }
+
 
 .text-field {
     -fx-text-fill: white;

@@ -536,6 +536,7 @@ public class ViewController implements Initializable {
         if (mediaPlayer == null) {
             selectedPlaylistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
             selectedSong = selectedPlaylistSong.getSong();
+            currentPlaylistSong = selectedPlaylistSong;
         }
         //if mouse has been pressed twice on a tblPlaylistSong item set selected song to that item.
         if (mouseEvent.getClickCount() == 2 && tblPlaylistSongs.getSelectionModel().getSelectedItem() != null) {

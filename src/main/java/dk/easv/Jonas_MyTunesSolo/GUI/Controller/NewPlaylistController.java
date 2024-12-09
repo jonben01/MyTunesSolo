@@ -68,7 +68,8 @@ public class NewPlaylistController implements Initializable {
     }
 
     public void btnHandleCancelPlaylist(ActionEvent actionEvent) {
-
+        Stage stage = (Stage) btnCancelPlaylist.getScene().getWindow();
+        stage.close();
     }
 
     public void playlistToBeEditedPasser(Playlist playlist) {
