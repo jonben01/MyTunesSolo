@@ -56,8 +56,6 @@ public class PlaylistSongsDAO_db {
 
                 PlaylistSong playlistSong = new PlaylistSong(psId, playlistId, song, orderIndex);
                 allPlaylistSongs.add(playlistSong);
-
-
             }
         } catch (SQLException e) {
             e.printStackTrace();

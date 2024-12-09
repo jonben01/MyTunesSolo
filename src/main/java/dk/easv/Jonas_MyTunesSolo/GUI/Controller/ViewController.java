@@ -31,6 +31,8 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -491,23 +493,68 @@ public class ViewController implements Initializable {
 
     }
 
+    public void btnHandlePlay(ActionEvent e) {
 
-    public void btnHandlePlay(ActionEvent actionEvent) {
+        if (mediaPlayer != null) {
+            MediaPlayer.Status status = mediaPlayer.getStatus();
+            if (status == MediaPlayer.Status.PLAYING) {
+                mediaPlayer.pause();
+            }
+            if (status == MediaPlayer.Status.PAUSED) {
+                mediaPlayer.seek(mediaPlayer.getCurrentTime());
+                mediaPlayer.play();
+            }
+        }
+    }
+    public void doubleClickedSong(MouseEvent mouseEvent) {
         Song selectedSong = null;
-        PlaylistSong selectedPlaylistSong = null;
-
-        if (tblSong.getSelectionModel().getSelectedItem() != null) {
+        //stupid workaround to avoid the issue of not being able to manually select a song and then press play on it
+        //which you could before implementing double click function
+        if (mediaPlayer == null) {
+            selectedSong = tblSong.getSelectionModel().getSelectedItem();
+        }
+        //if mouse has been pressed twice on a tblSong item set selected song to that item.
+        if (mouseEvent.getClickCount() == 2 && tblSong.getSelectionModel().getSelectedItem() != null) {
             selectedSong = tblSong.getSelectionModel().getSelectedItem();
             isPlayingFromPlaylist = false;
         }
-        if (tblPlaylistSongs.getSelectionModel().getSelectedItem() != null) {
+        //dont do anything if somehow you got here without selecting a song or having one loaded?
+        if (selectedSong == null && currentSong == null) {
+            return;
+        }
+        //play selected song, and it is not from a playlist
+        if(selectedSong != null) {
+            play(selectedSong, false);
+        }
+    }
+
+    public void doubleClickedPlaylistSong(MouseEvent mouseEvent) {
+        PlaylistSong selectedPlaylistSong = null;
+        Song selectedSong = null;
+        //stupid workaround to avoid the issue of not being able to manually select a song and then press play on it
+        //which you could before implementing double click function
+        if (mediaPlayer == null) {
+            selectedPlaylistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
+            selectedSong = selectedPlaylistSong.getSong();
+        }
+        //if mouse has been pressed twice on a tblPlaylistSong item set selected song to that item.
+        if (mouseEvent.getClickCount() == 2 && tblPlaylistSongs.getSelectionModel().getSelectedItem() != null) {
             selectedPlaylistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
             selectedSong = selectedPlaylistSong.getSong();
             isPlayingFromPlaylist = true;
             currentPlaylistSong = selectedPlaylistSong;
-        } else { currentPlaylistSong = null; }
-        Button btnHandlePlay = (Button) actionEvent.getSource();
-        if (selectedSong == null && currentSong == null && selectedPlaylistSong == null ) {
+        }
+        //dont do anything if somehow you got here without selecting a song or having one loaded?
+        if (selectedSong == null && currentSong == null) {
+            return;
+        }
+        //play selected song, and it is from a playlist
+        if(selectedSong != null) {
+            play(selectedSong, true);
+        }
+    }
+    public void play(Song selectedSong, boolean isPlayingFromPlaylist) {
+        if (selectedSong == null && currentSong == null) {
             return;
         }
         try {
@@ -535,19 +582,8 @@ public class ViewController implements Initializable {
                     mediaPlayer.stop();
                     mediaPlayer.dispose();
                 }
-                    playSelectedSong(selectedSong, isPlayingFromPlaylist);
+                playSelectedSong(selectedSong, isPlayingFromPlaylist);
 
-            } else {
-                MediaPlayer.Status status = mediaPlayer.getStatus();
-                if (mediaPlayer != null) {
-                    if (status == MediaPlayer.Status.PLAYING) {
-                        mediaPlayer.pause();
-                    }
-                    if (status == MediaPlayer.Status.PAUSED) {
-                        mediaPlayer.seek(mediaPlayer.getCurrentTime());
-                        mediaPlayer.play();
-                    }
-                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -783,3 +819,4 @@ public class ViewController implements Initializable {
         stage.setY(mouseEvent.getScreenY() + yOffset);
     }
 }
+
