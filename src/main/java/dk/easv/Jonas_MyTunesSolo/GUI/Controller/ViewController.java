@@ -249,8 +249,6 @@ public class ViewController implements Initializable {
             //stops the event from getting picked up by other listeners
            event.consume();
         });
-        //TODO implement drag and drop on delete buttons for respective table views.
-
     }
 
     @FXML
@@ -619,20 +617,25 @@ public class ViewController implements Initializable {
             } else {
                 mediaPlayer.setVolume(volumeSlider.getValue() / 100 * 0.2);
             }
-            mediaPlayer.play();
-            updateMuteButton();
-            lblSongDuration.setText(formatDuration((int) mediaPlayer.getTotalDuration().toSeconds()));
 
+            mediaPlayer.play();
+            lblSongDuration.setText(formatDuration((int) mediaPlayer.getTotalDuration().toSeconds()));
+            //save the selected song as the currentSong
             currentSong = selectedSong;
+            //displays title and artist(s)
             lblCurrentlyPlaying.setText(currentSong.getTitle());
             lblCurrentArtist.setText(currentSong.getArtistName());
 
             //TODO explain double colon :: method reference operator.
             if (isPlayingFromPlaylist) {
+                //when set on end of media is triggered, mediaPlayer calls playNextPlaylistSong
                 mediaPlayer.setOnEndOfMedia(this::playNextPlaylistSong);
+                //select the currently playing song
                 tblPlaylistSongs.getSelectionModel().select(currentPlaylistSong);
             } else{
+                //when set on end of media is triggered, mediaPlayer calls playNextSong
                 mediaPlayer.setOnEndOfMedia(this::playNextSong);
+                //select the currently playing song
                 tblSong.getSelectionModel().select(currentSong);
             }
         });
@@ -684,6 +687,7 @@ public class ViewController implements Initializable {
         currentPlaylistSong = nextPlaylistSong;
         playSelectedSong(nextPlaylistSong.getSong(), true);
     }
+
     private void playPreviousSong() {
         List<Song> songOrder = songModel.getSongsToBeViewed();
         if (songOrder.isEmpty()) {
@@ -699,7 +703,7 @@ public class ViewController implements Initializable {
         Song nextSong = songOrder.get(nextIndex);
         playSelectedSong(nextSong, false);
     }
-
+    //just plays the next song, as long as a mediaPlayer exists.
     public void btnHandleSkip(ActionEvent actionEvent) {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
@@ -737,7 +741,7 @@ public class ViewController implements Initializable {
             }
         }
     }
-
+    //mutes the media.
     public void btnHandleMute(ActionEvent actionEvent) {
         if (mediaPlayer != null) {
             if (!muted) {
@@ -760,7 +764,7 @@ public class ViewController implements Initializable {
         //makes it user-friendly by formatting it to MM:SS
         return String.format("%02d:%02d", minutes, seconds);
     }
-
+    //closes the program
     public void btnHandleCloseApplication(ActionEvent actionEvent) {
         Stage stage = (Stage) btnCloseApplication.getScene().getWindow();
         if (mediaPlayer != null) {
@@ -768,7 +772,7 @@ public class ViewController implements Initializable {
         }
         stage.close();
     }
-
+    //"Iconifies" the main window
     public void btnHandleMinimizeApplication(ActionEvent actionEvent) {
         Stage stage = (Stage) btnMinimizeApplication.getScene().getWindow();
         stage.setIconified(true);

@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -53,12 +54,16 @@ public class NewPlaylistController implements Initializable {
             txtPlaylistName.clear();
             dataChangedFlag.set(true);
         }
+        Stage stage = (Stage) btnMenuAddPlaylist.getScene().getWindow();
+        stage.close();
     }
 
     public void btnHandleMenuEditPlaylist(ActionEvent actionEvent) throws SQLServerException {
         playlistToBeEdited.setName(txtPlaylistName.getText());
         playlistModel.updatePlaylist(playlistToBeEdited);
         dataChangedFlag.set(true);
+        Stage stage = (Stage) btnMenuEditPlaylist.getScene().getWindow();
+        stage.close();
     }
 
     public void btnHandleCancelPlaylist(ActionEvent actionEvent) {
