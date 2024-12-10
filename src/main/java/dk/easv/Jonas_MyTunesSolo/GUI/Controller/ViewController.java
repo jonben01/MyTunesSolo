@@ -70,6 +70,8 @@ public class ViewController implements Initializable {
     private boolean muted = false;
     private SongModel songModel;
     private SimpleBooleanProperty dataChanged;
+    private SimpleBooleanProperty playlistDataChanged;
+    private SimpleBooleanProperty playlistSongDataChanged;
     private Media media;
     private MediaPlayer mediaPlayer;
     private Song currentSong;
@@ -156,11 +158,36 @@ public class ViewController implements Initializable {
                 //TODO if i delete a song it should refresh the selected playlists songs, currently it doesnt update when
                 // i delete a song.
                 if (selectedPlaylist != null) {
-                    playlistSongsModel.refreshPlaylistSongs(selectedPlaylist);
+                   playlistSongsModel.refreshPlaylistSongs(selectedPlaylist);
                     tblPlaylist.getSelectionModel().select(selectedPlaylist);
                 }
                 //reset flag, so code is reusable
                 dataChanged.set(false);
+            }
+        });
+
+        playlistDataChanged = new SimpleBooleanProperty(false);
+        playlistDataChanged.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                Playlist selectedPlaylist = tblPlaylist.getSelectionModel().getSelectedItem();
+
+                if (selectedPlaylist != null) {
+                    playlistModel.refreshPlaylist();
+                    tblPlaylist.getSelectionModel().select(selectedPlaylist);
+                }
+                //reset flag, so code is reusable
+                playlistDataChanged.set(false);
+            }
+        });
+        playlistSongDataChanged = new SimpleBooleanProperty(false);
+        playlistSongDataChanged.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                Playlist selectedPlaylist = tblPlaylist.getSelectionModel().getSelectedItem();
+                if (selectedPlaylist != null) {
+                    playlistSongsModel.refreshPlaylistSongs(selectedPlaylist);
+                    //tblPlaylist.getSelectionModel().select(selectedPlaylist);
+                }
+                playlistSongDataChanged.set(false);
             }
         });
 
@@ -240,8 +267,8 @@ public class ViewController implements Initializable {
                    try {
                        //runs moveSongToPlayList as long as conditions of if statement are met.
                        playlistSongsModel.moveSongToPlaylist(song, playlist);
+                       playlistDataChanged.set(true);
                        //refreshes gui after drag and drop success.
-                       dataChanged.set(true);
                    } catch (SQLServerException e) {
                        throw new RuntimeException(e);
                    }
@@ -426,46 +453,65 @@ public class ViewController implements Initializable {
     public void btnHandleMoveSongUp(ActionEvent actionEvent) throws SQLServerException {
         PlaylistSong playlistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
         List<PlaylistSong> playlistSongList = new ArrayList<PlaylistSong>(tblPlaylistSongs.getSelectionModel().getSelectedItems());
-        playlistSongsModel.moveSongOnPlaylistUp(playlistSong, playlistSongList);
-        dataChanged.set(true);
-    }
 
+        if (playlistSong != null) {
+        playlistSongsModel.moveSongOnPlaylistUp(playlistSong, playlistSongList);
+        playlistSongDataChanged.set(true);
+        int PlaylistSelectionIndex = playlistSong.getOrderIndex();
+        tblPlaylistSongs.getSelectionModel().select(PlaylistSelectionIndex);
+        }
+    }
+    //changes a PlaylistSong objects orderIndex value.
     public void btnHandleMoveSongDown(ActionEvent actionEvent) throws SQLException {
         PlaylistSong playlistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
         List<PlaylistSong> playlistSongList = new ArrayList<PlaylistSong>(tblPlaylistSongs.getSelectionModel().getSelectedItems());
-        playlistSongsModel.moveSongOnPlaylistDown(playlistSong, playlistSongList);
-        dataChanged.set(true);
-    }
 
+        if (playlistSong != null) {
+        playlistSongsModel.moveSongOnPlaylistDown(playlistSong, playlistSongList);
+        playlistSongDataChanged.set(true);
+        int PlaylistSelectionIndex = playlistSong.getOrderIndex();
+        tblPlaylistSongs.getSelectionModel().select(PlaylistSelectionIndex);
+        }
+    }
+    //deletes the selected PlaylistSong object.
     public void btnHandleDeleteSongOnPlaylist(ActionEvent actionEvent) throws SQLServerException {
         PlaylistSong playlistSongToBeDeleted = tblPlaylistSongs.getSelectionModel().getSelectedItem();
 
         if (playlistSongToBeDeleted != null) {
+            //used to select song below it, when song is deleted the song below gets the index of the song deleted.
+            //if you delete the bottom song, it just drops selection.
+            int PlaylistSongToBeSelectedIndex = playlistSongToBeDeleted.getOrderIndex();
+            //delete the song you selected
             playlistSongsModel.deleteSongOnPlaylist(playlistSongToBeDeleted);
-            dataChanged.set(true);
+            //refresh song count on playlist table.
+            playlistDataChanged.set(true);
+            //select song at same index as the deleted one.
+            tblPlaylistSongs.getSelectionModel().select(PlaylistSongToBeSelectedIndex);
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText(null);
             alert.setContentText("Please select a song to delete from your playlist");
+            alert.showAndWait();
         }
     }
 
-    //Legacy code lmao. Added drag and drop to handle this instead, but leaving it here anyway. button is invisible in the fxml
+    //should probably rename, now that I have made drag and drop instead, but the button exists, its just invisible.
     public void btnHandleMoveSongToPlaylist(ActionEvent actionEvent) throws SQLServerException {
         Song songToMove = tblSong.getSelectionModel().getSelectedItem();
+        Playlist selectedPlaylist = tblPlaylist.getSelectionModel().getSelectedItem();
 
-            Playlist selectedPlaylist = tblPlaylist.getSelectionModel().getSelectedItem();
-            if (songToMove != null && selectedPlaylist != null) {
-                playlistSongsModel.moveSongToPlaylist(songToMove, selectedPlaylist);
-                dataChanged.set(true);
-            }
-            else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Please a song and a playlist");
-            }
+        if (songToMove != null && selectedPlaylist != null) {
+            playlistSongsModel.moveSongToPlaylist(songToMove, selectedPlaylist);
+            playlistDataChanged.set(true);
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Please a song and a playlist");
+            alert.showAndWait();
+        }
     }
 
     public void updateMuteButton() {
