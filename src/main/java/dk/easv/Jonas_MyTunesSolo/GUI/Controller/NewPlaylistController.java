@@ -24,7 +24,6 @@ public class NewPlaylistController implements Initializable {
     @FXML Button btnMenuAddPlaylist;
     @FXML PlaylistModel playlistModel;
     @FXML SimpleBooleanProperty dataChangedFlag;
-
     private Playlist playlistToBeEdited;
 
     @Override

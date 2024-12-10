@@ -60,8 +60,7 @@ public class NewSongController implements Initializable {
 
     public void btnHandleMenuAddSong(ActionEvent actionEvent) throws SQLServerException, IOException {
 
-
-            if (txtFilePath.getText() == null || txtFilePath.getText().equals("")) {
+            if (txtFilePath.getText() == null || txtFilePath.getText().isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
@@ -69,12 +68,12 @@ public class NewSongController implements Initializable {
                 alert.showAndWait();
                 return;
             }
-            if (txtTitle.getText() == null || txtTitle.getText().equals("")
-                    || txtArtist.getText() == null || txtArtist.getText().equals("")) {
+            if (txtTitle.getText() == null || txtTitle.getText().isEmpty()
+                    || txtArtist.getText() == null || txtArtist.getText().isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
-                alert.setContentText("Please fill out name and artist");
+                alert.setContentText("Please fill out Title and Artist(s)");
                 alert.showAndWait();
                 return;
             }
@@ -108,7 +107,7 @@ public class NewSongController implements Initializable {
                     return;
                 }
             }
-            //not doing absolute path, I want it to be able to run on other computers
+            //setting the file path to the projects song dir
             String newFilePath = songDestinationPath.toString();
 
             //use ternary operator to let me pass a null value to the createSong method. sindsygt cool if/else statement alternativ
@@ -120,7 +119,6 @@ public class NewSongController implements Initializable {
             dataChangedFlag.set(true);
             Stage stage = (Stage) btnMenuAddSong.getScene().getWindow();
             stage.close();
-
     }
 
     public void btnHandleFileChooser(ActionEvent actionEvent) {
@@ -188,7 +186,6 @@ public class NewSongController implements Initializable {
             newGenreStage.show();
         } catch (IOException e) {
             e.printStackTrace();
-
         }
     }
 

@@ -95,44 +95,17 @@ public class ViewController implements Initializable {
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //TODO INITIALIZE PLAYLIST TABLE add total duration and number of songs
         //sets the playlist table columns and items
         colPlaylistName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colPlaylistSongs.setCellValueFactory(new PropertyValueFactory<>("songCount"));
         tblPlaylist.setItems(playlistModel.getPlaylistsToBeViewed());
 
         //sets the playlistSongs table columns and items
-        tblPlaylistSongs.setItems(playlistSongsModel.getPlaylistSongsToBeViewed());
-        //changing the placeholder, when the table is empty
-        tblPlaylistSongs.setPlaceholder(new Label("Drag songs here!"));
-
-        tblPlaylistSongs.setId("Playlist-Songs");
-        colOrderIndex.setCellValueFactory(new PropertyValueFactory<>("formattedOrderIndex"));
-
-        tblSong.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-           if (newValue != null) {
-               tblPlaylistSongs.getSelectionModel().clearSelection();
-           }
-        });
-        tblPlaylistSongs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                tblSong.getSelectionModel().clearSelection();
-            }
-        });
-
         colPlaylistSongTitle.setCellValueFactory(new PropertyValueFactory<>("SongTitle"));
-        //TODO fix this, so that when I delete/edit a song on the selected playlist, it doesnt remove my selection and just updates the list.
-        // if thats possible, might just live without it
-        tblPlaylist.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                    playlistSongsModel.refreshPlaylistSongs((Playlist) newValue);
-            }
-            else {
-                tblPlaylistSongs.setItems(playlistSongsModel.getPlaylistSongsToBeViewed());
-                playlistSongsModel.refreshPlaylistSongs(null);
-            }
-        });
-
+        tblPlaylistSongs.setItems(playlistSongsModel.getPlaylistSongsToBeViewed());
+        //changing the placeholder, when the table is empty - wanted to do more to it, but its w/e
+        tblPlaylistSongs.setPlaceholder(new Label("Drag songs here!"));
+        //sets the song table.
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colArtist.setCellValueFactory(new PropertyValueFactory<>("artistName"));
         colGenre.setCellValueFactory(new PropertyValueFactory<>("genreName"));
@@ -143,11 +116,34 @@ public class ViewController implements Initializable {
         });
         tblSong.setItems(songModel.getSongsToBeViewed());
 
-        //TODO add comments to this, and in the other controllers
-        //TODO fix selections dropping after changing anything.
-        //refreshes gui when data has changed, I regret making it this way now, its taking a big toll on performance
-        // make it only run for the areas affect, edited a song? only refresh the two tables containing songs
-        // moving a song on a playlist, only update song on playlist
+        colOrderIndex.setCellValueFactory(new PropertyValueFactory<>("formattedOrderIndex"));
+
+        //listener removes your selection in the playlistSong table if you select a song on the song table.
+        tblSong.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+           if (newValue != null) {
+               tblPlaylistSongs.getSelectionModel().clearSelection();
+           }
+        });
+        //listener removes your selection in the song table if you select a song on the playlistSong table.
+        tblPlaylistSongs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                tblSong.getSelectionModel().clearSelection();
+            }
+        });
+        //if you select a different playlist, this gets the songs for that playlist.
+        tblPlaylist.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                    playlistSongsModel.refreshPlaylistSongs((Playlist) newValue);
+            }
+            else {
+                tblPlaylistSongs.setItems(playlistSongsModel.getPlaylistSongsToBeViewed());
+                playlistSongsModel.refreshPlaylistSongs(null);
+            }
+        });
+
+        //Using this dataChanged to handle refreshing the GUI, after adding specific listeners to playlistDataChanged
+        //and playlistSongDataChanged this is mostly responsible for handling refreshing the main window, when making
+        //changes in the other windows i.e. adding a new song.
         dataChanged = new SimpleBooleanProperty(false);
         dataChanged.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -165,7 +161,7 @@ public class ViewController implements Initializable {
                 dataChanged.set(false);
             }
         });
-
+        //refreshes playlist table when set true in relevant methods - mostly in regard to updating song count.
         playlistDataChanged = new SimpleBooleanProperty(false);
         playlistDataChanged.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -179,20 +175,21 @@ public class ViewController implements Initializable {
                 playlistDataChanged.set(false);
             }
         });
+        //refresh playlistSong table when set true in relevant methods (move song up/down, delete/move song on playlist)
         playlistSongDataChanged = new SimpleBooleanProperty(false);
         playlistSongDataChanged.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 Playlist selectedPlaylist = tblPlaylist.getSelectionModel().getSelectedItem();
                 if (selectedPlaylist != null) {
                     playlistSongsModel.refreshPlaylistSongs(selectedPlaylist);
-                    //tblPlaylist.getSelectionModel().select(selectedPlaylist);
                 }
+                //reset flag
                 playlistSongDataChanged.set(false);
             }
         });
 
         //listener passes "newValue" as a query to the searchSong method.
-        //I liked this till i realized how laggy it is :)
+        //I liked this till I realized how laggy it is :)
         txtSearcher.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 songModel.searchSongs(newValue);
@@ -201,17 +198,20 @@ public class ViewController implements Initializable {
                 throw new RuntimeException(e);
             }
         });
-
+        //Suboptimal way of handling volume I'm sure, but I reached these numbers through trial and error.
+        //sets volume slider min val and default val.
         volumeSlider.setMin(5);
         volumeSlider.setValue(25);
+        //used to store volume value for mute button.
         savedVolume = volumeSlider.getValue()/100 *0.2;
 
 
         volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (mediaPlayer != null) {
                 //When I scale my double value (volume), the application refuses to play audible volume on 5% (depends on multiplier)
-                //I assume this is due to the value being <1, therefore I am limiting how quiet the volume can be, before its actually 0.
+                //I assume this is due to the value being <1, therefore I am limiting how low the slider can go, before its muted.
                 if(volumeSlider.getValue() < 5 && volumeSlider.getValue() > 0) {
+                    //mute if we get below audible threshold
                     mediaPlayer.setVolume(0);
                     muted = true;
                 } else {
@@ -219,20 +219,19 @@ public class ViewController implements Initializable {
                 }
             }
             if (newValue != null) {
+                //save the volume the slider is set to, for mute button.
                 savedVolume = volumeSlider.getValue()/100 * 0.2;
                 muted = false;
                 updateMuteButton();
             }
         });
 
-
-        //TODO test if this could brick something somewhere
         //Drag and drop song -> playlist start
         tblSong.setOnDragDetected(event -> {
             Song selectedSong = tblSong.getSelectionModel().getSelectedItem();
             //making sure you're actually dragging something.
             if (selectedSong != null) {
-                //using javafx dragboard to handle the dragging actions, using copy as we want to keep the song on both tables
+                //using javafx dragboard to handle the dragging actions, using copy as we want to have the song on both tables
                 Dragboard dragboard = tblSong.startDragAndDrop(TransferMode.COPY);
                 //passing song by Id(String.valueOf) as content to the dragboard.
                 ClipboardContent content = new ClipboardContent();
@@ -244,20 +243,18 @@ public class ViewController implements Initializable {
         });
         //making the table accept the drag and drop
         tblPlaylistSongs.setOnDragOver(event -> {
-
             //checks if the dragboard has a string.
             if(event.getDragboard().hasString()) {
                 //makes tblPlaylistSongs accept the data transfer
                 event.acceptTransferModes(TransferMode.COPY);
-            }tblPlaylistSongs.setCursor(Cursor.CLOSED_HAND);
+            }
             //stops the event from getting picked up by other listeners
             event.consume();
         });
-
+        //when you drop the drag
         tblPlaylistSongs.setOnDragDropped(event -> {
-            tblPlaylistSongs.setCursor(Cursor.DEFAULT);
            Dragboard dragboard = event.getDragboard();
-            //check if dragboard has a string.
+           //check if dragboard has a string.
            if (dragboard.hasString()) {
                //uses getSongById to get a song to move.
                String songId = dragboard.getString();
@@ -267,8 +264,8 @@ public class ViewController implements Initializable {
                    try {
                        //runs moveSongToPlayList as long as conditions of if statement are met.
                        playlistSongsModel.moveSongToPlaylist(song, playlist);
-                       playlistDataChanged.set(true);
                        //refreshes gui after drag and drop success.
+                       playlistDataChanged.set(true);
                    } catch (SQLServerException e) {
                        throw new RuntimeException(e);
                    }
@@ -308,16 +305,17 @@ public class ViewController implements Initializable {
         }
     }
 
+    @FXML
     public void btnHandleDeleteSong(ActionEvent actionEvent) throws SQLServerException {
         Song songToBeDeleted = tblSong.getSelectionModel().getSelectedItem();
-
+        //if song exists send alert
         if (songToBeDeleted != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Song deletion confirmation");
             alert.setHeaderText("");
-            alert.setContentText("Are you sure you want to delete: " + songToBeDeleted.getTitle() + " by " + songToBeDeleted.getArtistName());
-
+            alert.setContentText("Are you sure you want to delete: " + songToBeDeleted.getTitle() + "\n" + "by " + songToBeDeleted.getArtistName());
             Optional<ButtonType> result = alert.showAndWait();
+            //if you press okay, delete the song and file.
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 songModel.deleteSong(songToBeDeleted);
 
@@ -331,6 +329,7 @@ public class ViewController implements Initializable {
         }
     }
 
+    @FXML
     public void btnHandleEditSong(ActionEvent actionEvent) {
         Song songToBeEdited = tblSong.getSelectionModel().getSelectedItem();
 
@@ -345,8 +344,11 @@ public class ViewController implements Initializable {
                 // Load the FXML file
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/song-view.fxml"));
                 Parent root = fxmlLoader.load();
+                //i dont know if this is illegal, but make a reference to the controller of the loaded fxml file.
+                //used to handle data changes through dataChanged
                 NewSongController NSController = fxmlLoader.getController();
                 NSController.setDataChangedFlag(dataChanged);
+                //hide add button when editing
                 NSController.btnMenuAddSong.setVisible(false);
                 //pass the song with the song passer method
                 NSController.songToBeEditedPasser(songToBeEdited);
@@ -365,15 +367,18 @@ public class ViewController implements Initializable {
             }
         }
     }
-
+    @FXML
     public void btnHandleNewPlaylist(ActionEvent actionEvent) {
         try {
             // Load the FXML file
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/playlist-view.fxml"));
             Parent root = fxmlLoader.load();
 
+            //i dont know if this is illegal, but make a reference to the controller of the loaded fxml file.
+            //used to handle data changes through dataChanged
             NewPlaylistController NPController = fxmlLoader.getController();
             NPController.setDataChangedFlag(dataChanged);
+            //hide edit button when using add window
             NPController.btnMenuEditPlaylist.setVisible(false);
 
             // Create a new stage
@@ -393,9 +398,9 @@ public class ViewController implements Initializable {
 
         }
     }
-
+    @FXML
     public void btnHandleEditPlaylist(ActionEvent actionEvent) {
-        Playlist playlistToBeEdited = (Playlist) tblPlaylist.getSelectionModel().getSelectedItem();
+        Playlist playlistToBeEdited = tblPlaylist.getSelectionModel().getSelectedItem();
 
         if (playlistToBeEdited == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -404,35 +409,39 @@ public class ViewController implements Initializable {
             alert.setContentText("Please select a playlist to edit");
             alert.showAndWait();
         } else {
-                try {
-                    // Load the FXML file
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/playlist-view.fxml"));
-                    Parent root = fxmlLoader.load();
+            try {
+                // Load the FXML file
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/playlist-view.fxml"));
+                Parent root = fxmlLoader.load();
 
-                    NewPlaylistController NPController = fxmlLoader.getController();
-                    NPController.setDataChangedFlag(dataChanged);
-                    NPController.btnMenuAddPlaylist.setVisible(false);
-                    NPController.playlistToBeEditedPasser(playlistToBeEdited);
+                //i dont know if this is illegal, but make a reference to the controller of the loaded fxml file.
+                //used to handle data changes through dataChanged
+                NewPlaylistController NPController = fxmlLoader.getController();
+                NPController.setDataChangedFlag(dataChanged);
+                //hide add button when using edit window
+                NPController.btnMenuAddPlaylist.setVisible(false);
+                //pass the selected playlist to the other controller
+                NPController.playlistToBeEditedPasser(playlistToBeEdited);
 
-                    // Create a new stage
-                    Stage newSongStage = new Stage();
-                    newSongStage.setTitle("Edit a playlist");
-                    newSongStage.setResizable(false);
-                    //Sets modality, cant use previous window till this one is closed
-                    newSongStage.initModality(Modality.APPLICATION_MODAL);
+                // Create a new stage
+                Stage newSongStage = new Stage();
+                newSongStage.setTitle("Edit a playlist");
+                newSongStage.setResizable(false);
+                //Sets modality, cant use previous window till this one is closed
+                newSongStage.initModality(Modality.APPLICATION_MODAL);
 
-                    // Set the scene with the loaded FXML file
-                    newSongStage.setScene(new Scene(root));
+                // Set the scene with the loaded FXML file
+                newSongStage.setScene(new Scene(root));
 
-                    // Show the stage
-                    newSongStage.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                // Show the stage
+                newSongStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
 
-                }
             }
+        }
     }
-
+    @FXML
     public void btnHandleDeletePlaylist(ActionEvent actionEvent) throws SQLServerException {
         Playlist playlistToBeDeleted = tblPlaylist.getSelectionModel().getSelectedItem();
 
@@ -449,7 +458,8 @@ public class ViewController implements Initializable {
             tblPlaylist.setItems(playlistModel.getPlaylistsToBeViewed());
         }
     }
-
+    //changes a PlaylistSong objects orderIndex value and selects it again.
+    @FXML
     public void btnHandleMoveSongUp(ActionEvent actionEvent) throws SQLServerException {
         PlaylistSong playlistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
         List<PlaylistSong> playlistSongList = new ArrayList<PlaylistSong>(tblPlaylistSongs.getSelectionModel().getSelectedItems());
@@ -461,7 +471,9 @@ public class ViewController implements Initializable {
         tblPlaylistSongs.getSelectionModel().select(PlaylistSelectionIndex);
         }
     }
-    //changes a PlaylistSong objects orderIndex value.
+
+    //changes a PlaylistSong objects orderIndex value and selects it again.
+    @FXML
     public void btnHandleMoveSongDown(ActionEvent actionEvent) throws SQLException {
         PlaylistSong playlistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
         List<PlaylistSong> playlistSongList = new ArrayList<PlaylistSong>(tblPlaylistSongs.getSelectionModel().getSelectedItems());
@@ -474,6 +486,7 @@ public class ViewController implements Initializable {
         }
     }
     //deletes the selected PlaylistSong object.
+    @FXML
     public void btnHandleDeleteSongOnPlaylist(ActionEvent actionEvent) throws SQLServerException {
         PlaylistSong playlistSongToBeDeleted = tblPlaylistSongs.getSelectionModel().getSelectedItem();
 
@@ -497,6 +510,8 @@ public class ViewController implements Initializable {
     }
 
     //should probably rename, now that I have made drag and drop instead, but the button exists, its just invisible.
+    //and also because it doesnt "move" the song???????
+    @FXML
     public void btnHandleMoveSongToPlaylist(ActionEvent actionEvent) throws SQLServerException {
         Song songToMove = tblSong.getSelectionModel().getSelectedItem();
         Playlist selectedPlaylist = tblPlaylist.getSelectionModel().getSelectedItem();
@@ -514,6 +529,7 @@ public class ViewController implements Initializable {
         }
     }
 
+    //updates the text on the mute button depending on volumeSlider value.
     public void updateMuteButton() {
         if(muted) {
             btnMute.setText("\uD83D\uDD07");
@@ -539,6 +555,8 @@ public class ViewController implements Initializable {
 
     }
 
+    //Play or pause the song depending on media player status.
+    @FXML
     public void btnHandlePlay(ActionEvent e) {
 
         if (mediaPlayer != null) {
@@ -554,11 +572,7 @@ public class ViewController implements Initializable {
     }
     public void doubleClickedSong(MouseEvent mouseEvent) {
         Song selectedSong = null;
-        //stupid workaround to avoid the issue of not being able to manually select a song and then press play on it
-        //which you could before implementing double click function
-        if (mediaPlayer == null) {
-            selectedSong = tblSong.getSelectionModel().getSelectedItem();
-        }
+
         //if mouse has been pressed twice on a tblSong item set selected song to that item.
         if (mouseEvent.getClickCount() == 2 && tblSong.getSelectionModel().getSelectedItem() != null) {
             selectedSong = tblSong.getSelectionModel().getSelectedItem();
@@ -575,15 +589,9 @@ public class ViewController implements Initializable {
     }
 
     public void doubleClickedPlaylistSong(MouseEvent mouseEvent) {
-        PlaylistSong selectedPlaylistSong = null;
+        PlaylistSong selectedPlaylistSong;
         Song selectedSong = null;
-        //stupid workaround to avoid the issue of not being able to manually select a song and then press play on it
-        //which you could before implementing double click function
-        if (mediaPlayer == null) {
-            selectedPlaylistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
-            selectedSong = selectedPlaylistSong.getSong();
-            currentPlaylistSong = selectedPlaylistSong;
-        }
+
         //if mouse has been pressed twice on a tblPlaylistSong item set selected song to that item.
         if (mouseEvent.getClickCount() == 2 && tblPlaylistSongs.getSelectionModel().getSelectedItem() != null) {
             selectedPlaylistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
@@ -777,7 +785,9 @@ public class ViewController implements Initializable {
         Song nextSong = songOrder.get(nextIndex);
         playSelectedSong(nextSong, false);
     }
+
     //just plays the next song, as long as a mediaPlayer exists.
+    @FXML
     public void btnHandleSkip(ActionEvent actionEvent) {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
@@ -789,7 +799,9 @@ public class ViewController implements Initializable {
             }
         }
     }
+
     //shouldve given it a better name
+    @FXML
     public void btnHandleGoBack(ActionEvent actionEvent) {
         //Resets song back to start if you pressed it while further than 5 seconds into the song
         //this is the reset button too
@@ -815,6 +827,7 @@ public class ViewController implements Initializable {
             }
         }
     }
+
     //mutes the media.
     public void btnHandleMute(ActionEvent actionEvent) {
         if (mediaPlayer != null) {
@@ -838,7 +851,9 @@ public class ViewController implements Initializable {
         //makes it user-friendly by formatting it to MM:SS
         return String.format("%02d:%02d", minutes, seconds);
     }
+
     //closes the program
+    @FXML
     public void btnHandleCloseApplication(ActionEvent actionEvent) {
         Stage stage = (Stage) btnCloseApplication.getScene().getWindow();
         if (mediaPlayer != null) {
@@ -846,11 +861,14 @@ public class ViewController implements Initializable {
         }
         stage.close();
     }
+
     //"Iconifies" the main window
+    @FXML
     public void btnHandleMinimizeApplication(ActionEvent actionEvent) {
         Stage stage = (Stage) btnMinimizeApplication.getScene().getWindow();
         stage.setIconified(true);
     }
+
     //These methods let you drag the window by mousePressed and mouseDragged actions.
     public void handleClicked(MouseEvent mouseEvent) {
         Stage stage = (Stage) titlePane.getScene().getWindow();
