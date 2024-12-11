@@ -146,7 +146,7 @@ HBox {
     -fx-padding: 0 10px 0 10px;
     -fx-alignment: center-left;
     -fx-font-family: "Arial Black";
-    -fx-border-radius: 0;
+    -fx-border-radius: 0px;
 }
 
 .table-view .table-row-cell {

@@ -99,7 +99,7 @@ public class NewSongController implements Initializable {
                     //get songToBeDeleted if a song with the file path of the destination path exists
                     Song songToBeDeleted = songModel.getSongByFilePath(songDestinationPath.toString());
                     if (songToBeDeleted != null) {
-                        //deletes SongToBeDeleted, so we dont keep a deleted song in the database
+                        //deletes SongToBeDeleted, so it doesnt keep a deleted song in the database
                         songModel.deleteSong(songToBeDeleted);
                     }
                     Files.copy(Paths.get(txtFilePath.getText()), songDestinationPath, StandardCopyOption.REPLACE_EXISTING);
@@ -142,7 +142,7 @@ public class NewSongController implements Initializable {
                     double duration = mediaPlayer.getTotalDuration().toSeconds();
                     //use format duration method to make it mm:ss  format
                     txtDuration.setText(formatDuration((int) duration));
-                    //dispose of the loaded song, we only needed it for duration.
+                    //dispose of the loaded song, it was only needed for duration.
                     mediaPlayer.dispose();
                 });
                 //Just in case MediaPlayer acts up
@@ -217,8 +217,7 @@ public class NewSongController implements Initializable {
         return String.format("%02d:%02d", minutes, seconds);
     }
     //Doing both formatDuration and then parsing it through this seems inefficient :)
-    //having songs go over one hour is unrealistic, so 92830 minutes and 10 seconds will do fine, too bad we only show 2 digits.
-    //should fix at some point maybe
+    //having songs go over one hour is unrealistic, so 92830 minutes and 10 seconds will do fine, too bad it only shows 2 digits.
     private int durationParser () {
         try {
             String[] parts = txtDuration.getText().split(":");

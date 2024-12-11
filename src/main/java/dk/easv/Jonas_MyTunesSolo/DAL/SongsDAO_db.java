@@ -120,6 +120,8 @@ public class SongsDAO_db implements ISongDataAccess {
     public void deleteSong(Song songToBeDeleted) throws SQLServerException {
         String sql = "DELETE FROM dbo.Song WHERE Id = ?";
 
+
+
         // TODO Update song count on playlists that contain the deleted song, as many times as the song is on there :)
 
 

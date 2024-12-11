@@ -65,7 +65,7 @@ public class PlaylistSongsDAO_db {
     public PlaylistSong moveSongToPlaylist(Song songToMove, Playlist selectedPlaylist) {
         //COALESCE runs through the column to find non-null entries, if there are none its null and will default to 0 (+1) //change to -1 +1 instead
         //MAX finds the maximum value (if there are any valid values) combined these find the maximum non-null value
-        //This ensures we will always have a valid "nextOrderIndex" as if there are 0 songs, it will be 1, if there are 10 songs it will be 11
+        //This ensures it will always have a valid "nextOrderIndex" as if there are 0 songs, it will be 1, if there are 10 songs it will be 11
         String getOrderIndexSQL = "SELECT COALESCE(MAX(OrderIndex), -1) + 1 AS NextOrderIndex " +
                                   "FROM PlaylistSongs ps " +
                                   "WHERE ps.PlaylistId = ?;";
@@ -219,7 +219,7 @@ public class PlaylistSongsDAO_db {
         String updateBelowSQL = "UPDATE dbo.PlaylistSongs " +
                                 "SET OrderIndex = ?" +
                                 "WHERE PlaylistId = ? AND OrderIndex = ?;";
-        //get max order index for the playlist, so we cant go above it.
+        //get max order index for the playlist, so our song cant go above it.
         String maxOrderIndexSQL = "SELECT MAX(OrderIndex) AS MaxOrderIndex FROM dbo.PlaylistSongs " +
                                   "Where PlaylistId = ?;";
 

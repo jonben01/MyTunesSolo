@@ -211,7 +211,7 @@ public class ViewController implements Initializable {
                 //When I scale my double value (volume), the application refuses to play audible volume on 5% (depends on multiplier)
                 //I assume this is due to the value being <1, therefore I am limiting how low the slider can go, before its muted.
                 if(volumeSlider.getValue() < 5 && volumeSlider.getValue() > 0) {
-                    //mute if we get below audible threshold
+                    //mute if it goes below audible threshold
                     mediaPlayer.setVolume(0);
                     muted = true;
                 } else {
@@ -231,7 +231,7 @@ public class ViewController implements Initializable {
             Song selectedSong = tblSong.getSelectionModel().getSelectedItem();
             //making sure you're actually dragging something.
             if (selectedSong != null) {
-                //using javafx dragboard to handle the dragging actions, using copy as we want to have the song on both tables
+                //using javafx dragboard to handle the dragging actions.
                 Dragboard dragboard = tblSong.startDragAndDrop(TransferMode.COPY);
                 //passing song by Id(String.valueOf) as content to the dragboard.
                 ClipboardContent content = new ClipboardContent();
@@ -638,18 +638,18 @@ public class ViewController implements Initializable {
                     mediaPlayer.dispose();
                 }
                 playSelectedSong(selectedSong, isPlayingFromPlaylist);
-
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+
     //encapsulating the initial play part of previous method, it became way way way too long - still is.
     //this could be made a lot better still, but imagine this being inside the btnHandlePlay() - should've done it more tbh.
     //Tried making an overloaded method, but adding a boolean parameter made it easier to work with
     public void playSelectedSong(Song selectedSong, boolean playingFromPlaylist) {
-        //boolean check for whether we are playing from a playlist or not, single-handedly controls autoplay function
+        //boolean check for whether it is currently playing from a playlist or not, single-handedly controls autoplay function
         //from playlist
         isPlayingFromPlaylist = playingFromPlaylist;
         //create everything relevant for the mediaPlayer - including itself.
@@ -729,7 +729,7 @@ public class ViewController implements Initializable {
             return;
         }
         int currentIndex = songOrder.indexOf(currentSong);
-        //first part ensures we get the next index. Modulo only has an effect when we're at the songOrder.size
+        //first part ensures it gets the next index. Modulo only has an effect when we're at the songOrder.size
         //on a six song long list, the last index is 5, and thus it will loop back to 0: (5 + 1) % 6 = 0
         int nextIndex = (currentIndex + 1) % songOrder.size();
         //creates the nextSong, based on the nextIndex and then plays it
@@ -742,7 +742,7 @@ public class ViewController implements Initializable {
             return;
         }
         int currentIndex = playlistSongOrder.indexOf(currentPlaylistSong);
-        //first part ensures we get the next index. Modulo only has an effect when we're at the songOrder.size
+        //first part ensures it gets the next index. Modulo only has an effect when we're at the songOrder.size
         //on a six song long list, the last index is 5, and thus it will loop back to 0: (5 + 1) % 6 = 0
         int nextIndex = (currentIndex + 1) % playlistSongOrder.size();
         //creates the nextPlaylistSong, based on the nextIndex and then plays it
