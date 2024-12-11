@@ -152,7 +152,6 @@ public class NewSongController implements Initializable {
                     alert.setHeaderText(null);
                     alert.setContentText("This should never happen");
                 });
-
             } catch (Exception e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");

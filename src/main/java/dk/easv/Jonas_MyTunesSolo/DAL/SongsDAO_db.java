@@ -6,8 +6,7 @@ import com.microsoft.sqlserver.jdbc.SQLServerException;
 //JAVA IMPORTS
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class SongsDAO_db implements ISongDataAccess {
 
@@ -118,24 +117,79 @@ public class SongsDAO_db implements ISongDataAccess {
 
     @Override
     public void deleteSong(Song songToBeDeleted) throws SQLServerException {
-        String sql = "DELETE FROM dbo.Song WHERE Id = ?";
+        Connection connection = null;
 
+        String getAffectPlaylistsSQL =
+                        "SELECT PlaylistId, COUNT(*) AS Occurrences " +
+                        "FROM dbo.PlaylistSongs WHERE SongID = ? " +
+                        "GROUP BY PlaylistId;";
 
+        String updateSongCountsSQL =
+                        "UPDATE dbo.Playlist " +
+                        "SET SongCount = SongCount - ? " +
+                        "WHERE Id = ?;";
 
-        // TODO Update song count on playlists that contain the deleted song, as many times as the song is on there :)
+        String deleteSongSQL =
+                        "DELETE FROM dbo.Song " +
+                        "WHERE Id = ?;";
 
+        try {
+            //due to multiple queries in here I want to manually manage the connection, so I can rollback in case
+            //of an exception.
+            connection = dbConnector.getConnection();
+            connection.setAutoCommit(false);
+            Map<Integer, Integer> affectedSongCounts = new HashMap<>();
 
+            try (PreparedStatement pstmt = connection.prepareStatement(getAffectPlaylistsSQL)) {
+                pstmt.setInt(1, songToBeDeleted.getSongID());
+                ResultSet rs = pstmt.executeQuery();
 
+                while (rs.next()) {
+                    int id = rs.getInt("PlaylistId");
+                    int count = rs.getInt("Occurrences");
+                    affectedSongCounts.put(id, count);
+                }
+                rs.close();
+            }
 
+            if (!affectedSongCounts.isEmpty()) {
+                try (PreparedStatement pstmt = connection.prepareStatement(updateSongCountsSQL)) {
+                    for (Map.Entry<Integer, Integer> entry : affectedSongCounts.entrySet()) {
+                        int id = entry.getKey();
+                        int count = entry.getValue();
 
-
-        try (Connection connection = dbConnector.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
-
-            pstmt.setInt(1, songToBeDeleted.getSongID());
-            pstmt.executeUpdate();
+                        pstmt.setInt(1, count);
+                        pstmt.setInt(2, id);
+                        pstmt.addBatch();
+                    }
+                    pstmt.executeBatch();
+                }
+            }
+            try(PreparedStatement pstmt = connection.prepareStatement(deleteSongSQL)) {
+                pstmt.setInt(1, songToBeDeleted.getSongID());
+                pstmt.executeUpdate();
+            }
+            connection.commit();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(e);
+                }
+            }
+        //need to use a finally block, cause if the method runs well, my connection stays open :)
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
+
     }
 }

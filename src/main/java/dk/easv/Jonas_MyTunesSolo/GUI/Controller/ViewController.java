@@ -319,12 +319,17 @@ public class ViewController implements Initializable {
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 songModel.deleteSong(songToBeDeleted);
 
+                if (songToBeDeleted == currentSong && mediaPlayer != null) {
+                    mediaPlayer.stop();
+                    mediaPlayer.dispose();
+                    mediaPlayer = null;
+                }
                 File fileToDelete = new File(songToBeDeleted.getSongFilePath());
                 if (fileToDelete.exists()) {
                     fileToDelete.delete();
                 }
                 tblSong.setItems(songModel.getSongsToBeViewed());
-
+                dataChanged.set(true);
             }
         }
     }
@@ -465,10 +470,10 @@ public class ViewController implements Initializable {
         List<PlaylistSong> playlistSongList = new ArrayList<PlaylistSong>(tblPlaylistSongs.getSelectionModel().getSelectedItems());
 
         if (playlistSong != null) {
-        playlistSongsModel.moveSongOnPlaylistUp(playlistSong, playlistSongList);
-        playlistSongDataChanged.set(true);
-        int PlaylistSelectionIndex = playlistSong.getOrderIndex();
-        tblPlaylistSongs.getSelectionModel().select(PlaylistSelectionIndex);
+            playlistSongsModel.moveSongOnPlaylistUp(playlistSong, playlistSongList);
+            playlistSongDataChanged.set(true);
+            int PlaylistSelectionIndex = playlistSong.getOrderIndex();
+            tblPlaylistSongs.getSelectionModel().select(PlaylistSelectionIndex);
         }
     }
 
@@ -479,10 +484,10 @@ public class ViewController implements Initializable {
         List<PlaylistSong> playlistSongList = new ArrayList<PlaylistSong>(tblPlaylistSongs.getSelectionModel().getSelectedItems());
 
         if (playlistSong != null) {
-        playlistSongsModel.moveSongOnPlaylistDown(playlistSong, playlistSongList);
-        playlistSongDataChanged.set(true);
-        int PlaylistSelectionIndex = playlistSong.getOrderIndex();
-        tblPlaylistSongs.getSelectionModel().select(PlaylistSelectionIndex);
+            playlistSongsModel.moveSongOnPlaylistDown(playlistSong, playlistSongList);
+            playlistSongDataChanged.set(true);
+            int PlaylistSelectionIndex = playlistSong.getOrderIndex();
+            tblPlaylistSongs.getSelectionModel().select(PlaylistSelectionIndex);
         }
     }
     //deletes the selected PlaylistSong object.

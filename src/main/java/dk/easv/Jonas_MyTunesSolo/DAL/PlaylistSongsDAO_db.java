@@ -63,6 +63,7 @@ public class PlaylistSongsDAO_db {
         return allPlaylistSongs;
     }
     public PlaylistSong moveSongToPlaylist(Song songToMove, Playlist selectedPlaylist) {
+        Connection connection = null;
         //COALESCE runs through the column to find non-null entries, if there are none its null and will default to 0 (+1) //change to -1 +1 instead
         //MAX finds the maximum value (if there are any valid values) combined these find the maximum non-null value
         //This ensures it will always have a valid "nextOrderIndex" as if there are 0 songs, it will be 1, if there are 10 songs it will be 11
@@ -76,7 +77,8 @@ public class PlaylistSongsDAO_db {
                                        "SET SongCount = SongCount + 1" +
                                        "WHERE Id = ?;";
 
-        try(Connection connection = dbConnector.getConnection()) {
+        try {
+            connection = dbConnector.getConnection();
             //noticeable performance issues without batching
             connection.setAutoCommit(false);
             int nextOrderIndex = 0;
@@ -115,11 +117,30 @@ public class PlaylistSongsDAO_db {
             return playlistSong;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(e);
+                }
+            }
+            throw new RuntimeException();
+            //need to use a finally block, cause if the method runs well, my connection stays open :)
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
         }
     }
 
     public void deleteSongOnPlaylist(PlaylistSong playlistSong) {
+        Connection connection = null;
         String deletionSQL = "DELETE FROM dbo.PlaylistSongs " +
                              "WHERE PlaylistSongId = ?;";
 
@@ -132,7 +153,8 @@ public class PlaylistSongsDAO_db {
                                 "SET OrderIndex = OrderIndex - 1 " +
                                 "WHERE PlaylistId = ? AND OrderIndex > ?;";
 
-        try (Connection connection = dbConnector.getConnection()) {
+        try {
+            connection = dbConnector.getConnection();
             connection.setAutoCommit(false);
 
             try (PreparedStatement pstmt = connection.prepareStatement(deletionSQL)) {
@@ -151,16 +173,28 @@ public class PlaylistSongsDAO_db {
             connection.commit();
 
         } catch (SQLException e) {
-            try (Connection connection = dbConnector.getConnection()) {
-                connection.rollback();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(e);
+                }
             }
-            throw new RuntimeException(e);
+            //need to use a finally block, cause if the method runs well, my connection stays open :)
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 
     public void moveSongOnPlaylistUp(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) {
+        Connection connection = null;
         //Cant move a song into the abyss.
         if (playlistSong.getOrderIndex() <= 0) {
             return;
@@ -177,14 +211,20 @@ public class PlaylistSongsDAO_db {
                                    "WHERE PlaylistSongId = ?;";
 
         //try with resources to auto close connection.
-        try (Connection connection = dbConnector.getConnection()) {
+        try {
+            //due to multiple queries in here I want to manually manage the connection, so I can rollback in case
+            //of an exception.
+            connection = dbConnector.getConnection();
             connection.setAutoCommit(false);
+
             try (PreparedStatement pstmt = connection.prepareStatement(updateAboveSQL)) {
                 pstmt.setInt(1, selectedSongOrderIndex);
                 pstmt.setInt(2, playlistSong.getPlaylistId());
                 pstmt.setInt(3, aboveOrderIndex);
-                int rowsUpdated = pstmt.executeUpdate();
+                pstmt.executeUpdate();
+
             }
+
             try (PreparedStatement pstmt = connection.prepareStatement(updateSelectedSQL)) {
                 pstmt.setInt(1, aboveOrderIndex);
                 pstmt.setInt(2, playlistSong.getPsId());
@@ -201,20 +241,31 @@ public class PlaylistSongsDAO_db {
             connection.commit();
 
         } catch (SQLException e) {
-            try (Connection connection = dbConnector.getConnection()) {
-                connection.rollback();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(e);
+                }
             }
-            throw new RuntimeException(e);
+            //need to use a finally block, cause if the method runs well, my connection stays open :)
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 
     public void moveSongOnPlaylistDown(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) {
         int maxOrderIndex;
-
         int belowOrderIndex = playlistSong.getOrderIndex() + 1;
         int selectedSongOrderIndex = playlistSong.getOrderIndex();
+        Connection connection = null;
 
         String updateBelowSQL = "UPDATE dbo.PlaylistSongs " +
                                 "SET OrderIndex = ?" +
@@ -226,7 +277,8 @@ public class PlaylistSongsDAO_db {
         String updateSelectedSQL = "UPDATE dbo.PlaylistSongs " +
                                    "SET OrderIndex = ? " +
                                    "WHERE PlaylistSongId = ?;";
-        try (Connection connection = dbConnector.getConnection()) {
+        try {
+            connection = dbConnector.getConnection();
             connection.setAutoCommit(false);
             try (PreparedStatement pstmt = connection.prepareStatement(maxOrderIndexSQL)) {
                 pstmt.setInt(1, playlistSong.getPlaylistId());
@@ -264,12 +316,23 @@ public class PlaylistSongsDAO_db {
             connection.commit();
             //rolling back if an error occurs - i noticed sometimes when I spam some methods here, there's a gap in my orderIndex.
         } catch (SQLException e) {
-            try (Connection connection = dbConnector.getConnection()) {
-                connection.rollback();
-            } catch (SQLException exception) {
-                throw new RuntimeException(exception);
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(e);
+                }
             }
-            throw new RuntimeException();
+            //need to use a finally block, cause if the method runs well, my connection stays open :)
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 
