@@ -13,11 +13,11 @@ public interface ISongDataAccess {
 
     List<Song> getAllSongs() throws SQLServerException;
 
-    Song createSong(Song newSong) throws SQLServerException;
+    Song createSong(Song newSong) throws SQLException;
 
     void updateSong(Song song) throws SQLException;
 
-    void deleteSong(Song song) throws SQLServerException;
+    void deleteSong(Song song) throws SQLException;
 }
 
 

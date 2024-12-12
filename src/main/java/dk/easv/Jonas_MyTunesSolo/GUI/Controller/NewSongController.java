@@ -5,8 +5,6 @@ import dk.easv.Jonas_MyTunesSolo.BE.Genre;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.GUI.GenreModel;
 import dk.easv.Jonas_MyTunesSolo.GUI.SongModel;
-//LIBRARY IMPORTS
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 //JAVA IMPORTS
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
@@ -58,7 +56,7 @@ public class NewSongController implements Initializable {
         }
     }
 
-    public void btnHandleMenuAddSong(ActionEvent actionEvent) throws SQLServerException, IOException {
+    public void btnHandleMenuAddSong(ActionEvent actionEvent) throws SQLException, IOException {
             //cant add a song if theres no file path
             if (txtFilePath.getText() == null || txtFilePath.getText().isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);

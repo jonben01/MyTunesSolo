@@ -2,8 +2,6 @@ package dk.easv.Jonas_MyTunesSolo.GUI.Controller;
 //PROJECT IMPORTS
 import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
 import dk.easv.Jonas_MyTunesSolo.GUI.PlaylistModel;
-//LIBRARY IMPORTS
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 //JAVA IMPORTS
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
@@ -59,7 +57,7 @@ public class NewPlaylistController implements Initializable {
         stage.close();
     }
 
-    public void btnHandleMenuEditPlaylist(ActionEvent actionEvent) throws SQLServerException {
+    public void btnHandleMenuEditPlaylist(ActionEvent actionEvent) throws SQLException {
         playlistToBeEdited.setName(txtPlaylistName.getText());
         playlistModel.updatePlaylist(playlistToBeEdited);
         dataChangedFlag.set(true);

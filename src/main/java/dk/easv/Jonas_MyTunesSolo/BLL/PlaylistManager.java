@@ -4,8 +4,6 @@ package dk.easv.Jonas_MyTunesSolo.BLL;
 import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
 import dk.easv.Jonas_MyTunesSolo.DAL.IPlaylistDataAccess;
 import dk.easv.Jonas_MyTunesSolo.DAL.PlaylistDAO_db;
-//LIBRARY IMPORTS
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 //JAVA IMPORTS
 import java.io.IOException;
 import java.sql.SQLException;
@@ -30,11 +28,11 @@ public class PlaylistManager {
         return playlistDAO.getAllPlaylists();
     }
 
-    public void updatePlaylist(Playlist playlistToBeEdited) throws SQLServerException {
+    public void updatePlaylist(Playlist playlistToBeEdited) throws SQLException {
         playlistDAO.updatePlaylist(playlistToBeEdited);
     }
 
-    public void deletePlaylist(Playlist playlistToBeDeleted) throws SQLServerException {
+    public void deletePlaylist(Playlist playlistToBeDeleted) throws SQLException {
         playlistDAO.deletePlaylist(playlistToBeDeleted);
     }
 }

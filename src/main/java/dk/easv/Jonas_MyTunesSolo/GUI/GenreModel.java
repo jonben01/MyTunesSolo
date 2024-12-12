@@ -13,7 +13,7 @@ public class GenreModel {
     private ObservableList<Genre> genresToBeViewed;
     private GenreManager genreManager;
 
-    public GenreModel() throws IOException {
+    public GenreModel() throws IOException, SQLException {
         genreManager = new GenreManager();
         genresToBeViewed = FXCollections.observableArrayList();
         genresToBeViewed.addAll(genreManager.getAllGenres());

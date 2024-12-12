@@ -1,8 +1,6 @@
 package dk.easv.Jonas_MyTunesSolo.DAL;
 //PROJECT IMPORTS
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
-//LIBRARY IMPORTS
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 //JAVA IMPORTS
 import java.io.IOException;
 import java.sql.*;
@@ -53,7 +51,7 @@ public class SongsDAO_db implements ISongDataAccess {
     }
 
     @Override
-    public Song createSong(Song newSong) {
+    public Song createSong(Song newSong) throws SQLException {
         String sql = "INSERT INTO dbo.Song (Title, Artist, GenreId, Duration, File_Path ) VALUES (?,?,?,?,?);";
 
         try (Connection connection = dbConnector.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -77,7 +75,7 @@ public class SongsDAO_db implements ISongDataAccess {
             return songCreated;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new SQLException("Could not create new song", e);
         }
     }
 
@@ -98,9 +96,12 @@ public class SongsDAO_db implements ISongDataAccess {
             }
             pstmt.setInt(4, songToBeEdited.getSongID());
             pstmt.executeUpdate();
-
+        } catch (SQLException e) {
+            throw new SQLException("Could not update song",e);
         }
+
     }
+
     //I wish I didnt need this right now, but i cant figure out how to make things work without it
     //this still works if the genreName isnt in the database, because of if statement in update method
     public Integer getGenreIdByName(String genreName) throws SQLException {
@@ -116,7 +117,7 @@ public class SongsDAO_db implements ISongDataAccess {
     }
 
     @Override
-    public void deleteSong(Song songToBeDeleted) throws SQLServerException {
+    public void deleteSong(Song songToBeDeleted) throws SQLException {
         Connection connection = null;
 
         String getAffectPlaylistsSQL =
@@ -176,8 +177,9 @@ public class SongsDAO_db implements ISongDataAccess {
                 try {
                     connection.rollback();
                 } catch (SQLException ex) {
-                    throw new RuntimeException(e);
+                    throw new SQLException("Could not delete song, rollback failed",ex);
                 }
+                throw new SQLException("Could not delete song", e);
             }
         //need to use a finally block, cause if the method runs well, my connection stays open :)
         } finally {
@@ -186,7 +188,7 @@ public class SongsDAO_db implements ISongDataAccess {
                     connection.setAutoCommit(true);
                     connection.close();
                 } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                    throw new SQLException("Could not close connection", e);
                 }
             }
         }

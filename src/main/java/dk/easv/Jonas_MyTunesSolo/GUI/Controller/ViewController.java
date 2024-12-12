@@ -16,7 +16,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -28,13 +27,10 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -253,8 +249,8 @@ public class ViewController implements Initializable {
                        playlistSongsModel.moveSongToPlaylist(song, playlist);
                        //refreshes gui after drag and drop success.
                        playlistDataChanged.set(true);
-                   } catch (SQLServerException e) {
-                       throw new RuntimeException(e);
+                   } catch (SQLException e) {
+                       throw new RuntimeException("Drag failed", e);
                    }
                }
            }
@@ -291,7 +287,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    public void btnHandleDeleteSong(ActionEvent actionEvent) throws SQLServerException {
+    public void btnHandleDeleteSong(ActionEvent actionEvent) throws SQLException {
         Song songToBeDeleted = tblSong.getSelectionModel().getSelectedItem();
         //if song exists send alert
         if (songToBeDeleted != null) {
@@ -428,7 +424,7 @@ public class ViewController implements Initializable {
             }
         }
     }
-    public void btnHandleDeletePlaylist(ActionEvent actionEvent) throws SQLServerException {
+    public void btnHandleDeletePlaylist(ActionEvent actionEvent) throws SQLException {
         Playlist playlistToBeDeleted = tblPlaylist.getSelectionModel().getSelectedItem();
 
         if (playlistToBeDeleted != null) {
@@ -445,7 +441,7 @@ public class ViewController implements Initializable {
         }
     }
     //changes a PlaylistSong objects orderIndex value and selects it again.
-    public void btnHandleMoveSongUp(ActionEvent actionEvent) throws SQLServerException {
+    public void btnHandleMoveSongUp(ActionEvent actionEvent) throws SQLException {
         PlaylistSong playlistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
 
         if (playlistSong != null) {
@@ -470,7 +466,7 @@ public class ViewController implements Initializable {
         }
     }
     //deletes the selected PlaylistSong object.
-    public void btnHandleDeleteSongOnPlaylist(ActionEvent actionEvent) throws SQLServerException {
+    public void btnHandleDeleteSongOnPlaylist(ActionEvent actionEvent) throws SQLException {
         PlaylistSong playlistSongToBeDeleted = tblPlaylistSongs.getSelectionModel().getSelectedItem();
 
         if (playlistSongToBeDeleted != null) {
@@ -494,7 +490,7 @@ public class ViewController implements Initializable {
 
     //should probably rename, now that I have made drag and drop instead, but the button exists, its just invisible.
     //and also because it doesnt "move" the song???????
-    public void btnHandleMoveSongToPlaylist(ActionEvent actionEvent) throws SQLServerException {
+    public void btnHandleMoveSongToPlaylist(ActionEvent actionEvent) throws SQLException {
         Song songToMove = tblSong.getSelectionModel().getSelectedItem();
         Playlist selectedPlaylist = tblPlaylist.getSelectionModel().getSelectedItem();
 

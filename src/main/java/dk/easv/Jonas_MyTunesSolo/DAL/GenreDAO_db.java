@@ -16,15 +16,20 @@ public class GenreDAO_db implements IGenreDataAccess {
         dbConnector = new DBConnector();
     }
 
+    /**
+     * @return list of all Genre objects stored in the database
+     * I dont know if I should call it a "genre object" in this case
+     */
     @Override
     public List<Genre> getAllGenres() {
         ArrayList<Genre> allGenres  = new ArrayList<Genre>();
         //try with resources, auto closes database connection.
         try (Connection connection = dbConnector.getConnection(); Statement stmt = connection.createStatement()) {
+            //gets all columns from Genre table
             String sql = "SELECT * FROM dbo.Genre ";
 
             ResultSet rs = stmt.executeQuery(sql);
-
+            //as long as there a more rows of data, create Genre objects from the database info, and add them to the list.
             while(rs.next()) {
 
                 int Id =rs.getInt("Id");
@@ -36,42 +41,36 @@ public class GenreDAO_db implements IGenreDataAccess {
             return allGenres;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            //throwing runtime instead of SQL because I would have to try catch all my listeners in viewController.
+            throw new RuntimeException("Could not get all genres", e);
         }
     }
 
+    /**
+     * @param newGenre to be added to the database
+     * @return genreCreated.
+     * @throws SQLException if db issues
+     */
     @Override
     public Genre createGenre(Genre newGenre) throws SQLException {
+        //SQL for inserting a new genre with the given name from the view.
         String sql = "INSERT INTO dbo.Genre (genreName) VALUES (?);";
 
-        try (Connection conn = dbConnector.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
-            // Bind parameters
+        try (Connection conn = dbConnector.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1,newGenre.getGenreName());
 
-            // Run the specified SQL statement
+            Genre genreCreated = new Genre(newGenre.getId(), newGenre.getGenreName());
+
             stmt.executeUpdate();
-
-            // Get the generated ID from the DB
-            ResultSet rs = stmt.getGeneratedKeys();
-            int id = 0;
-
-            if (rs.next()) {
-                id = rs.getInt(1);
-            }
-
-            // Create movie object and send up the layers
-            Genre genreCreated = new Genre(id, newGenre.getGenreName());
             return genreCreated ;
         }
-        catch (SQLException ex)
+        catch (SQLException e)
         {
-            ex.printStackTrace();
-            throw new SQLException("Could not create movie", ex);
+            throw new SQLException("Could not create genre", e);
         }
     }
 
+    //deletes a genre.
     @Override
     public void deleteGenre(Genre genreToBeDeleted) throws SQLException {
         String sql = "DELETE FROM dbo.Genre WHERE Id = ?;";
@@ -81,7 +80,8 @@ public class GenreDAO_db implements IGenreDataAccess {
             stmt.setInt(1, genreToBeDeleted.getId());
             stmt.executeUpdate();
         }
-
+        catch (SQLException e) {
+            throw new SQLException("Could not delete genre", e);
+        }
     }
-
 }

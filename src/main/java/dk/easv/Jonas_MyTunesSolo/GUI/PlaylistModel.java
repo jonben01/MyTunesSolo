@@ -2,8 +2,6 @@ package dk.easv.Jonas_MyTunesSolo.GUI;
 //PROJECT IMPORTS
 import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
 import dk.easv.Jonas_MyTunesSolo.BLL.PlaylistManager;
-//LIBRARY IMPORTS
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 //JAVA IMPORTS
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -47,18 +45,18 @@ public class PlaylistModel {
     /**
      * calls updatePlaylist() in BLL
      * @param playlistToBeEdited to pass to DAL
-     * @throws SQLServerException if db issues
+     * @throws SQLException if db issues
      */
-    public void updatePlaylist(Playlist playlistToBeEdited) throws SQLServerException {
+    public void updatePlaylist(Playlist playlistToBeEdited) throws SQLException {
         playlistManager.updatePlaylist(playlistToBeEdited);
     }
 
     /**
      * calls deletePlaylist() in BLL and removes the playlistToBeDeleted from the observable list.
      * @param playlistToBeDeleted to pass to DAL
-     * @throws SQLServerException if db issues
+     * @throws SQLException if db issues
      */
-    public void deletePlaylist(Playlist playlistToBeDeleted) throws SQLServerException {
+    public void deletePlaylist(Playlist playlistToBeDeleted) throws SQLException {
         playlistsToBeViewed.remove(playlistToBeDeleted);
         playlistManager.deletePlaylist(playlistToBeDeleted);
     }

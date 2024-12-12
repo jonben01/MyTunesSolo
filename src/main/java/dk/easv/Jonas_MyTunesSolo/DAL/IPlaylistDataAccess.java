@@ -14,8 +14,8 @@ public interface IPlaylistDataAccess {
 
     Playlist createPlaylist(Playlist newPlaylist) throws SQLException;
 
-    void updatePlaylist(Playlist playlist) throws SQLServerException;
+    void updatePlaylist(Playlist playlist) throws SQLException;
 
-    void deletePlaylist(Playlist playlist) throws SQLServerException;
+    void deletePlaylist(Playlist playlist) throws SQLException;
 
 }

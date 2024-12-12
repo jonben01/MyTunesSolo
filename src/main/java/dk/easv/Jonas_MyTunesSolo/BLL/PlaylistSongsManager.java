@@ -5,12 +5,10 @@ import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
 import dk.easv.Jonas_MyTunesSolo.BE.PlaylistSong;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.DAL.PlaylistSongsDAO_db;
-//LIBRARY IMPORTS
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 //JAVA IMPORTS
 import javafx.collections.ObservableList;
 import java.sql.SQLException;
-import java.util.List;
+
 
 public class PlaylistSongsManager {
 
@@ -26,11 +24,11 @@ public class PlaylistSongsManager {
         return playlistSongsDAO.getAllPlaylistSongs(playlist);
     }
 
-    public PlaylistSong moveSongToPlaylist(Song songToMove, Playlist selectedPlaylist) throws SQLServerException {
+    public PlaylistSong moveSongToPlaylist(Song songToMove, Playlist selectedPlaylist) throws SQLException {
         return playlistSongsDAO.moveSongToPlaylist(songToMove, selectedPlaylist);
     }
 
-    public void deleteSongOnPlaylist(PlaylistSong playlistSong) throws SQLServerException {
+    public void deleteSongOnPlaylist(PlaylistSong playlistSong) throws SQLException {
         playlistSongsDAO.deleteSongOnPlaylist(playlistSong);
     }
 
@@ -39,7 +37,7 @@ public class PlaylistSongsManager {
         playlistSongsDAO.moveSongOnPlaylistDown(playlistSong);
     }
 
-    public void moveSongOnPlaylistUp(PlaylistSong playlistSong) throws SQLServerException {
+    public void moveSongOnPlaylistUp(PlaylistSong playlistSong) throws SQLException {
         playlistSongsDAO.moveSongOnPlaylistUp(playlistSong);
     }
 }

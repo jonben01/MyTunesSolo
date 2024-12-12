@@ -2,8 +2,6 @@ package dk.easv.Jonas_MyTunesSolo.BLL;
 //PROJECT IMPORTS
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.DAL.SongsDAO_db;
-//LIBRARY IMPORTS
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 //JAVA IMPORTS
 import java.io.IOException;
 import java.sql.SQLException;
@@ -25,11 +23,11 @@ public class SongManager {
         return SongsDAO.getAllSongs();
     }
 
-    public Song createSong(Song newSong) {
+    public Song createSong(Song newSong) throws SQLException {
         return SongsDAO.createSong(newSong);
     }
 
-    public void deleteSong(Song songToBeDeleted) throws SQLServerException {
+    public void deleteSong(Song songToBeDeleted) throws SQLException {
         SongsDAO.deleteSong(songToBeDeleted);
     }
 

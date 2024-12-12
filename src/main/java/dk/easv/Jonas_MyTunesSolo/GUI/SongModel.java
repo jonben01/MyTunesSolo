@@ -3,7 +3,6 @@ package dk.easv.Jonas_MyTunesSolo.GUI;
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
 import dk.easv.Jonas_MyTunesSolo.BLL.SongManager;
-
 //JAVA IMPORTS
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -36,7 +35,7 @@ public class SongModel {
      * calls createSong in BLL and adds the newSong to the observable list
      * @param newSong song to be created in DAL
      */
-    public void createSong(Song newSong) {
+    public void createSong(Song newSong) throws SQLException {
         Song songCreated = songManager.createSong(newSong);
         songsToBeViewed.add(songCreated);
     }
@@ -77,7 +76,7 @@ public class SongModel {
      * @param songToBeDeleted to pass selected object to DAL
      * @throws SQLServerException if db issues
      */
-    public void deleteSong(Song songToBeDeleted) throws SQLServerException {
+    public void deleteSong(Song songToBeDeleted) throws SQLException {
         songsToBeViewed.remove(songToBeDeleted);
         songManager.deleteSong(songToBeDeleted);
     }

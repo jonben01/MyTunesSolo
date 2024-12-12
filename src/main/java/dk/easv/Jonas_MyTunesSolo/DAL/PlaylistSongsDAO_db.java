@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 public class PlaylistSongsDAO_db {
 
@@ -25,7 +24,7 @@ public class PlaylistSongsDAO_db {
     }
 
 
-    public ObservableList<PlaylistSong> getAllPlaylistSongs(Playlist playlist) {
+    public ObservableList<PlaylistSong> getAllPlaylistSongs(Playlist playlist)  {
         ObservableList<PlaylistSong> allPlaylistSongs = FXCollections.observableArrayList();
         String sql = "SELECT s.*, ps.* " +
                      "FROM dbo.Song s " +
@@ -58,11 +57,12 @@ public class PlaylistSongsDAO_db {
                 allPlaylistSongs.add(playlistSong);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //throwing runtime instead of SQL because I would have to try catch all my listeners in viewController.
+            throw new RuntimeException("Could not get all playlist songs", e);
         }
         return allPlaylistSongs;
     }
-    public PlaylistSong moveSongToPlaylist(Song songToMove, Playlist selectedPlaylist) {
+    public PlaylistSong moveSongToPlaylist(Song songToMove, Playlist selectedPlaylist) throws SQLException {
         Connection connection = null;
         //COALESCE runs through the column to find non-null entries, if there are none its null and will default to 0 (+1) //change to -1 +1 instead
         //MAX finds the maximum value (if there are any valid values) combined these find the maximum non-null value
@@ -121,10 +121,10 @@ public class PlaylistSongsDAO_db {
                 try {
                     connection.rollback();
                 } catch (SQLException ex) {
-                    throw new RuntimeException(e);
+                    throw new SQLException("Could not move song to playlist, rollback failed", ex);
                 }
             }
-            throw new RuntimeException();
+            throw new SQLException("Could not move song to playlist", e);
             //need to use a finally block, cause if the method runs well, my connection stays open :)
         } finally {
             if (connection != null) {
@@ -132,14 +132,14 @@ public class PlaylistSongsDAO_db {
                     connection.setAutoCommit(true);
                     connection.close();
                 } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                    throw new SQLException("Could not close connection", e);
                 }
             }
 
         }
     }
 
-    public void deleteSongOnPlaylist(PlaylistSong playlistSong) {
+    public void deleteSongOnPlaylist(PlaylistSong playlistSong) throws SQLException {
         Connection connection = null;
         String deletionSQL = "DELETE FROM dbo.PlaylistSongs " +
                              "WHERE PlaylistSongId = ?;";
@@ -177,8 +177,9 @@ public class PlaylistSongsDAO_db {
                 try {
                     connection.rollback();
                 } catch (SQLException ex) {
-                    throw new RuntimeException(e);
+                    throw new SQLException("Could not delete song on playlist, rollback failed", ex);
                 }
+                throw new SQLException("Could not delete song on playlist", e);
             }
             //need to use a finally block, cause if the method runs well, my connection stays open :)
         } finally {
@@ -187,13 +188,13 @@ public class PlaylistSongsDAO_db {
                     connection.setAutoCommit(true);
                     connection.close();
                 } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                    throw new SQLException("Could not close connection", e);
                 }
             }
         }
     }
 
-    public void moveSongOnPlaylistUp(PlaylistSong playlistSong) {
+    public void moveSongOnPlaylistUp(PlaylistSong playlistSong) throws SQLException {
         Connection connection = null;
         //Cant move a song into the abyss.
         if (playlistSong.getOrderIndex() <= 0) {
@@ -222,15 +223,12 @@ public class PlaylistSongsDAO_db {
                 pstmt.setInt(2, playlistSong.getPlaylistId());
                 pstmt.setInt(3, aboveOrderIndex);
                 pstmt.executeUpdate();
-
             }
-
             try (PreparedStatement pstmt = connection.prepareStatement(updateSelectedSQL)) {
                 pstmt.setInt(1, aboveOrderIndex);
                 pstmt.setInt(2, playlistSong.getPsId());
                 pstmt.executeUpdate();
             }
-
             playlistSong.setOrderIndex(aboveOrderIndex);
             connection.commit();
 
@@ -239,9 +237,10 @@ public class PlaylistSongsDAO_db {
                 try {
                     connection.rollback();
                 } catch (SQLException ex) {
-                    throw new RuntimeException(e);
+                    throw new SQLException("Could not move song on playlist UP, rollback failed", ex);
                 }
             }
+            throw new SQLException("Could not move song on playlist UP", e);
             //need to use a finally block, cause if the method runs well, my connection stays open :)
         } finally {
             if (connection != null) {
@@ -249,13 +248,13 @@ public class PlaylistSongsDAO_db {
                     connection.setAutoCommit(true);
                     connection.close();
                 } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                    throw new SQLException("Could not close connection", e);
                 }
             }
         }
     }
 
-    public void moveSongOnPlaylistDown(PlaylistSong playlistSong) {
+    public void moveSongOnPlaylistDown(PlaylistSong playlistSong) throws SQLException {
         int maxOrderIndex;
         int belowOrderIndex = playlistSong.getOrderIndex() + 1;
         int selectedSongOrderIndex = playlistSong.getOrderIndex();
@@ -309,9 +308,10 @@ public class PlaylistSongsDAO_db {
                 try {
                     connection.rollback();
                 } catch (SQLException ex) {
-                    throw new RuntimeException(e);
+                    throw new SQLException("Could not move song on playlist DOWN, rollback failed", ex);
                 }
             }
+            throw new SQLException("Could not move song on playlist DOWN", e);
             //need to use a finally block, cause if the method runs well, my connection stays open :)
         } finally {
             if (connection != null) {
@@ -319,7 +319,7 @@ public class PlaylistSongsDAO_db {
                     connection.setAutoCommit(true);
                     connection.close();
                 } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                    throw new SQLException("Could not move song on playlist DOWN 2", e);
                 }
             }
         }
