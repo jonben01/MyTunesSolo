@@ -523,11 +523,11 @@ public class ViewController implements Initializable {
                     btnMute.setText("\uD83D\uDD07");
 
         }
-        if (volumeSlider.getValue() >=6 && volumeSlider.getValue() < 35) {
+        if (volumeSlider.getValue() >=6 && volumeSlider.getValue() < 20) {
                     btnMute.setText("\uD83D\uDD08");
 
         }
-        if (volumeSlider.getValue() >=35 && volumeSlider.getValue() < 70) {
+        if (volumeSlider.getValue() >=20 && volumeSlider.getValue() < 70) {
                     btnMute.setText("🔉");
 
         }

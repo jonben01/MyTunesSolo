@@ -136,6 +136,11 @@ HBox {
     -fx-background-color: transparent;
     -fx-pref-width: 2;
 }
+
+.table-view .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+    -fx-pref-width: 0;
+}
 .table-view .table-cell {
     -fx-background-color: rgba(43, 43, 43, 0.8);
     -fx-text-fill: white;

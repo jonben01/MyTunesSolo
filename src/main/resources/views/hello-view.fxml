@@ -18,8 +18,8 @@
       <AnchorPane layoutX="6.0" layoutY="467.0" prefHeight="94.0" prefWidth="966.0" styleClass="anchor-pane2">
          <children>
             <Slider fx:id="durationSlider" layoutX="150.0" layoutY="65.0" prefHeight="14.0" prefWidth="676.0" />
-            <Button fx:id="btnSkip" layoutX="513.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnHandleSkip" styleClass="media-buttons" text="⏭" />
-            <Button fx:id="btnGoBack" layoutX="393.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnHandleGoBack" styleClass="media-buttons" text="⏮" />
+            <Button fx:id="btnSkip" layoutX="513.0" layoutY="5.0" mnemonicParsing="false" onAction="#btnHandleSkip" styleClass="media-buttons" text="⏭" />
+            <Button fx:id="btnGoBack" layoutX="393.0" layoutY="5.0" mnemonicParsing="false" onAction="#btnHandleGoBack" styleClass="media-buttons" text="⏮" />
             <Label fx:id="lblCurrentlyPlaying" layoutX="14.0" layoutY="6.0" styleClass="text-white">
                <font>
                   <Font name="System Bold" size="17.0" />
@@ -29,7 +29,7 @@
             <Label fx:id="lblSongDuration" layoutX="826.0" layoutY="64.0" styleClass="text-white" text="00:00" />
             <Slider fx:id="volumeSlider" layoutX="779.0" layoutY="19.0" prefHeight="14.0" prefWidth="161.0" />
             <Button fx:id="btnMute" layoutX="728.0" layoutY="6.0" mnemonicParsing="false" onAction="#btnHandleMute" text="🔉 " />
-            <Button fx:id="btnPlay" layoutX="453.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnHandlePlay" styleClass="media-buttons" text="⏵">
+            <Button fx:id="btnPlay" layoutX="453.0" layoutY="5.0" mnemonicParsing="false" onAction="#btnHandlePlay" styleClass="media-buttons" text="⏵">
                <font>
                   <Font size="18.0" />
                </font>
@@ -66,9 +66,9 @@
             <TableView fx:id="tblSong" editable="true" fixedCellSize="25.0" onMousePressed="#doubleClickedSong" prefHeight="384.0" prefWidth="441.0">
               <columns>
                 <TableColumn fx:id="colTitle" prefWidth="165.59994196891785" resizable="false" text="Title" />
-                <TableColumn fx:id="colArtist" prefWidth="151.99989318847656" resizable="false" text="Artist" />
-                  <TableColumn fx:id="colGenre" prefWidth="84.8001708984375" resizable="false" text="Genre" />
-                  <TableColumn fx:id="colDuration" prefWidth="67.1998291015625" resizable="false" styleClass="colDuration" text="🕑" />
+                <TableColumn fx:id="colArtist" prefWidth="134.40003967285156" resizable="false" text="Artist" />
+                  <TableColumn fx:id="colGenre" prefWidth="103.2000732421875" resizable="false" text="Genre" />
+                  <TableColumn fx:id="colDuration" prefWidth="61.5999755859375" resizable="false" styleClass="colDuration" text="🕑" />
               </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
