@@ -46,6 +46,7 @@ public class NewGenreController implements Initializable {
 
     }
 
+    @FXML
     public void btnHandleAddGenre(ActionEvent actionEvent) throws SQLException {
         String genreName = txtGenreName.getText();
         Genre newGenre = new Genre(-1, genreName);
@@ -61,6 +62,7 @@ public class NewGenreController implements Initializable {
         stage.close();
     }
 
+    @FXML
     public void btnHandleDeleteGenre(ActionEvent actionEvent) throws SQLException {
         Genre genreToBeDeleted = lstGenres.getSelectionModel().getSelectedItem();
 
@@ -72,13 +74,18 @@ public class NewGenreController implements Initializable {
             }
         }
     }
+
+    //used to refresh GUI in other views
     public void setDataChangedFlag(SimpleBooleanProperty dataChangedFlag) {
         this.dataChangedFlag = dataChangedFlag;
     }
+    //used to refresh GUI in new song view
     public void setGenreDataChangedFlag(SimpleBooleanProperty genreDataChangedFlag) {
         this.genreDataChangedFlag = genreDataChangedFlag;
     }
 
+    //close the stage
+    @FXML
     public void btnHandleCancelGenre(ActionEvent actionEvent) {
         Stage stage = (Stage) btnCancelGenre.getScene().getWindow();
         stage.close();

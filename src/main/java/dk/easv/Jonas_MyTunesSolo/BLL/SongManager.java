@@ -19,6 +19,8 @@ public class SongManager {
         SongsDAO = new SongsDAO_db();
     }
 
+    //this class is literally only used to pass stuff from DAL to GUI layer except the call to the SongSearcher class
+
     public List<Song> getAllSongs() {
         return SongsDAO.getAllSongs();
     }
@@ -34,6 +36,12 @@ public class SongManager {
     public void updateSong(Song songToBeEdited) throws SQLException {
         SongsDAO.updateSong(songToBeEdited);
     }
+
+    /**
+     * calls the search() method on the SongSearcher class with a query from the GUI.
+     * @param searchQuery query from gui to compare song titles, artists and genres with
+     * @return a list of songs containing the query
+     */
     public List<Song> searchSongs(String searchQuery) {
         List<Song> allSongs = SongsDAO.getAllSongs();
         List<Song> searchedResults = searcher.search(allSongs, searchQuery);

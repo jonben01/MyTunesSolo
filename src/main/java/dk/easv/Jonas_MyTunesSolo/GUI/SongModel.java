@@ -21,18 +21,31 @@ public class SongModel {
         songsToBeViewed.addAll(songManager.getAllSongs());
     }
 
+    /**
+     * @return observable list of song objects
+     */
     public ObservableList<Song> getSongsToBeViewed() { return songsToBeViewed; }
 
+    //used to refresh observable list when changes are made.
     public void refreshSong() {
         songsToBeViewed.clear();
         songsToBeViewed.addAll(songManager.getAllSongs());
     }
 
+    /**
+     * calls createSong in BLL and adds the newSong to the observable list
+     * @param newSong song to be created in DAL
+     */
     public void createSong(Song newSong) {
         Song songCreated = songManager.createSong(newSong);
         songsToBeViewed.add(songCreated);
     }
 
+    /**
+     * used to get a song object from its file path.
+     * @param filePath to compare to songs
+     * @return song with matching file path
+     */
     public Song getSongByFilePath(String filePath) {
         //go through all songs
         for (Song song : songManager.getAllSongs()) {
@@ -44,7 +57,12 @@ public class SongModel {
         }
         return null;
     }
-    //same as prior method, but for ID
+
+    /**
+     * used to get a song object from its id.
+     * @param id to compare to song id
+     * @return the song with matching id
+     */
     public Song getSongByID(int id) {
         for (Song song : songManager.getAllSongs()) {
             if (song.getSongID() == id) {
@@ -54,14 +72,30 @@ public class SongModel {
         return null;
     }
 
+    /**
+     * calls deleteSong() in BLL and removes the song to be deleted from the observable list
+     * @param songToBeDeleted to pass selected object to DAL
+     * @throws SQLServerException if db issues
+     */
     public void deleteSong(Song songToBeDeleted) throws SQLServerException {
         songsToBeViewed.remove(songToBeDeleted);
         songManager.deleteSong(songToBeDeleted);
     }
 
+    /**
+     * calls updateSong() in BLL
+     * @param songToBeEdited to pass selected object to DAL
+     * @throws SQLException if db issues
+     */
     public void updateSong(Song songToBeEdited) throws SQLException {
         songManager.updateSong(songToBeEdited);
     }
+
+    /**
+     * takes a query from the search txt field in viewController to pass to BLL
+     * @param searchQuery query to compare songs to
+     * @throws SQLServerException if issues with getting songs from db
+     */
     public void searchSongs(String searchQuery) throws SQLServerException {
         List<Song> searchResults = songManager.searchSongs(searchQuery);
         songsToBeViewed.clear();

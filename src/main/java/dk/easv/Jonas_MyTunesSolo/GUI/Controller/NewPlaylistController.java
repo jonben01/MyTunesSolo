@@ -40,11 +40,12 @@ public class NewPlaylistController implements Initializable {
             throw new RuntimeException(e);
         }
     }
-
+    //used to update GUI in main view.
     public void setDataChangedFlag(SimpleBooleanProperty dataChangedFlag) {
         this.dataChangedFlag = dataChangedFlag;
     }
 
+    @FXML
     public void btnMenuHandleAddPlaylist(ActionEvent actionEvent) throws SQLException {
         String name = txtPlaylistName.getText();
         Playlist newPlaylist = new Playlist(-1, name);
@@ -54,23 +55,28 @@ public class NewPlaylistController implements Initializable {
             txtPlaylistName.clear();
             dataChangedFlag.set(true);
         }
+        //close the stage after adding a playlist
         Stage stage = (Stage) btnMenuAddPlaylist.getScene().getWindow();
         stage.close();
     }
 
+    @FXML
     public void btnHandleMenuEditPlaylist(ActionEvent actionEvent) throws SQLServerException {
         playlistToBeEdited.setName(txtPlaylistName.getText());
         playlistModel.updatePlaylist(playlistToBeEdited);
         dataChangedFlag.set(true);
+        //close the stage after editing a playlist
         Stage stage = (Stage) btnMenuEditPlaylist.getScene().getWindow();
         stage.close();
     }
 
+    @FXML
     public void btnHandleCancelPlaylist(ActionEvent actionEvent) {
         Stage stage = (Stage) btnCancelPlaylist.getScene().getWindow();
         stage.close();
     }
 
+    //passing playlist.
     public void playlistToBeEditedPasser(Playlist playlist) {
     playlistToBeEdited = playlist;
 

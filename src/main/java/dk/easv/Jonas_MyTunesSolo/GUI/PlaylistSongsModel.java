@@ -23,11 +23,17 @@ public class PlaylistSongsModel {
 
     }
 
+    /**
+     * @return observable list of playlistSong objets
+     */
     public ObservableList<PlaylistSong> getPlaylistSongsToBeViewed() {
-        //ObservableList<Song> playlistSongs = FXCollections.observableArrayList(playlistSongsManager.getAllPlaylistSongs(playlist));
         return playlistSongsToBeViewed;
     }
 
+    /**
+     * refresh observable list for GUI for the selected playlist
+     * @param playlist selected playlist to refresh
+     */
     public void refreshPlaylistSongs(Playlist playlist) {
         if (playlist == null) {
             playlistSongsToBeViewed.clear();
@@ -37,20 +43,41 @@ public class PlaylistSongsModel {
         playlistSongsToBeViewed.addAll(playlistSongsManager.getAllPlaylistSongs(playlist));
     }
 
+    /**
+     * calls moveSongToPlaylist() in BLL and adds to observable list
+     * @param songToMove song to move to playlist
+     * @param selectedPlaylist playlist to move song to
+     * @throws SQLServerException if db issues
+     */
     public void moveSongToPlaylist(Song songToMove, Playlist selectedPlaylist) throws SQLServerException {
         PlaylistSong playlistSong = playlistSongsManager.moveSongToPlaylist(songToMove, selectedPlaylist);
         playlistSongsToBeViewed.add(playlistSong);
     }
 
+    /**
+     * calls deleteSongOnPlaylist in BLL and removes from observable list
+     * @param playlistSong song to delete in DAL
+     * @throws SQLServerException if db issues
+     */
     public void deleteSongOnPlaylist(PlaylistSong playlistSong) throws SQLServerException {
         playlistSongsToBeViewed.remove(playlistSong);
         playlistSongsManager.deleteSongOnPlaylist(playlistSong);
     }
 
+    /**
+     * calls moveSongOnPlaylistDown() in BLL
+     * @param playlistSong song to move down
+     * @throws SQLException if db issues
+     */
     public void moveSongOnPlaylistDown(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) throws SQLException {
         playlistSongsManager.moveSongOnPlaylistDown(playlistSong, playlistSongList);
     }
 
+    /**
+     * calls moveSongOnPlaylistDown() in BLL
+     * @param playlistSong to move up
+     * @throws SQLServerException if db issues
+     */
     public void moveSongOnPlaylistUp(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) throws SQLServerException {
         playlistSongsManager.moveSongOnPlaylistUp(playlistSong, playlistSongList);
     }

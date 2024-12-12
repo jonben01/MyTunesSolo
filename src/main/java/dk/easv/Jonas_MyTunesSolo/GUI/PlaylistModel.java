@@ -21,28 +21,46 @@ public class PlaylistModel {
         playlistsToBeViewed.addAll(playlistManager.getAllPlaylists());
     }
 
+    /**
+     * cals createPlaylist() in BLL and adds newPlaylist to observable list
+     * @param newPlaylist to pass to DAL
+     * @throws SQLException if db issues
+     */
     public void createNewPlaylist(Playlist newPlaylist) throws SQLException {
         Playlist createdPlaylist = playlistManager.createPlaylist(newPlaylist);
         playlistsToBeViewed.add(createdPlaylist);
     }
 
+    /**
+     * @return observable list of playlists
+     */
     public ObservableList<Playlist> getPlaylistsToBeViewed() {
-        ObservableList<Playlist> playlists = FXCollections.observableArrayList(playlistsToBeViewed);
         return playlistsToBeViewed;
     }
 
+    //used to refresh GUI
     public void refreshPlaylist() {
         playlistsToBeViewed.clear();
         playlistsToBeViewed.addAll(playlistManager.getAllPlaylists());
     }
 
+    /**
+     * calls updatePlaylist() in BLL
+     * @param playlistToBeEdited to pass to DAL
+     * @throws SQLServerException if db issues
+     */
     public void updatePlaylist(Playlist playlistToBeEdited) throws SQLServerException {
         playlistManager.updatePlaylist(playlistToBeEdited);
     }
 
+    /**
+     * calls deletePlaylist() in BLL and removes the playlistToBeDeleted from the observable list.
+     * @param playlistToBeDeleted to pass to DAL
+     * @throws SQLServerException if db issues
+     */
     public void deletePlaylist(Playlist playlistToBeDeleted) throws SQLServerException {
         playlistsToBeViewed.remove(playlistToBeDeleted);
-        playlistManager.deleteSong(playlistToBeDeleted);
+        playlistManager.deletePlaylist(playlistToBeDeleted);
     }
 
 }

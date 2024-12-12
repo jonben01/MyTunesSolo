@@ -467,11 +467,12 @@ public class ViewController implements Initializable {
     @FXML
     public void btnHandleMoveSongUp(ActionEvent actionEvent) throws SQLServerException {
         PlaylistSong playlistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
-        List<PlaylistSong> playlistSongList = new ArrayList<PlaylistSong>(tblPlaylistSongs.getSelectionModel().getSelectedItems());
+        List<PlaylistSong> playlistSongList = new ArrayList<>(tblPlaylistSongs.getSelectionModel().getSelectedItems());
 
         if (playlistSong != null) {
             playlistSongsModel.moveSongOnPlaylistUp(playlistSong, playlistSongList);
             playlistSongDataChanged.set(true);
+            //didnt work when I just selected the playlist again, had to make this
             int PlaylistSelectionIndex = playlistSong.getOrderIndex();
             tblPlaylistSongs.getSelectionModel().select(PlaylistSelectionIndex);
         }
@@ -481,11 +482,12 @@ public class ViewController implements Initializable {
     @FXML
     public void btnHandleMoveSongDown(ActionEvent actionEvent) throws SQLException {
         PlaylistSong playlistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
-        List<PlaylistSong> playlistSongList = new ArrayList<PlaylistSong>(tblPlaylistSongs.getSelectionModel().getSelectedItems());
+        List<PlaylistSong> playlistSongList = new ArrayList<>(tblPlaylistSongs.getSelectionModel().getSelectedItems());
 
         if (playlistSong != null) {
             playlistSongsModel.moveSongOnPlaylistDown(playlistSong, playlistSongList);
             playlistSongDataChanged.set(true);
+            //didnt work when I just selected the playlist again, had to make this
             int PlaylistSelectionIndex = playlistSong.getOrderIndex();
             tblPlaylistSongs.getSelectionModel().select(PlaylistSelectionIndex);
         }
@@ -728,7 +730,7 @@ public class ViewController implements Initializable {
         });
     }
 
-    private void playNextSong() {
+    public void playNextSong() {
         List<Song> songOrder = songModel.getSongsToBeViewed();
         if (songOrder.isEmpty()) {
             return;
@@ -741,7 +743,7 @@ public class ViewController implements Initializable {
         Song nextSong = songOrder.get(nextIndex);
         playSelectedSong(nextSong, false);
     }
-    private void playNextPlaylistSong() {
+    public void playNextPlaylistSong() {
         List<PlaylistSong> playlistSongOrder = playlistSongsModel.getPlaylistSongsToBeViewed();
         if (playlistSongOrder.isEmpty()) {
             return;
@@ -756,13 +758,12 @@ public class ViewController implements Initializable {
         playSelectedSong(nextPlaylistSong.getSong(), true);
     }
 
-    //TODO figure out if I should use OrderIndex of the playlistSongs instead, might help with handling deletion of a playlistSong.
-    private void playPreviousPlaylistSong() {
+
+    public void playPreviousPlaylistSong() {
         List<PlaylistSong> playlistSongOrder = playlistSongsModel.getPlaylistSongsToBeViewed();
         if (playlistSongOrder.isEmpty()) {
             return;
         }
-
         int currentIndex = playlistSongOrder.indexOf(currentPlaylistSong);
         //works same as in the other methods like this one just works the other way around
         //on a 6 song playlist, we're playing song index 4 so we get (4 - 1 + 6) % 6 = 3
@@ -775,7 +776,7 @@ public class ViewController implements Initializable {
         playSelectedSong(nextPlaylistSong.getSong(), true);
     }
 
-    private void playPreviousSong() {
+    public void playPreviousSong() {
         List<Song> songOrder = songModel.getSongsToBeViewed();
         if (songOrder.isEmpty()) {
             return;
@@ -848,7 +849,7 @@ public class ViewController implements Initializable {
         }
     }
 
-    private String formatDuration(int durationSeconds) {
+    public String formatDuration(int durationSeconds) {
         //removes decimals, so it only gets whole minutes
         int minutes = durationSeconds / 60;
         //gets whats left after converting to minutes.

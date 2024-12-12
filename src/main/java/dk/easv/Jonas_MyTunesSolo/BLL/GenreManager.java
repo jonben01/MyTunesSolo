@@ -13,6 +13,8 @@ public class GenreManager {
 
     private IGenreDataAccess genreDAO;
 
+    //this class is literally only used to pass stuff from DAL to GUI layer
+
     public GenreManager() throws IOException {
         genreDAO = new GenreDAO_db();
     }

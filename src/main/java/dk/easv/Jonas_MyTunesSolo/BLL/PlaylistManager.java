@@ -20,6 +20,7 @@ public class PlaylistManager {
         playlistDAO = new PlaylistDAO_db();
     }
 
+    //this class is literally only used to pass stuff from DAL to GUI layer
 
     public Playlist createPlaylist(Playlist newPlaylist) throws SQLException {
         return playlistDAO.createPlaylist(newPlaylist);
@@ -33,7 +34,7 @@ public class PlaylistManager {
         playlistDAO.updatePlaylist(playlistToBeEdited);
     }
 
-    public void deleteSong(Playlist playlistToBeDeleted) throws SQLServerException {
+    public void deletePlaylist(Playlist playlistToBeDeleted) throws SQLServerException {
         playlistDAO.deletePlaylist(playlistToBeDeleted);
     }
 }

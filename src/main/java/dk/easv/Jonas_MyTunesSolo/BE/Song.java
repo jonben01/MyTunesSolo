@@ -14,7 +14,6 @@ public class Song {
     public Integer getPSId() {return psId;}
     public void setPSId(Integer psId) {this.psId = psId;}
 
-    //Getters and setters for variables
     public int getSongID() {return songId;}
     public void setSongID(int songID) {this.songId = songID;}
 
@@ -67,7 +66,7 @@ public class Song {
 
     @Override
     public String toString() {
-        return title + " ";
+        return title.trim();
     }
 }
 

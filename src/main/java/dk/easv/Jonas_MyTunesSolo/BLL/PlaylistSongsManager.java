@@ -20,6 +20,8 @@ public class PlaylistSongsManager {
         playlistSongsDAO = new PlaylistSongsDAO_db();
     }
 
+    //this class is literally only used to pass stuff from DAL to GUI layer
+
     public ObservableList<PlaylistSong> getAllPlaylistSongs(Playlist playlist) {
         return playlistSongsDAO.getAllPlaylistSongs(playlist);
     }

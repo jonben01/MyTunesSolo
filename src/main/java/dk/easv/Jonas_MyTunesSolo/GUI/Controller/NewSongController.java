@@ -58,8 +58,9 @@ public class NewSongController implements Initializable {
         }
     }
 
+    @FXML
     public void btnHandleMenuAddSong(ActionEvent actionEvent) throws SQLServerException, IOException {
-
+            //cant add a song if theres no file path
             if (txtFilePath.getText() == null || txtFilePath.getText().isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
@@ -68,6 +69,7 @@ public class NewSongController implements Initializable {
                 alert.showAndWait();
                 return;
             }
+            //cant add a song if theres no title
             if (txtTitle.getText() == null || txtTitle.getText().isEmpty()
                     || txtArtist.getText() == null || txtArtist.getText().isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -77,6 +79,7 @@ public class NewSongController implements Initializable {
                 alert.showAndWait();
                 return;
             }
+            //getting song params
             String title = txtTitle.getText();
             String artist = txtArtist.getText();
             Genre selectedGenre = (Genre) this.cmbGenre.getSelectionModel().getSelectedItem();
@@ -121,6 +124,7 @@ public class NewSongController implements Initializable {
             stage.close();
     }
 
+    @FXML
     public void btnHandleFileChooser(ActionEvent actionEvent) {
         //create file chooser object, with filters for relevant file types.
         FileChooser fileChooser = new FileChooser();
@@ -161,6 +165,8 @@ public class NewSongController implements Initializable {
         }
     }
 
+    //opens a new window where you add genres.
+    @FXML
     public void btnHandleAddGenre(ActionEvent actionEvent) {
         try {
             // Load the FXML file
@@ -202,7 +208,7 @@ public class NewSongController implements Initializable {
         });
 
     }
-
+    //used to update GUI in other windows
     public void setDataChangedFlag(SimpleBooleanProperty dataChangedFlag) {
         this.dataChangedFlag = dataChangedFlag;
     }
@@ -224,11 +230,12 @@ public class NewSongController implements Initializable {
             int seconds = Integer.parseInt(parts[1]);
             return (minutes * 60) + seconds;
         } catch (Exception e) {
-           //not sure if I should do an alert here
             throw new IllegalArgumentException("Failed to parse duration");
         }
     }
 
+    //sets the params of the selected song.
+    @FXML
     public void btnHandleEditSong(ActionEvent actionEvent) throws SQLException {
         songToBeEdited.setTitle(txtTitle.getText());
         songToBeEdited.setArtistName(txtArtist.getText());
@@ -239,12 +246,14 @@ public class NewSongController implements Initializable {
         stage.close();
     }
 
+    //close the stage
+    @FXML
     public void btnHandleCancelSong(ActionEvent actionEvent) {
-        //close the stage that the button is located in.
         Stage stage = (Stage) btnCancelSong.getScene().getWindow();
         stage.close();
 
     }
+    //probably stupid, but just used to pass the song.
     public void songToBeEditedPasser(Song song) {
         songToBeEdited = song;
 

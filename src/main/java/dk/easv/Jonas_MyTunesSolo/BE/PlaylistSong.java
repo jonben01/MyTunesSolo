@@ -25,9 +25,12 @@ public class PlaylistSong {
         this.orderIndex = orderIndex;
     }
 
+    //used by playlistSong table view column
     public String getSongTitle() {
         return song != null ? song.getTitle() : "";
     }
+
+    //used by playlistSong table view column - changing orderIndex, so it starts at 1, not 0.
     public String getFormattedOrderIndex() {
         return orderIndex + 1 + ".";
     }
