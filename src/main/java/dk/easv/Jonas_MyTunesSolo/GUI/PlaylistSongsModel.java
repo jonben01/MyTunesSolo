@@ -69,8 +69,8 @@ public class PlaylistSongsModel {
      * @param playlistSong song to move down
      * @throws SQLException if db issues
      */
-    public void moveSongOnPlaylistDown(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) throws SQLException {
-        playlistSongsManager.moveSongOnPlaylistDown(playlistSong, playlistSongList);
+    public void moveSongOnPlaylistDown(PlaylistSong playlistSong) throws SQLException {
+        playlistSongsManager.moveSongOnPlaylistDown(playlistSong);
     }
 
     /**
@@ -78,8 +78,8 @@ public class PlaylistSongsModel {
      * @param playlistSong to move up
      * @throws SQLServerException if db issues
      */
-    public void moveSongOnPlaylistUp(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) throws SQLServerException {
-        playlistSongsManager.moveSongOnPlaylistUp(playlistSong, playlistSongList);
+    public void moveSongOnPlaylistUp(PlaylistSong playlistSong) throws SQLServerException {
+        playlistSongsManager.moveSongOnPlaylistUp(playlistSong);
     }
 
 }

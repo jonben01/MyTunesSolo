@@ -35,11 +35,11 @@ public class PlaylistSongsManager {
     }
 
 
-    public void moveSongOnPlaylistDown(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) throws SQLException {
-        playlistSongsDAO.moveSongOnPlaylistDown(playlistSong, playlistSongList);
+    public void moveSongOnPlaylistDown(PlaylistSong playlistSong) throws SQLException {
+        playlistSongsDAO.moveSongOnPlaylistDown(playlistSong);
     }
 
-    public void moveSongOnPlaylistUp(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) throws SQLServerException {
-        playlistSongsDAO.moveSongOnPlaylistUp(playlistSong, playlistSongList);
+    public void moveSongOnPlaylistUp(PlaylistSong playlistSong) throws SQLServerException {
+        playlistSongsDAO.moveSongOnPlaylistUp(playlistSong);
     }
 }

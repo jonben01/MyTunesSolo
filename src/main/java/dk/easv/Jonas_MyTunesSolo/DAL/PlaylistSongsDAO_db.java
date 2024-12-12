@@ -193,7 +193,7 @@ public class PlaylistSongsDAO_db {
         }
     }
 
-    public void moveSongOnPlaylistUp(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) {
+    public void moveSongOnPlaylistUp(PlaylistSong playlistSong) {
         Connection connection = null;
         //Cant move a song into the abyss.
         if (playlistSong.getOrderIndex() <= 0) {
@@ -231,12 +231,6 @@ public class PlaylistSongsDAO_db {
                 pstmt.executeUpdate();
             }
 
-            for (PlaylistSong song : playlistSongList) {
-                if(song.getOrderIndex() == aboveOrderIndex && song.getPlaylistId() == playlistSong.getPlaylistId()) {
-                    song.setOrderIndex(selectedSongOrderIndex);
-                    break;
-                }
-            }
             playlistSong.setOrderIndex(aboveOrderIndex);
             connection.commit();
 
@@ -261,7 +255,7 @@ public class PlaylistSongsDAO_db {
         }
     }
 
-    public void moveSongOnPlaylistDown(PlaylistSong playlistSong, List<PlaylistSong> playlistSongList) {
+    public void moveSongOnPlaylistDown(PlaylistSong playlistSong) {
         int maxOrderIndex;
         int belowOrderIndex = playlistSong.getOrderIndex() + 1;
         int selectedSongOrderIndex = playlistSong.getOrderIndex();
@@ -306,12 +300,7 @@ public class PlaylistSongsDAO_db {
                 pstmt.executeUpdate();
             }
 
-            for (PlaylistSong song : playlistSongList) {
-                if(song.getOrderIndex() == belowOrderIndex && song.getPlaylistId() == playlistSong.getPlaylistId()) {
-                    song.setOrderIndex(selectedSongOrderIndex);
-                    break;
-                }
-            }
+
             playlistSong.setOrderIndex(belowOrderIndex);
             connection.commit();
             //rolling back if an error occurs - i noticed sometimes when I spam some methods here, there's a gap in my orderIndex.

@@ -467,10 +467,9 @@ public class ViewController implements Initializable {
     @FXML
     public void btnHandleMoveSongUp(ActionEvent actionEvent) throws SQLServerException {
         PlaylistSong playlistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
-        List<PlaylistSong> playlistSongList = new ArrayList<>(tblPlaylistSongs.getSelectionModel().getSelectedItems());
 
         if (playlistSong != null) {
-            playlistSongsModel.moveSongOnPlaylistUp(playlistSong, playlistSongList);
+            playlistSongsModel.moveSongOnPlaylistUp(playlistSong);
             playlistSongDataChanged.set(true);
             //didnt work when I just selected the playlist again, had to make this
             int PlaylistSelectionIndex = playlistSong.getOrderIndex();
@@ -482,10 +481,9 @@ public class ViewController implements Initializable {
     @FXML
     public void btnHandleMoveSongDown(ActionEvent actionEvent) throws SQLException {
         PlaylistSong playlistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
-        List<PlaylistSong> playlistSongList = new ArrayList<>(tblPlaylistSongs.getSelectionModel().getSelectedItems());
 
         if (playlistSong != null) {
-            playlistSongsModel.moveSongOnPlaylistDown(playlistSong, playlistSongList);
+            playlistSongsModel.moveSongOnPlaylistDown(playlistSong);
             playlistSongDataChanged.set(true);
             //didnt work when I just selected the playlist again, had to make this
             int PlaylistSelectionIndex = playlistSong.getOrderIndex();
