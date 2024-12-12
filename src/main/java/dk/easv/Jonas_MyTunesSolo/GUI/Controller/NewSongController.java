@@ -58,7 +58,6 @@ public class NewSongController implements Initializable {
         }
     }
 
-    @FXML
     public void btnHandleMenuAddSong(ActionEvent actionEvent) throws SQLServerException, IOException {
             //cant add a song if theres no file path
             if (txtFilePath.getText() == null || txtFilePath.getText().isEmpty()) {
@@ -124,7 +123,6 @@ public class NewSongController implements Initializable {
             stage.close();
     }
 
-    @FXML
     public void btnHandleFileChooser(ActionEvent actionEvent) {
         //create file chooser object, with filters for relevant file types.
         FileChooser fileChooser = new FileChooser();
@@ -166,7 +164,6 @@ public class NewSongController implements Initializable {
     }
 
     //opens a new window where you add genres.
-    @FXML
     public void btnHandleAddGenre(ActionEvent actionEvent) {
         try {
             // Load the FXML file
@@ -194,7 +191,6 @@ public class NewSongController implements Initializable {
         }
     }
 
-    @Override
     public void initialize(URL location, ResourceBundle resources) {
         cmbGenre.setItems(genreModel.getGenresToBeViewed());
 
@@ -235,7 +231,6 @@ public class NewSongController implements Initializable {
     }
 
     //sets the params of the selected song.
-    @FXML
     public void btnHandleEditSong(ActionEvent actionEvent) throws SQLException {
         songToBeEdited.setTitle(txtTitle.getText());
         songToBeEdited.setArtistName(txtArtist.getText());
@@ -247,7 +242,6 @@ public class NewSongController implements Initializable {
     }
 
     //close the stage
-    @FXML
     public void btnHandleCancelSong(ActionEvent actionEvent) {
         Stage stage = (Stage) btnCancelSong.getScene().getWindow();
         stage.close();

@@ -70,7 +70,6 @@ public class GenreDAO_db implements IGenreDataAccess {
             ex.printStackTrace();
             throw new SQLException("Could not create movie", ex);
         }
-
     }
 
     @Override

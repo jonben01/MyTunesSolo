@@ -148,7 +148,6 @@ HBox {
     -fx-font-family: "Arial Black";
     -fx-border-radius: 0px;
 }
-
 .table-view .table-row-cell {
     -fx-background-color: rgba(43, 43, 43, 0.8);
     -fx-border-width: 0;
@@ -230,7 +229,6 @@ HBox {
     -fx-alignment: center;
     -fx-pref-width: 45
 }
-
 
 .text-field {
     -fx-text-fill: white;

@@ -45,7 +45,6 @@ public class NewPlaylistController implements Initializable {
         this.dataChangedFlag = dataChangedFlag;
     }
 
-    @FXML
     public void btnMenuHandleAddPlaylist(ActionEvent actionEvent) throws SQLException {
         String name = txtPlaylistName.getText();
         Playlist newPlaylist = new Playlist(-1, name);
@@ -60,7 +59,6 @@ public class NewPlaylistController implements Initializable {
         stage.close();
     }
 
-    @FXML
     public void btnHandleMenuEditPlaylist(ActionEvent actionEvent) throws SQLServerException {
         playlistToBeEdited.setName(txtPlaylistName.getText());
         playlistModel.updatePlaylist(playlistToBeEdited);
@@ -70,7 +68,6 @@ public class NewPlaylistController implements Initializable {
         stage.close();
     }
 
-    @FXML
     public void btnHandleCancelPlaylist(ActionEvent actionEvent) {
         Stage stage = (Stage) btnCancelPlaylist.getScene().getWindow();
         stage.close();

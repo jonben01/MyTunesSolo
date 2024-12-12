@@ -21,10 +21,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -51,6 +48,7 @@ public class ViewController implements Initializable {
     @FXML public Button btnCloseApplication;
     @FXML public Button btnMinimizeApplication;
     @FXML public AnchorPane titlePane;
+    @FXML public Button btnSearch;
     @FXML private Slider volumeSlider;
     @FXML private Button btnPlay;public TextField txtSearcher;
     @FXML private Slider durationSlider;
@@ -188,23 +186,12 @@ public class ViewController implements Initializable {
             }
         });
 
-        //listener passes "newValue" as a query to the searchSong method.
-        //I liked this till I realized how laggy it is :)
-        txtSearcher.textProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                songModel.searchSongs(newValue);
-
-            } catch (SQLServerException e) {
-                throw new RuntimeException(e);
-            }
-        });
         //Suboptimal way of handling volume I'm sure, but I reached these numbers through trial and error.
         //sets volume slider min val and default val.
         volumeSlider.setMin(5);
         volumeSlider.setValue(25);
         //used to store volume value for mute button.
         savedVolume = volumeSlider.getValue()/100 *0.2;
-
 
         volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (mediaPlayer != null) {
@@ -276,7 +263,6 @@ public class ViewController implements Initializable {
         });
     }
 
-    @FXML
     public void btnHandleNewSong(ActionEvent actionEvent) {
         try {
             // Load the FXML file
@@ -305,7 +291,6 @@ public class ViewController implements Initializable {
         }
     }
 
-    @FXML
     public void btnHandleDeleteSong(ActionEvent actionEvent) throws SQLServerException {
         Song songToBeDeleted = tblSong.getSelectionModel().getSelectedItem();
         //if song exists send alert
@@ -334,7 +319,6 @@ public class ViewController implements Initializable {
         }
     }
 
-    @FXML
     public void btnHandleEditSong(ActionEvent actionEvent) {
         Song songToBeEdited = tblSong.getSelectionModel().getSelectedItem();
 
@@ -372,7 +356,6 @@ public class ViewController implements Initializable {
             }
         }
     }
-    @FXML
     public void btnHandleNewPlaylist(ActionEvent actionEvent) {
         try {
             // Load the FXML file
@@ -403,7 +386,6 @@ public class ViewController implements Initializable {
 
         }
     }
-    @FXML
     public void btnHandleEditPlaylist(ActionEvent actionEvent) {
         Playlist playlistToBeEdited = tblPlaylist.getSelectionModel().getSelectedItem();
 
@@ -446,7 +428,6 @@ public class ViewController implements Initializable {
             }
         }
     }
-    @FXML
     public void btnHandleDeletePlaylist(ActionEvent actionEvent) throws SQLServerException {
         Playlist playlistToBeDeleted = tblPlaylist.getSelectionModel().getSelectedItem();
 
@@ -464,7 +445,6 @@ public class ViewController implements Initializable {
         }
     }
     //changes a PlaylistSong objects orderIndex value and selects it again.
-    @FXML
     public void btnHandleMoveSongUp(ActionEvent actionEvent) throws SQLServerException {
         PlaylistSong playlistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
 
@@ -478,7 +458,6 @@ public class ViewController implements Initializable {
     }
 
     //changes a PlaylistSong objects orderIndex value and selects it again.
-    @FXML
     public void btnHandleMoveSongDown(ActionEvent actionEvent) throws SQLException {
         PlaylistSong playlistSong = tblPlaylistSongs.getSelectionModel().getSelectedItem();
 
@@ -491,7 +470,6 @@ public class ViewController implements Initializable {
         }
     }
     //deletes the selected PlaylistSong object.
-    @FXML
     public void btnHandleDeleteSongOnPlaylist(ActionEvent actionEvent) throws SQLServerException {
         PlaylistSong playlistSongToBeDeleted = tblPlaylistSongs.getSelectionModel().getSelectedItem();
 
@@ -516,7 +494,6 @@ public class ViewController implements Initializable {
 
     //should probably rename, now that I have made drag and drop instead, but the button exists, its just invisible.
     //and also because it doesnt "move" the song???????
-    @FXML
     public void btnHandleMoveSongToPlaylist(ActionEvent actionEvent) throws SQLServerException {
         Song songToMove = tblSong.getSelectionModel().getSelectedItem();
         Playlist selectedPlaylist = tblPlaylist.getSelectionModel().getSelectedItem();
@@ -561,7 +538,6 @@ public class ViewController implements Initializable {
     }
 
     //Play or pause the song depending on media player status.
-    @FXML
     public void btnHandlePlay(ActionEvent e) {
 
         if (mediaPlayer != null) {
@@ -791,7 +767,6 @@ public class ViewController implements Initializable {
     }
 
     //just plays the next song, as long as a mediaPlayer exists.
-    @FXML
     public void btnHandleSkip(ActionEvent actionEvent) {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
@@ -805,7 +780,6 @@ public class ViewController implements Initializable {
     }
 
     //shouldve given it a better name
-    @FXML
     public void btnHandleGoBack(ActionEvent actionEvent) {
         //Resets song back to start if you pressed it while further than 5 seconds into the song
         //this is the reset button too
@@ -857,7 +831,6 @@ public class ViewController implements Initializable {
     }
 
     //closes the program
-    @FXML
     public void btnHandleCloseApplication(ActionEvent actionEvent) {
         Stage stage = (Stage) btnCloseApplication.getScene().getWindow();
         if (mediaPlayer != null) {
@@ -867,7 +840,6 @@ public class ViewController implements Initializable {
     }
 
     //"Iconifies" the main window
-    @FXML
     public void btnHandleMinimizeApplication(ActionEvent actionEvent) {
         Stage stage = (Stage) btnMinimizeApplication.getScene().getWindow();
         stage.setIconified(true);
@@ -886,6 +858,20 @@ public class ViewController implements Initializable {
         //sets the x and y value of the window as you drag it.
         stage.setX(mouseEvent.getScreenX() + xOffset);
         stage.setY(mouseEvent.getScreenY() + yOffset);
+    }
+
+    public void btnHandleSearch(ActionEvent actionEvent) throws SQLServerException {
+        songModel.searchSongs(txtSearcher.getText());
+    }
+
+    /**
+     * @param keyEvent listen for KeyEvents while txtSearch is focused
+     *                 if key event is ENTER search
+     */
+    public void handleEnterKeyPressed(KeyEvent keyEvent) throws SQLServerException {
+        if (keyEvent.getCode() == KeyCode.ENTER) {
+            songModel.searchSongs(txtSearcher.getText());
+        }
     }
 }
 

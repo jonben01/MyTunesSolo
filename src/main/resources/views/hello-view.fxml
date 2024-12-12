@@ -65,7 +65,7 @@
          <children>
             <TableView fx:id="tblSong" editable="true" fixedCellSize="25.0" onMousePressed="#doubleClickedSong" prefHeight="384.0" prefWidth="441.0">
               <columns>
-                <TableColumn fx:id="colTitle" prefWidth="165.59994196891785" resizable="false" styleClass="table-view" text="Title" />
+                <TableColumn fx:id="colTitle" prefWidth="165.59994196891785" resizable="false" text="Title" />
                 <TableColumn fx:id="colArtist" prefWidth="151.99989318847656" resizable="false" text="Artist" />
                   <TableColumn fx:id="colGenre" prefWidth="84.8001708984375" resizable="false" text="Genre" />
                   <TableColumn fx:id="colDuration" prefWidth="67.1998291015625" resizable="false" styleClass="colDuration" text="🕑" />
@@ -79,11 +79,16 @@
                   <Button fx:id="btnNewSong" mnemonicParsing="false" onAction="#btnHandleNewSong" text="+" />
                   <Button fx:id="btnDeleteSong" mnemonicParsing="false" onAction="#btnHandleDeleteSong" text="−" />
                   <Button fx:id="btnEditSong" mnemonicParsing="false" onAction="#btnHandleEditSong" text="✍" />
-                  <TextField fx:id="txtSearcher" prefHeight="26.0" prefWidth="174.0" promptText="Search">
+                  <TextField fx:id="txtSearcher" onKeyPressed="#handleEnterKeyPressed" prefHeight="26.0" prefWidth="174.0" promptText="Search..">
                      <HBox.margin>
                         <Insets left="15.0" top="7.0" />
                      </HBox.margin>
                   </TextField>
+                  <Button fx:id="btnSearch" mnemonicParsing="false" onAction="#btnHandleSearch" text="⌕">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                  </Button>
                   <Button fx:id="btnMoveSongToPlaylist" mnemonicParsing="false" onAction="#btnHandleMoveSongToPlaylist" prefHeight="26.0" prefWidth="42.0" text="←" visible="false" />
                </children>
             </HBox>

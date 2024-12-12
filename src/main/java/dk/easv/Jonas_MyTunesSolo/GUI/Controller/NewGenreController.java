@@ -46,7 +46,6 @@ public class NewGenreController implements Initializable {
 
     }
 
-    @FXML
     public void btnHandleAddGenre(ActionEvent actionEvent) throws SQLException {
         String genreName = txtGenreName.getText();
         Genre newGenre = new Genre(-1, genreName);
@@ -62,7 +61,6 @@ public class NewGenreController implements Initializable {
         stage.close();
     }
 
-    @FXML
     public void btnHandleDeleteGenre(ActionEvent actionEvent) throws SQLException {
         Genre genreToBeDeleted = lstGenres.getSelectionModel().getSelectedItem();
 
@@ -85,7 +83,6 @@ public class NewGenreController implements Initializable {
     }
 
     //close the stage
-    @FXML
     public void btnHandleCancelGenre(ActionEvent actionEvent) {
         Stage stage = (Stage) btnCancelGenre.getScene().getWindow();
         stage.close();
