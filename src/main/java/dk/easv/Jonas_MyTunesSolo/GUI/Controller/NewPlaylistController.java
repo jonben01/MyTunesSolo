@@ -1,7 +1,7 @@
 package dk.easv.Jonas_MyTunesSolo.GUI.Controller;
 //PROJECT IMPORTS
 import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
-import dk.easv.Jonas_MyTunesSolo.GUI.PlaylistModel;
+import dk.easv.Jonas_MyTunesSolo.GUI.Models.PlaylistModel;
 //JAVA IMPORTS
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;

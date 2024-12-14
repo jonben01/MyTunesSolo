@@ -62,11 +62,12 @@ public class PlaylistSongsDAO_db {
         }
         return allPlaylistSongs;
     }
+
     public PlaylistSong moveSongToPlaylist(Song songToMove, Playlist selectedPlaylist) throws SQLException {
         Connection connection = null;
-        //COALESCE runs through the column to find non-null entries, if there are none its null and will default to 0 (+1) //change to -1 +1 instead
+        //COALESCE runs through the column to find non-null entries, if there are none its null and will default to 0 (+1)
         //MAX finds the maximum value (if there are any valid values) combined these find the maximum non-null value
-        //This ensures it will always have a valid "nextOrderIndex" as if there are 0 songs, it will be 1, if there are 10 songs it will be 11
+        //This ensures it will always have a valid "nextOrderIndex"
         String getOrderIndexSQL = "SELECT COALESCE(MAX(OrderIndex), -1) + 1 AS NextOrderIndex " +
                                   "FROM PlaylistSongs ps " +
                                   "WHERE ps.PlaylistId = ?;";
@@ -79,9 +80,9 @@ public class PlaylistSongsDAO_db {
 
         try {
             connection = dbConnector.getConnection();
-            //noticeable performance issues without batching
             connection.setAutoCommit(false);
             int nextOrderIndex = 0;
+
             try(PreparedStatement pstmt = connection.prepareStatement(getOrderIndexSQL)) {
                 //runs orderIndex sql where the selected playlists id matches.
                 pstmt.setInt(1, selectedPlaylist.getId());
@@ -111,7 +112,6 @@ public class PlaylistSongsDAO_db {
                     }
                 }
             }
-
             PlaylistSong playlistSong = new PlaylistSong(generatedId, selectedPlaylist.getId(), songToMove, nextOrderIndex);
 
             return playlistSong;
@@ -148,7 +148,6 @@ public class PlaylistSongsDAO_db {
                                       "SET SongCount = SongCount - 1" +
                                       "WHERE Id = ?;";
 
-
         String orderUpdateSQL = "UPDATE dbo.PlaylistSongs " +
                                 "SET OrderIndex = OrderIndex - 1 " +
                                 "WHERE PlaylistId = ? AND OrderIndex > ?;";
@@ -182,6 +181,7 @@ public class PlaylistSongsDAO_db {
                 throw new SQLException("Could not delete song on playlist", e);
             }
             //need to use a finally block, cause if the method runs well, my connection stays open :)
+            //actually i dont need this, if I just did another try block inside
         } finally {
             if (connection != null) {
                 try {
@@ -291,15 +291,12 @@ public class PlaylistSongsDAO_db {
                 pstmt.setInt(2, playlistSong.getPlaylistId());
                 pstmt.setInt(3, belowOrderIndex);
                 pstmt.executeUpdate();
-
             }
             try (PreparedStatement pstmt = connection.prepareStatement(updateSelectedSQL)) {
                 pstmt.setInt(1, belowOrderIndex);
                 pstmt.setInt(2, playlistSong.getPsId());
                 pstmt.executeUpdate();
             }
-
-
             playlistSong.setOrderIndex(belowOrderIndex);
             connection.commit();
             //rolling back if an error occurs - i noticed sometimes when I spam some methods here, there's a gap in my orderIndex.
@@ -324,5 +321,4 @@ public class PlaylistSongsDAO_db {
             }
         }
     }
-
 }

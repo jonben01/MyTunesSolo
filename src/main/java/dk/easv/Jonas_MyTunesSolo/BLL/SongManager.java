@@ -18,6 +18,8 @@ public class SongManager {
     }
 
     //this class is literally only used to pass stuff from DAL to GUI layer except the call to the SongSearcher class
+    //but should probably have significantly more responsibility, I think I wouldve maybe moved my play methods here
+    //but refactoring now is difficult.
 
     public List<Song> getAllSongs() {
         return SongsDAO.getAllSongs();

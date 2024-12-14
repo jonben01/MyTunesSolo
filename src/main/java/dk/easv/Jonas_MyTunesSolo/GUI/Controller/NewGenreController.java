@@ -2,7 +2,7 @@ package dk.easv.Jonas_MyTunesSolo.GUI.Controller;
 
 //PROJECT IMPORTS
 import dk.easv.Jonas_MyTunesSolo.BE.Genre;
-import dk.easv.Jonas_MyTunesSolo.GUI.GenreModel;
+import dk.easv.Jonas_MyTunesSolo.GUI.Models.GenreModel;
 //JAVA IMPORTS
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
@@ -77,6 +77,7 @@ public class NewGenreController implements Initializable {
     public void setDataChangedFlag(SimpleBooleanProperty dataChangedFlag) {
         this.dataChangedFlag = dataChangedFlag;
     }
+
     //used to refresh GUI in new song view
     public void setGenreDataChangedFlag(SimpleBooleanProperty genreDataChangedFlag) {
         this.genreDataChangedFlag = genreDataChangedFlag;

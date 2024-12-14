@@ -4,11 +4,9 @@ package dk.easv.Jonas_MyTunesSolo.GUI.Controller;
 import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
 import dk.easv.Jonas_MyTunesSolo.BE.PlaylistSong;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
-import dk.easv.Jonas_MyTunesSolo.GUI.PlaylistModel;
-import dk.easv.Jonas_MyTunesSolo.GUI.PlaylistSongsModel;
-import dk.easv.Jonas_MyTunesSolo.GUI.SongModel;
-//LIBRARY IMPORTS
-import com.microsoft.sqlserver.jdbc.SQLServerException;
+import dk.easv.Jonas_MyTunesSolo.GUI.Models.PlaylistModel;
+import dk.easv.Jonas_MyTunesSolo.GUI.Models.PlaylistSongsModel;
+import dk.easv.Jonas_MyTunesSolo.GUI.Models.SongModel;
 //JAVA IMPORTS
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -77,16 +75,13 @@ public class ViewController implements Initializable {
     private double xOffset = 0;
     private double yOffset = 0;
 
-    public ViewController()  {
-
-        try {
+    public ViewController() throws Exception {
             songModel = new SongModel();
             playlistModel = new PlaylistModel();
             playlistSongsModel = new PlaylistSongsModel();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
+
+    //imagine not encapsulating any of this
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //sets the playlist table columns and items
@@ -145,8 +140,6 @@ public class ViewController implements Initializable {
                 songModel.refreshSong();
                 playlistModel.refreshPlaylist();
 
-                //TODO if i delete a song it should refresh the selected playlists songs, currently it doesnt update when
-                // i delete a song.
                 if (selectedPlaylist != null) {
                    playlistSongsModel.refreshPlaylistSongs(selectedPlaylist);
                     tblPlaylist.getSelectionModel().select(selectedPlaylist);
@@ -352,6 +345,7 @@ public class ViewController implements Initializable {
             }
         }
     }
+
     public void btnHandleNewPlaylist(ActionEvent actionEvent) {
         try {
             // Load the FXML file
@@ -585,6 +579,12 @@ public class ViewController implements Initializable {
             play(selectedSong, true);
         }
     }
+
+    /**
+     *
+     * @param selectedSong
+     * @param isPlayingFromPlaylist
+     */
     public void play(Song selectedSong, boolean isPlayingFromPlaylist) {
         if (selectedSong == null && currentSong == null) {
             return;
@@ -856,15 +856,19 @@ public class ViewController implements Initializable {
         stage.setY(mouseEvent.getScreenY() + yOffset);
     }
 
-    public void btnHandleSearch(ActionEvent actionEvent) throws SQLServerException {
+    /**
+     * @param actionEvent listen for an action on the button
+     *                    run search songs.
+     */
+    public void btnHandleSearch(ActionEvent actionEvent) throws SQLException {
         songModel.searchSongs(txtSearcher.getText());
     }
 
     /**
      * @param keyEvent listen for KeyEvents while txtSearch is focused
-     *                 if key event is ENTER search
+     *                 if key events code is ENTER, search
      */
-    public void handleEnterKeyPressed(KeyEvent keyEvent) throws SQLServerException {
+    public void handleEnterKeyPressed(KeyEvent keyEvent) throws SQLException {
         if (keyEvent.getCode() == KeyCode.ENTER) {
             songModel.searchSongs(txtSearcher.getText());
         }

@@ -30,7 +30,7 @@ public class PlaylistSong {
         return song != null ? song.getTitle() : "";
     }
 
-    //used by playlistSong table view column - changing orderIndex, so it starts at 1, not 0.
+    //used by playlistSong table view column - changing the visual orderIndex, so it starts from 1, not 0.
     public String getFormattedOrderIndex() {
         return orderIndex + 1 + ".";
     }

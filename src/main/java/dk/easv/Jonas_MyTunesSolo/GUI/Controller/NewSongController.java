@@ -3,8 +3,8 @@ package dk.easv.Jonas_MyTunesSolo.GUI.Controller;
 //PROJECT IMPORTS
 import dk.easv.Jonas_MyTunesSolo.BE.Genre;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
-import dk.easv.Jonas_MyTunesSolo.GUI.GenreModel;
-import dk.easv.Jonas_MyTunesSolo.GUI.SongModel;
+import dk.easv.Jonas_MyTunesSolo.GUI.Models.GenreModel;
+import dk.easv.Jonas_MyTunesSolo.GUI.Models.SongModel;
 //JAVA IMPORTS
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;

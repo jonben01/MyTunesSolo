@@ -1,4 +1,4 @@
-package dk.easv.Jonas_MyTunesSolo.GUI;
+package dk.easv.Jonas_MyTunesSolo.GUI.Models;
 //PROJECT IMPORTS
 import dk.easv.Jonas_MyTunesSolo.BE.Playlist;
 import dk.easv.Jonas_MyTunesSolo.BLL.PlaylistManager;

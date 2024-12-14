@@ -32,7 +32,6 @@ public class PlaylistSongsManager {
         playlistSongsDAO.deleteSongOnPlaylist(playlistSong);
     }
 
-
     public void moveSongOnPlaylistDown(PlaylistSong playlistSong) throws SQLException {
         playlistSongsDAO.moveSongOnPlaylistDown(playlistSong);
     }

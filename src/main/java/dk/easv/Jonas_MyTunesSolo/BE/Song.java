@@ -9,10 +9,8 @@ public class Song {
     private String songFilePath;
     private int duration;
     private Integer genreId;
-    private Integer psId;
 
-    public Integer getPSId() {return psId;}
-    public void setPSId(Integer psId) {this.psId = psId;}
+
 
     public int getSongID() {return songId;}
     public void setSongID(int songID) {this.songId = songID;}
@@ -58,7 +56,7 @@ public class Song {
     public String getFormattedDuration() {
         //removes decimals, so it only gets whole minutes
         int minutes = this.duration / 60;
-        //gets whats left after converting to minutes.
+        //gets what's left after converting to minutes.
         int seconds = this.duration % 60;
         //makes it user-friendly by formatting it to MM:SS
         return String.format("%02d:%02d", minutes, seconds);

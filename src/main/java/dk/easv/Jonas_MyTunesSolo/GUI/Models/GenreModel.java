@@ -1,4 +1,4 @@
-package dk.easv.Jonas_MyTunesSolo.GUI;
+package dk.easv.Jonas_MyTunesSolo.GUI.Models;
 //PROJECT IMPORTS
 import dk.easv.Jonas_MyTunesSolo.BE.Genre;
 import dk.easv.Jonas_MyTunesSolo.BLL.GenreManager;
@@ -46,7 +46,9 @@ public class GenreModel {
         genreManager.deleteGenre(genreToBeDeleted);
     }
 
-    //used to update GUI
+    /**
+     * refreshes GUI
+     */
     public void refreshGenre() {
         genresToBeViewed.clear();
         genresToBeViewed.addAll(genreManager.getAllGenres());

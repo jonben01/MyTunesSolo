@@ -43,7 +43,6 @@ public class PlaylistDAO_db implements IPlaylistDataAccess{
     public Playlist createPlaylist(Playlist newPlaylist) throws SQLException {
         String sql = "INSERT INTO dbo.Playlist (Name) VALUES(?)";
         try (Connection connection = dbConnector.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)) {
-
             pstmt.setString(1, newPlaylist.getName());
 
             Playlist createdPlaylist = new Playlist(newPlaylist.getId(), newPlaylist.getName(), newPlaylist.getSongCount());

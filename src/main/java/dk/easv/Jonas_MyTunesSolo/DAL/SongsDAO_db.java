@@ -124,16 +124,13 @@ public class SongsDAO_db implements ISongDataAccess {
                         "SELECT PlaylistId, COUNT(*) AS Occurrences " +
                         "FROM dbo.PlaylistSongs WHERE SongID = ? " +
                         "GROUP BY PlaylistId;";
-
         String updateSongCountsSQL =
                         "UPDATE dbo.Playlist " +
                         "SET SongCount = SongCount - ? " +
                         "WHERE Id = ?;";
-
         String deleteSongSQL =
                         "DELETE FROM dbo.Song " +
                         "WHERE Id = ?;";
-
         try {
             //due to multiple queries in here I want to manually manage the connection, so I can rollback in case
             //of an exception.
@@ -152,7 +149,6 @@ public class SongsDAO_db implements ISongDataAccess {
                 }
                 rs.close();
             }
-
             if (!affectedSongCounts.isEmpty()) {
                 try (PreparedStatement pstmt = connection.prepareStatement(updateSongCountsSQL)) {
                     for (Map.Entry<Integer, Integer> entry : affectedSongCounts.entrySet()) {
@@ -192,6 +188,5 @@ public class SongsDAO_db implements ISongDataAccess {
                 }
             }
         }
-
     }
 }

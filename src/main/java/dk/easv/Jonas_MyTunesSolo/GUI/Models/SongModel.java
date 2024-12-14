@@ -1,4 +1,4 @@
-package dk.easv.Jonas_MyTunesSolo.GUI;
+package dk.easv.Jonas_MyTunesSolo.GUI.Models;
 //PROJECT IMPORTS
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dk.easv.Jonas_MyTunesSolo.BE.Song;
