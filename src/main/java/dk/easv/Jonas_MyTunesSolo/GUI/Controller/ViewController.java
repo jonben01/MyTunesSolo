@@ -8,6 +8,7 @@ import dk.easv.Jonas_MyTunesSolo.GUI.Models.PlaylistModel;
 import dk.easv.Jonas_MyTunesSolo.GUI.Models.PlaylistSongsModel;
 import dk.easv.Jonas_MyTunesSolo.GUI.Models.SongModel;
 //JAVA IMPORTS
+import dk.easv.Jonas_MyTunesSolo.Main;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
@@ -18,6 +19,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
@@ -30,6 +32,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -84,6 +87,7 @@ public class ViewController implements Initializable {
     //imagine not encapsulating any of this
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         //sets the playlist table columns and items
         colPlaylistName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colPlaylistSongs.setCellValueFactory(new PropertyValueFactory<>("songCount"));
@@ -265,6 +269,7 @@ public class ViewController implements Initializable {
             // Create a new stage
             Stage newSongStage = new Stage();
             newSongStage.setTitle("Add a new audio file");
+            newSongStage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("/fox.png"))));
             newSongStage.setResizable(false);
             //Sets modality, cant use previous window till this one is closed
             newSongStage.initModality(Modality.APPLICATION_MODAL);
@@ -333,6 +338,7 @@ public class ViewController implements Initializable {
 
                 // Create a new stage
                 Stage newSongStage = new Stage();
+                newSongStage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("/fox.png"))));
                 newSongStage.setTitle("Edit a song");
                 newSongStage.setResizable(false);
                 //Sets modality, cant use previous window till this one is closed
@@ -360,17 +366,18 @@ public class ViewController implements Initializable {
             NPController.btnMenuEditPlaylist.setVisible(false);
 
             // Create a new stage
-            Stage newSongStage = new Stage();
-            newSongStage.setTitle("Add a new playlist");
-            newSongStage.setResizable(false);
+            Stage newPlaylistStage = new Stage();
+            newPlaylistStage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("/fox.png"))));
+            newPlaylistStage.setTitle("Add a new playlist");
+            newPlaylistStage.setResizable(false);
             //Sets modality, cant use previous window till this one is closed
-            newSongStage.initModality(Modality.APPLICATION_MODAL);
+            newPlaylistStage.initModality(Modality.APPLICATION_MODAL);
 
             // Set the scene with the loaded FXML file
-            newSongStage.setScene(new Scene(root));
+            newPlaylistStage.setScene(new Scene(root));
 
             // Show the stage
-            newSongStage.show();
+            newPlaylistStage.show();
         } catch (IOException e) {
             e.printStackTrace();
 
@@ -401,17 +408,18 @@ public class ViewController implements Initializable {
                 NPController.playlistToBeEditedPasser(playlistToBeEdited);
 
                 // Create a new stage
-                Stage newSongStage = new Stage();
-                newSongStage.setTitle("Edit a playlist");
-                newSongStage.setResizable(false);
+                Stage newPlaylistStage = new Stage();
+                newPlaylistStage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("/fox.png"))));
+                newPlaylistStage.setTitle("Edit a playlist");
+                newPlaylistStage.setResizable(false);
                 //Sets modality, cant use previous window till this one is closed
-                newSongStage.initModality(Modality.APPLICATION_MODAL);
+                newPlaylistStage.initModality(Modality.APPLICATION_MODAL);
 
                 // Set the scene with the loaded FXML file
-                newSongStage.setScene(new Scene(root));
+                newPlaylistStage.setScene(new Scene(root));
 
                 // Show the stage
-                newSongStage.show();
+                newPlaylistStage.show();
             } catch (IOException e) {
                 e.printStackTrace();
 
@@ -511,20 +519,16 @@ public class ViewController implements Initializable {
         //I think.
         if (volumeSlider.getValue() >=0 && volumeSlider.getValue() <= 5) {
                     btnMute.setText("\uD83D\uDD07");
-
         }
         if (volumeSlider.getValue() >=6 && volumeSlider.getValue() < 20) {
                     btnMute.setText("\uD83D\uDD08");
-
         }
         if (volumeSlider.getValue() >=20 && volumeSlider.getValue() < 70) {
                     btnMute.setText("🔉");
-
         }
         if(volumeSlider.getValue() >= 70 && volumeSlider.getValue() < 101) {
                     btnMute.setText("🔊");
         }
-
     }
 
     //Play or pause the song depending on media player status.

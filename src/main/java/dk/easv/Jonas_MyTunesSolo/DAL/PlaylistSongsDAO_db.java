@@ -24,8 +24,16 @@ public class PlaylistSongsDAO_db {
     }
 
 
+    /**
+     * gets all playlistSongs, adds them to observable list, and orders by orderIndex
+     * @param playlist used to get songs through the junction table, where playlistId matches the input playlist
+     * @return
+     */
     public ObservableList<PlaylistSong> getAllPlaylistSongs(Playlist playlist)  {
         ObservableList<PlaylistSong> allPlaylistSongs = FXCollections.observableArrayList();
+        //links a song to playlist through the PlaylistSong table
+        //this retrieves all songs that are tied to the selected playlists id on the PlaylistSong table
+        //and orders it by the OrderIndex column.
         String sql = "SELECT s.*, ps.* " +
                      "FROM dbo.Song s " +
                      "JOIN PlaylistSongs ps " +
@@ -58,26 +66,35 @@ public class PlaylistSongsDAO_db {
             }
         } catch (SQLException e) {
             //throwing runtime instead of SQL because I would have to try catch all my listeners in viewController.
+            // "have to"
             throw new RuntimeException("Could not get all playlist songs", e);
         }
         return allPlaylistSongs;
     }
 
+    /**
+     *
+     * @param songToMove object to be added to playlist
+     * @param selectedPlaylist playlist that will get the song
+     * @return a PlaylistSong object, which holds a reference to the Song object and a playlistId
+     * @throws SQLException in case of db issues
+     */
     public PlaylistSong moveSongToPlaylist(Song songToMove, Playlist selectedPlaylist) throws SQLException {
         Connection connection = null;
-        //COALESCE runs through the column to find non-null entries, if there are none its null and will default to 0 (+1)
+        //COALESCE runs through the column to find non-null entries, if there are none its null and will default to -1 (+1)
         //MAX finds the maximum value (if there are any valid values) combined these find the maximum non-null value
         //This ensures it will always have a valid "nextOrderIndex"
         String getOrderIndexSQL = "SELECT COALESCE(MAX(OrderIndex), -1) + 1 AS NextOrderIndex " +
                                   "FROM PlaylistSongs ps " +
                                   "WHERE ps.PlaylistId = ?;";
 
+        //add a new entry to PlaylistSong table
         String sql = "INSERT INTO dbo.PlaylistSongs (SongId, PlaylistId, OrderIndex) VALUES (?,?,?);";
 
+        //when this method runs, increase the songCount on the selected playlist by one
         String increaseSongCountSQL =  "UPDATE dbo.Playlist " +
                                        "SET SongCount = SongCount + 1" +
                                        "WHERE Id = ?;";
-
         try {
             connection = dbConnector.getConnection();
             connection.setAutoCommit(false);
@@ -95,12 +112,10 @@ public class PlaylistSongsDAO_db {
                 pstmt.setInt(1, selectedPlaylist.getId());
                 pstmt.executeUpdate();
             }
-
             Integer generatedId = null;
             try (PreparedStatement pstmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 pstmt.setInt(1, songToMove.getSongID());
                 pstmt.setInt(2, selectedPlaylist.getId());
-
                 pstmt.setInt(3, nextOrderIndex);
                 pstmt.executeUpdate();
 
@@ -113,7 +128,6 @@ public class PlaylistSongsDAO_db {
                 }
             }
             PlaylistSong playlistSong = new PlaylistSong(generatedId, selectedPlaylist.getId(), songToMove, nextOrderIndex);
-
             return playlistSong;
 
         } catch (SQLException e) {
@@ -126,6 +140,7 @@ public class PlaylistSongsDAO_db {
             }
             throw new SQLException("Could not move song to playlist", e);
             //need to use a finally block, cause if the method runs well, my connection stays open :)
+            //dont actually need to do this, couldve just used another try block, but I cba changing this now
         } finally {
             if (connection != null) {
                 try {
@@ -135,10 +150,14 @@ public class PlaylistSongsDAO_db {
                     throw new SQLException("Could not close connection", e);
                 }
             }
-
         }
     }
 
+    /**
+     * deletes the selected PlaylistSong object on the PlaylistSong table in the database.
+     * @param playlistSong to be deleted
+     * @throws SQLException in case of db issues
+     */
     public void deleteSongOnPlaylist(PlaylistSong playlistSong) throws SQLException {
         Connection connection = null;
         String deletionSQL = "DELETE FROM dbo.PlaylistSongs " +
@@ -194,6 +213,11 @@ public class PlaylistSongsDAO_db {
         }
     }
 
+    /**
+     * reduces the OrderIndex value on a selected songId on and increases the OrderIndex on the song above it.
+     * @param playlistSong to be moved up on the playlist (reduced OrderIndex value)
+     * @throws SQLException in case of db isses
+     */
     public void moveSongOnPlaylistUp(PlaylistSong playlistSong) throws SQLException {
         Connection connection = null;
         //Cant move a song into the abyss.
@@ -203,6 +227,7 @@ public class PlaylistSongsDAO_db {
         int aboveOrderIndex = playlistSong.getOrderIndex() - 1;
         int selectedSongOrderIndex = playlistSong.getOrderIndex();
 
+
         String updateAboveSQL = "UPDATE dbo.PlaylistSongs " +
                                 "SET OrderIndex = ?" +
                                 "WHERE PlaylistId = ? AND OrderIndex = ?;";
@@ -211,7 +236,6 @@ public class PlaylistSongsDAO_db {
                                    "SET OrderIndex = ? " +
                                    "WHERE PlaylistSongId = ?;";
 
-        //try with resources to auto close connection.
         try {
             //due to multiple queries in here I want to manually manage the connection, so I can rollback in case
             //of an exception.
@@ -254,6 +278,11 @@ public class PlaylistSongsDAO_db {
         }
     }
 
+    /**
+     * increases the OrderIndex value on a selected songId on and decreases the OrderIndex on the song below it.
+     * @param playlistSong to be moved down on the playlist (increased OrderIndex value)
+     * @throws SQLException in case of db isses
+     */
     public void moveSongOnPlaylistDown(PlaylistSong playlistSong) throws SQLException {
         int maxOrderIndex;
         int belowOrderIndex = playlistSong.getOrderIndex() + 1;

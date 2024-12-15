@@ -15,11 +15,16 @@ public class SongsDAO_db implements ISongDataAccess {
     }
 
 
+    /**
+     * gets all songs, and joins a genreName to the song, so it can be displayed directly
+     * @return a list of song Objects to be added to observable list.
+     */
     @Override
     public List<Song> getAllSongs() {
         ArrayList<Song> allSongs = new ArrayList<>();
         //try with resources, auto closes database connection.
         try (Connection connection = dbConnector.getConnection(); Statement stmt = connection.createStatement()) {
+            //left join to get results from the genre table only where it matches, but still getting all songs.
             String sql = "SELECT s.Id, s.Title, s.Artist, s.GenreId, g.GenreName AS genreName, s.Duration, s.File_Path " +
                          "FROM dbo.Song s " +
                          "LEFT JOIN dbo.Genre g ON s.GenreId = g.Id ";
@@ -40,16 +45,19 @@ public class SongsDAO_db implements ISongDataAccess {
 
                 Song song = new Song(id, title, artist, genreName, file_path, duration);
                 allSongs.add(song);
-
             }
             return allSongs;
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 
+    /**
+     * adds an entry to the database and pass that entry up the chain
+     * @param newSong to be created
+     * @return song created
+     * @throws SQLException in case of db issues
+     */
     @Override
     public Song createSong(Song newSong) throws SQLException {
         String sql = "INSERT INTO dbo.Song (Title, Artist, GenreId, Duration, File_Path ) VALUES (?,?,?,?,?);";
@@ -79,6 +87,11 @@ public class SongsDAO_db implements ISongDataAccess {
         }
     }
 
+    /**
+     * updates a song entry in the database, with either a new title, artist or genreId
+     * @param songToBeEdited object to be edited in database
+     * @throws SQLException in case of db issues
+     */
     @Override
     public void updateSong(Song songToBeEdited) throws SQLException {
 
@@ -99,7 +112,6 @@ public class SongsDAO_db implements ISongDataAccess {
         } catch (SQLException e) {
             throw new SQLException("Could not update song",e);
         }
-
     }
 
     //I wish I didnt need this right now, but i cant figure out how to make things work without it
@@ -116,6 +128,11 @@ public class SongsDAO_db implements ISongDataAccess {
         return null;
     }
 
+    /**
+     * Deletes a song from the song table, and also updates the song count of playlists if the song is on the playlistSong table.
+     * @param songToBeDeleted object to be removed from db
+     * @throws SQLException in case of db issues
+     */
     @Override
     public void deleteSong(Song songToBeDeleted) throws SQLException {
         Connection connection = null;
@@ -149,6 +166,8 @@ public class SongsDAO_db implements ISongDataAccess {
                 }
                 rs.close();
             }
+            //uses the key-value hashmap to update song count on affected playlists
+            //the map ensures an affected playlist is updated the correct amount of times, if a song is on it multiple times.
             if (!affectedSongCounts.isEmpty()) {
                 try (PreparedStatement pstmt = connection.prepareStatement(updateSongCountsSQL)) {
                     for (Map.Entry<Integer, Integer> entry : affectedSongCounts.entrySet()) {

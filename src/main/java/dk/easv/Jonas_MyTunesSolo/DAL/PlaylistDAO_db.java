@@ -14,6 +14,10 @@ public class PlaylistDAO_db implements IPlaylistDataAccess{
         dbConnector = new DBConnector();
     }
 
+    /**
+     * gets all playlists in the database and pass them back up to be added to the observable list for playlists
+     * @return a list of playlists in the database.
+     */
     @Override
     public List<Playlist> getAllPlaylists() {
         ArrayList<Playlist> allPlaylists  = new ArrayList<Playlist>();
@@ -35,10 +39,17 @@ public class PlaylistDAO_db implements IPlaylistDataAccess{
 
         } catch (SQLException e) {
             //throwing runtime here so I dont have to try catch listeners in view Controller
+            // "have to"
             throw new RuntimeException("Could not get playlists",e);
         }
     }
 
+    /**
+     * creates a playlist in the database, and passes it back up to be added to the observable list
+     * @param newPlaylist to be created in the database
+     * @return the newly created playlist
+     * @throws SQLException in case of db issues
+     */
     @Override
     public Playlist createPlaylist(Playlist newPlaylist) throws SQLException {
         String sql = "INSERT INTO dbo.Playlist (Name) VALUES(?)";
@@ -54,6 +65,11 @@ public class PlaylistDAO_db implements IPlaylistDataAccess{
         }
     }
 
+    /**
+     * Updates a playlist in the database.
+     * @param playlistToBeEdited to be edited
+     * @throws SQLException in case of db issues
+     */
     @Override
     public void updatePlaylist(Playlist playlistToBeEdited) throws SQLException {
         String sql = "UPDATE dbo.Playlist SET Name = ? WHERE Id = ?";
@@ -68,6 +84,11 @@ public class PlaylistDAO_db implements IPlaylistDataAccess{
 
     }
 
+    /**
+     * Deletes a playlist from the database
+     * @param playlist to be deleted
+     * @throws SQLException in case of db issues
+     */
     @Override
     public void deletePlaylist(Playlist playlist) throws SQLException {
         String sql = "DELETE FROM dbo.Playlist WHERE Id = ?";
