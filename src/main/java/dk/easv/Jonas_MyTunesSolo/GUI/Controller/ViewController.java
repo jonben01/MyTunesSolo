@@ -585,9 +585,8 @@ public class ViewController implements Initializable {
     }
 
     /**
-     *
-     * @param selectedSong
-     * @param isPlayingFromPlaylist
+     * @param selectedSong to be played
+     * @param isPlayingFromPlaylist boolean that decides if the next song should be picked from the playlist or from the song table
      */
     public void play(Song selectedSong, boolean isPlayingFromPlaylist) {
         if (selectedSong == null && currentSong == null) {
