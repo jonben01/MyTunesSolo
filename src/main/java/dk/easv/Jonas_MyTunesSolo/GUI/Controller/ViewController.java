@@ -628,9 +628,12 @@ public class ViewController implements Initializable {
     //encapsulating the initial play part of previous method, it became way way way too long - still is.
     //this could be made a lot better still, but imagine this being inside the btnHandlePlay() - should've done it more tbh.
     //Tried making an overloaded method, but adding a boolean parameter made it easier to work with
+    /**
+     * Plays the selected song.
+     * @param selectedSong song passed from play method, selected by doubleClickedSong or doubleClickedPlaylistSong methods
+     * @param isPlayingFromPlaylist check to see whether to play next or previous song from playlist or song table
+     */
     public void playSelectedSong(Song selectedSong, boolean isPlayingFromPlaylist) {
-        //boolean check for whether it is currently playing from a playlist or not, single-handedly controls autoplay function
-        //from playlist
         //create everything relevant for the mediaPlayer - including itself.
         String mediaURL = selectedSong.getSongFilePath();
         File file = new File(mediaURL);
