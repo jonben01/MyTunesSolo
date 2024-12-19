@@ -9,7 +9,7 @@ public class Genre {
     public void setGenreName(String genreName) { this.genreName = genreName;}
 
     public int getId() {return id;}
-    public void setId(int genreId) {this.id = id;}
+    public void setId(int id) {this.id = id;}
 
     public Genre(int id, String genreName) {
         this.id = id;

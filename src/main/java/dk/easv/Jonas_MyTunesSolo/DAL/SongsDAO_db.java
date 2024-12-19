@@ -137,7 +137,7 @@ public class SongsDAO_db implements ISongDataAccess {
     public void deleteSong(Song songToBeDeleted) throws SQLException {
         Connection connection = null;
 
-        String getAffectPlaylistsSQL =
+        String getAffectedPlaylistsSQL =
                         "SELECT PlaylistId, COUNT(*) AS Occurrences " +
                         "FROM dbo.PlaylistSongs WHERE SongID = ? " +
                         "GROUP BY PlaylistId;";
@@ -155,7 +155,7 @@ public class SongsDAO_db implements ISongDataAccess {
             connection.setAutoCommit(false);
             Map<Integer, Integer> affectedSongCounts = new HashMap<>();
 
-            try (PreparedStatement pstmt = connection.prepareStatement(getAffectPlaylistsSQL)) {
+            try (PreparedStatement pstmt = connection.prepareStatement(getAffectedPlaylistsSQL)) {
                 pstmt.setInt(1, songToBeDeleted.getSongID());
                 ResultSet rs = pstmt.executeQuery();
 
